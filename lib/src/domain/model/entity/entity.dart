@@ -12,6 +12,7 @@ abstract class Entity
         EntityCommands,
         EntityPolicies,
         EntityAttributes {
+  get status;
 // final List<Entity> children = <Entity>[];
 
 // // add remove and access children

@@ -135,4 +135,8 @@ class User extends Entity {
   @override
   // TODO: implement attributes
   List<EntityAttribute> get attributes => throw UnimplementedError();
+
+  @override
+  // TODO: implement status
+  get status => throw UnimplementedError();
 }
