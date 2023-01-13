@@ -1,33 +1,36 @@
-abstract class EntityPolicy {
-  String get id;
+import '../serializable.dart';
 
-  set id(String value);
+class EntityPolicy with Serializable {
+  String id;
+  String name;
+  String? description;
+  String type;
+  String version;
 
-  String get name;
+  EntityPolicy({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.version,
+  });
 
-  set name(String value);
+  static fromJson(Map<String, dynamic> json) {
+    return EntityPolicy(
+      id: json['id'],
+      name: json['name'],
+      type: json['type'],
+      version: json['version'],
+    );
+  }
 
-  String get description;
-
-  set description(String value);
-
-  String get type;
-
-  set type(String value);
-
-  String get version;
-
-  set version(String value);
-
-  String get source;
-
-  set source(String value);
-
-  DateTime get time;
-
-  set time(DateTime value);
-
-  Map<String, Object> get data;
-
-  set data(Map<String, Object> value);
+  @override
+  toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'type': type,
+      'version': version,
+    };
+  }
 }

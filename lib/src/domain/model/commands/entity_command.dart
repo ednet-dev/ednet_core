@@ -21,12 +21,26 @@ class EntityCommand with Serializable {
     );
   }
 
+  fromJsonFactory(Map<String, dynamic> json) {
+    return EntityCommand(
+      name: json['name'],
+      parameters: json['parameters'],
+    );
+  }
+
   @override
   Map<String, dynamic> toJson() {
     return {
       'name': name,
       'parameters': parameters.map((e) => e.toJson()).toList(),
     };
+  }
+
+  static fromJson(Map<String, dynamic> json) {
+    return EntityCommand(
+      name: json['name'],
+      parameters: json['parameters'],
+    );
   }
 
 // void validateParameters(Map<String, dynamic> parameters) {

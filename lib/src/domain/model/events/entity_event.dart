@@ -1,41 +1,27 @@
 import '../serializable.dart';
 
-abstract class EntityEvent with Serializable {
-  String get topic;
+class EntityEvent with Serializable {
+  String topic;
+  String id;
+  String name;
+  String? description;
+  String type;
+  String version;
+  String source;
+  DateTime time = DateTime.now();
+  Map<String, Object> data;
 
-  set topic(String value);
-
-  String get id;
-
-  set id(String value);
-
-  String get name;
-
-  set name(String value);
-
-  String get description;
-
-  set description(String value);
-
-  String get type;
-
-  set type(String value);
-
-  String get version;
-
-  set version(String value);
-
-  String get source;
-
-  set source(String value);
-
-  DateTime get time;
-
-  set time(DateTime value);
-
-  Map<String, Object> get data;
-
-  set data(Map<String, Object> value);
+  EntityEvent({
+    required this.topic,
+    required this.id,
+    required this.name,
+    this.description,
+    required this.type,
+    required this.version,
+    required this.source,
+    required this.time,
+    required this.data,
+  });
 
   @override
   Map<String, dynamic> toJson() {
@@ -50,5 +36,19 @@ abstract class EntityEvent with Serializable {
       'time': time,
       'data': data,
     };
+  }
+
+  static fromJson(Map<String, dynamic> json) {
+    return EntityEvent(
+      topic: json['topic'],
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      type: json['type'],
+      version: json['version'],
+      source: json['source'],
+      time: json['time'],
+      data: json['data'],
+    );
   }
 }

@@ -1,6 +1,6 @@
 import '../serializable.dart';
 
-abstract class EntityAttributes with Serializable {
+class EntityAttributes with Serializable {
   final List<EntityAttribute> attributes;
 
   EntityAttributes({required this.attributes});
@@ -37,7 +37,7 @@ abstract class EntityAttributes with Serializable {
 ///  "isMarried": true
 ///  }
 
-class EntityAttribute<T> {
+class EntityAttribute<T> with Serializable {
   final String name;
   final String type;
   final T value;
@@ -55,12 +55,21 @@ class EntityAttribute<T> {
 
   get toJsonString => '"$name": "$value"';
 
+  @override
   toJson() {
     return {
-      'name': name,
-      'type': type,
-      'value': value,
+      "name": name,
+      "type": type,
+      "value": value,
     };
+  }
+
+  static fromJson(json) {
+    return EntityAttribute(
+      name: json['name'],
+      type: json['type'],
+      value: json['value'],
+    );
   }
 
   static fromYaml(Map<dynamic, dynamic> yaml) {
