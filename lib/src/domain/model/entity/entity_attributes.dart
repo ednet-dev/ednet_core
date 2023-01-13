@@ -1,4 +1,6 @@
-abstract class EntityAttributes {
+import '../serializable.dart';
+
+abstract class EntityAttributes with Serializable {
   final List<EntityAttribute> attributes;
 
   EntityAttributes({required this.attributes});
@@ -19,6 +21,7 @@ abstract class EntityAttributes {
     return attributes.map((attribute) => attribute.name).toList();
   }
 
+  @override
   toJson() {
     return {
       'attributes': attributes.map((attribute) => attribute.toJson()).toList(),

@@ -1,6 +1,8 @@
 import 'package:ednet_core/ednet_core.dart';
 
-class EntityCommand {
+import '../serializable.dart';
+
+class EntityCommand with Serializable {
   EntityCommand({
     required this.name,
     required this.parameters,
@@ -17,6 +19,14 @@ class EntityCommand {
       name: yaml['name'],
       parameters: parameters,
     );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'parameters': parameters.map((e) => e.toJson()).toList(),
+    };
   }
 
 // void validateParameters(Map<String, dynamic> parameters) {

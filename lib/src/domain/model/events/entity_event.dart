@@ -1,4 +1,6 @@
-abstract class EntityEvent {
+import '../serializable.dart';
+
+abstract class EntityEvent with Serializable {
   String get topic;
 
   set topic(String value);
@@ -34,4 +36,19 @@ abstract class EntityEvent {
   Map<String, Object> get data;
 
   set data(Map<String, Object> value);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'topic': topic,
+      'id': id,
+      'name': name,
+      'description': description,
+      'type': type,
+      'version': version,
+      'source': source,
+      'time': time,
+      'data': data,
+    };
+  }
 }
