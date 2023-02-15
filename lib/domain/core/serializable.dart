@@ -1,4 +1,4 @@
-part of entities;
+part of core;
 
 mixin Serializable {
   Map<String, dynamic> toJson();

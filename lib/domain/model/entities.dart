@@ -1,5 +1,6 @@
 library entities;
 
+import '../core.dart';
 import 'events.dart';
 import 'commands.dart';
 import 'policies.dart';
@@ -28,4 +29,3 @@ part 'entity/semantic_attribute_format.dart';
 
 part 'entity/semantic_attribute_type.dart';
 
-part 'core/serializable.dart';
