@@ -1,5 +1,4 @@
-import 'package:ednet_core/ednet_core.dart';
-
+part of repository;
 abstract class Repository<T extends AggregateRoot> {
   // List<T> find(Criteria criteria);
   //

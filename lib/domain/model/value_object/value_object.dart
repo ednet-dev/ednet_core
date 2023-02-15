@@ -1,4 +1,4 @@
-part of ednet_core;
+part of value_object;
 
 /// ValueObject abstraction
 abstract class ValueObject {

@@ -1,6 +1,4 @@
-import 'package:ednet_core/src/domain/model/aggregate_root/aggregate_root.dart';
-
-import '../../repository.dart';
+part of repository;
 
 class NonDestructiveRepository extends Repository {
   @override

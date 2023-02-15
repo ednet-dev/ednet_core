@@ -1,4 +1,11 @@
-part of ednet_core;
+library model;
+
+export 'model/aggregate_root.dart';
+export 'model/entities.dart';
+export 'model/commands.dart';
+export 'model/policies.dart';
+export 'model/events.dart';
+export 'model/value_object.dart';
 
 String defaultDomainModelYaml = '''
 name: TaskManagement
