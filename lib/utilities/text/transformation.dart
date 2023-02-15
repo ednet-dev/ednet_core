@@ -15,7 +15,7 @@ String plural(String text) {
   if (t == '') {
     return '';
   }
-  var result;
+  String result;
   String lastLetter = t.substring(t.length - 1, t.length);
   if (lastLetter == 'x') {
     result = '${t}es';
@@ -69,7 +69,7 @@ String camelCaseSeparator(String text, String separator) {
   for (Match m in matches) {
     indexes.add(m.end);
   }
-  ;
+
   int previousIndex = 0;
   var camelCaseWordList = <String>[];
   for (int index in indexes) {
