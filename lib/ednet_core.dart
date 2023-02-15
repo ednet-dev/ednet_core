@@ -1,6 +1,13 @@
 library ednet_core;
 
-/// Basic infrastructure for the Domain-Driven Design (DDD) approach.
-export 'src/domain/model.dart';
-// export 'src/domain/infrastructure.dart';
-// export 'src/configuration/bootstrap.dart';
+export 'domain/model/entities.dart';
+export 'domain/model/aggregate_root.dart';
+export 'domain/model/events.dart';
+export 'domain/model/commands.dart';
+export 'domain/model/policies.dart';
+
+part 'domain/model.dart';
+
+// part 'domain/model/bounded_contexts/bounded_context.dart';
+
+
