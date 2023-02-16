@@ -109,7 +109,7 @@ class ModelEntries implements ModelEntriesApi {
   }
   
   String fromEntryToJson(String entryConceptCode) => 
-      JSON.encode(fromEntryToMap(entryConceptCode));
+      jsonEncode(fromEntryToMap(entryConceptCode));
   
   Map<String, Object> fromEntryToMap(String entryConceptCode) {
     Map<String, Object> entryMap = new Map<String, Object>();
@@ -122,7 +122,7 @@ class ModelEntries implements ModelEntriesApi {
   }
   
   void fromJsonToEntry(String entryJson) {
-    Map<String, Object> entryMap = JSON.decode(entryJson);
+    Map<String, Object> entryMap = jsonDecode(entryJson);
     fromMapToEntry(entryMap);
   }
   
@@ -191,11 +191,11 @@ class ModelEntries implements ModelEntriesApi {
   }
   
   void populateEntryReferences(String entryJson) {
-    Map<String, Object> entryMap = JSON.decode(entryJson);
+    Map<String, Object> entryMap = jsonDecode(entryJson);
     populateEntryReferencesFromJsonMap(entryMap);
   }
   
-  String toJson() => JSON.encode(toJsonMap());
+  String toJson() => jsonEncode(toJsonMap());
   
   Map<String, Object> toJsonMap() { 
     var entriesMap = new Map<String, Object>(); 
@@ -206,7 +206,7 @@ class ModelEntries implements ModelEntriesApi {
   }
   
   void fromJson(String entriesJson) {
-    Map<String, Object> entriesMap = JSON.decode(entriesJson);
+    Map<String, Object> entriesMap = jsonDecode(entriesJson);
     fromJsonMap(entriesMap);
   }
   

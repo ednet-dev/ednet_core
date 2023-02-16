@@ -1,22 +1,23 @@
 part of ednet_core;
 
-class Reference  {
+class Reference {
   String parentOidString;
   String parentConceptCode;
   String entryConceptCode;
-  
-  Reference(this.parentOidString, this.parentConceptCode, this.entryConceptCode);
-  
+
+  Reference(
+      this.parentOidString, this.parentConceptCode, this.entryConceptCode);
+
   Oid get oid {
-    var parentTimeStamp;
+    int parentTimeStamp;
     try {
-      parentTimeStamp = int.parse(parentOidString);   
+      parentTimeStamp = int.parse(parentOidString);
     } on FormatException catch (e) {
-      throw new TypeException('${parentConceptCode} parent oid is not int: $e');
+      throw TypeException('$parentConceptCode parent oid is not int: $e');
     }
-    return new Oid.ts(parentTimeStamp); 
+    return Oid.ts(parentTimeStamp);
   }
- 
+
   /*
   String toString() {
     String ref = 'parent oid: ${parentOidString}; ';
@@ -24,8 +25,9 @@ class Reference  {
            ref = '${ref}entry concept: ${entryConceptCode}';
     return ref;
   */
-  
+
+  @override
   String toString() {
-    return '${parentOidString}';
+    return parentOidString;
   }
 }

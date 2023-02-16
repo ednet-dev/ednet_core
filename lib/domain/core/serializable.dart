@@ -1,4 +1,4 @@
-part of core;
+part of ednet_core;
 
 mixin Serializable {
   Map<String, dynamic> toJson();

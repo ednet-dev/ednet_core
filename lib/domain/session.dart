@@ -1,21 +1,20 @@
 part of ednet_core;
 
 abstract class DomainSessionApi {
-
   DomainModelsApi get domainModels;
+
   PastApi get past;
 }
 
 class DomainSession implements DomainSessionApi {
+  final DomainModels _domainModels;
+  final Past _past;
 
-  DomainModels _domainModels;
-  Past _past;
+  DomainSession(this._domainModels) : _past = Past();
 
-  DomainSession(this._domainModels) {
-    _past = new Past();
-  }
-
+  @override
   DomainModels get domainModels => _domainModels;
-  Past get past => _past;
 
+  @override
+  Past get past => _past;
 }

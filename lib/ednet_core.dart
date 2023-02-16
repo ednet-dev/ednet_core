@@ -1,6 +1,7 @@
 library ednet_core;
 
 import 'dart:math';
+import 'dart:convert';
 
 export 'domain/model.dart';
 
@@ -101,3 +102,7 @@ part 'domain/model/entity/flutter_semantic_render_type.dart';
 part 'domain/model/entity/semantic_attribute_format.dart';
 
 part 'domain/model/entity/semantic_attribute_type.dart';
+
+part 'domain/core/serializable.dart';
+
+part 'utilities/text/transformation.dart';

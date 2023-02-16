@@ -9,10 +9,10 @@ abstract class EntityApi<E extends EntityApi<E>> implements Comparable {
 
   IdApi get id;
 
-  String code;
-  DateTime whenAdded;
-  DateTime whenSet;
-  DateTime whenRemoved;
+  late String code;
+  late DateTime whenAdded;
+  late DateTime whenSet;
+  late DateTime whenRemoved;
 
   Object getAttribute(String name);
 
@@ -43,56 +43,58 @@ abstract class EntityApi<E extends EntityApi<E>> implements Comparable {
   void fromJson(String entityJson);
 }
 
-class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
-  Concept _concept;
-  var _oid = new Oid();
-  String _code;
-  DateTime _whenAdded;
-  DateTime _whenSet;
-  DateTime _whenRemoved;
-  var exceptions = new ValidationExceptions();
+class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
+  late Concept _concept;
+  var _oid = Oid();
+  late String _code;
+  late DateTime _whenAdded;
+  late DateTime _whenSet;
+  late DateTime _whenRemoved;
+  @override
+  var exceptions = const ValidationExceptions();
 
-  Map<String, Object> _attributeMap;
+  late Map<String, Object?> _attributeMap;
 
   // cannot use T since a parent is of a different type
-  Map<String, Reference> _referenceMap;
-  Map<String, ConceptEntity> _parentMap;
-  Map<String, Entities> _childMap;
-  Map<String, Entities> _internalChildMap;
+  late Map<String, Reference?> _referenceMap;
+  late Map<String, ConceptEntity?> _parentMap;
+  late Map<String, Entities> _childMap;
+  late Map<String, Entities> _internalChildMap;
 
   bool pre = false;
   bool post = false;
 
   ConceptEntity<E> newEntity() {
-    var conceptEntity = new ConceptEntity<E>();
+    var conceptEntity = ConceptEntity<E>();
     conceptEntity.concept = _concept;
     return conceptEntity;
   }
 
   Entities<E> newEntities() {
-    var entities = new Entities<E>();
+    var entities = Entities<E>();
     entities.concept = _concept;
     return entities;
   }
 
+  @override
   Concept get concept => _concept;
 
-  void set concept(Concept concept) {
+  set concept(Concept concept) {
     _concept = concept;
-    _attributeMap = new Map<String, Object>();
-    _referenceMap = new Map<String, Reference>();
-    _parentMap = new Map<String, ConceptEntity>();
-    _childMap = new Map<String, Entities>();
-    _internalChildMap = new Map<String, Entities>();
+    _attributeMap = <String, Object>{};
+    _referenceMap = <String, Reference>{};
+    _parentMap = <String, ConceptEntity>{};
+    _childMap = <String, Entities>{};
+    _internalChildMap = <String, Entities>{};
 
     pre = true;
     post = true;
 
-    for (Attribute a in _concept.attributes) {
+    for (Attribute a in _concept.attributes as Iterable<Attribute>) {
       if (a.init == null) {
         _attributeMap[a.code] = null;
       } else if (a.type.code == 'DateTime' && a.init == 'now') {
-        _attributeMap[a.code] = new DateTime.now();
+        _attributeMap[a.code] = DateTime.now();
       } else if (a.type.code == 'bool' && a.init == 'true') {
         _attributeMap[a.code] = true;
       } else if (a.type.code == 'bool' && a.init == 'false') {
@@ -101,14 +103,14 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
         try {
           _attributeMap[a.code] = int.parse(a.init);
         } on FormatException catch (e) {
-          throw new TypeException(
+          throw TypeException(
               '${a.code} attribute init (default) value is not int: $e');
         }
       } else if (a.type.code == 'double') {
         try {
           _attributeMap[a.code] = double.parse(a.init);
         } on FormatException catch (e) {
-          throw new TypeException(
+          throw TypeException(
               '${a.code} attribute init (default) value is not double: $e');
         }
       } else if (a.type.code == 'num') {
@@ -118,7 +120,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
           try {
             _attributeMap[a.code] = double.parse(a.init);
           } on FormatException catch (e2) {
-            throw new TypeException(
+            throw TypeException(
                 '${a.code} attribute init (default) value is not num: $e1; $e2');
           }
         }
@@ -126,7 +128,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
         try {
           _attributeMap[a.code] = Uri.parse(a.init);
         } on ArgumentError catch (e) {
-          throw new TypeException(
+          throw TypeException(
               '${a.code} attribute init (default) value is not Uri: $e');
         }
       } else {
@@ -134,13 +136,13 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
       }
     } // for
 
-    for (Parent parent in _concept.parents) {
+    for (Parent parent in _concept.parents as Iterable<Parent>) {
       _referenceMap[parent.code] = null;
       _parentMap[parent.code] = null;
     }
 
     for (Child child in _concept.children) {
-      var childEntities = new Entities<E>();
+      var childEntities = Entities<E>();
       childEntities.concept = child.destinationConcept;
       _childMap[child.code] = childEntities;
       if (child.internal) {
@@ -149,21 +151,23 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
     }
   }
 
+  @override
   Oid get oid => _oid;
 
-  void set oid(Oid oid) {
+  set oid(Oid oid) {
     if (_concept.updateOid) {
       _oid = oid;
     } else {
-      throw new OidException('Entity.oid cannot be updated.');
+      throw OidException('Entity.oid cannot be updated.');
     }
   }
 
+  @override
   Id get id {
     if (_concept == null) {
-      throw new ConceptException('Entity concept is not defined.');
+      throw ConceptException('Entity concept is not defined.');
     }
-    Id id = new Id(_concept);
+    Id id = Id(_concept);
     for (Parent p in _concept.parents) {
       if (p.identifier) {
         id.setReference(p.code, _referenceMap[p.code]);
@@ -180,43 +184,51 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
     return id;
   }
 
+  @override
   String get code => _code;
 
-  void set code(String code) {
+  @override
+  set code(String code) {
     if (_code == null || _concept.updateCode) {
       _code = code;
     } else {
-      throw new CodeException('Entity.code cannot be updated.');
+      throw CodeException('Entity.code cannot be updated.');
     }
   }
 
+  @override
   DateTime get whenAdded => _whenAdded;
 
-  void set whenAdded(DateTime whenAdded) {
+  @override
+  set whenAdded(DateTime whenAdded) {
     if (_concept.updateWhen) {
       _whenAdded = whenAdded;
     } else {
-      throw new UpdateException('Entity.whenAdded cannot be updated.');
+      throw UpdateException('Entity.whenAdded cannot be updated.');
     }
   }
 
+  @override
   DateTime get whenSet => _whenSet;
 
-  void set whenSet(DateTime whenSet) {
+  @override
+  set whenSet(DateTime whenSet) {
     if (_concept.updateWhen) {
       _whenSet = whenSet;
     } else {
-      throw new UpdateException('Entity.whenSet cannot be updated.');
+      throw UpdateException('Entity.whenSet cannot be updated.');
     }
   }
 
+  @override
   DateTime get whenRemoved => _whenRemoved;
 
-  void set whenRemoved(DateTime whenRemoved) {
+  @override
+  set whenRemoved(DateTime whenRemoved) {
     if (_concept.updateWhen) {
       _whenRemoved = whenRemoved;
     } else {
-      throw new UpdateException('Entity.whenRemoved cannot be updated.');
+      throw UpdateException('Entity.whenRemoved cannot be updated.');
     }
   }
 
@@ -240,29 +252,32 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
   String get codePluralFirstLetterUpperSpace =>
       camelCaseFirstLetterUpperSeparator(codePlural, ' ');
 
+  @override
   bool preSetAttribute(String name, Object value) {
     if (!pre) {
       return true;
     }
 
     if (_concept == null) {
-      throw new ConceptException('Entity(oid: ${oid}) concept is not defined.');
+      throw ConceptException('Entity(oid: ${oid}) concept is not defined.');
     }
     return true;
   }
 
+  @override
   Object getAttribute(String name) => _attributeMap[name];
 
+  @override
   bool setAttribute(String name, Object value) {
     bool updated = false;
     if (preSetAttribute(name, value)) {
       if (_concept == null) {
-        throw new ConceptException('Entity concept is not defined.');
+        throw ConceptException('Entity concept is not defined.');
       }
       Attribute attribute = _concept.attributes.singleWhereCode(name);
       if (attribute == null) {
         String msg = '${_concept.code}.$name is not correct attribute name.';
-        throw new UpdateException(msg);
+        throw UpdateException(msg);
       }
       /*
        * validation done in Entities.preAdd
@@ -279,10 +294,10 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
       } else if (attribute.update) {
         _attributeMap[name] = value;
         updated = true;
-        _whenSet = new DateTime.now();
+        _whenSet = DateTime.now();
       } else {
         String msg = '${_concept.code}.${attribute.code} is not updateable.';
-        throw new UpdateException(msg);
+        throw UpdateException(msg);
       }
       if (postSetAttribute(name, value)) {
         updated = true;
@@ -295,7 +310,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
           var msg = '${_concept.code}.${attribute.code} '
               'was set to a new value, post was not successful, '
               'set to the before value was not successful';
-          throw new RemoveException(msg);
+          throw RemoveException(msg);
         } else {
           _whenSet = null;
         }
@@ -306,30 +321,34 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
     return updated;
   }
 
+  @override
   bool postSetAttribute(String name, Object value) {
     if (!post) {
       return true;
     }
 
     if (_concept == null) {
-      throw new ConceptException('Entity(oid: ${oid}) concept is not defined.');
+      throw ConceptException('Entity(oid: ${oid}) concept is not defined.');
     }
     return true;
   }
 
+  @override
   String getStringFromAttribute(String name) => _attributeMap[name].toString();
 
+  @override
   String getStringOrNullFromAttribute(String name) =>
       _attributeMap[name] == null ? null : _attributeMap[name].toString();
 
+  @override
   bool setStringToAttribute(String name, String string) {
     if (_concept == null) {
-      throw new ConceptException('Entity concept is not defined.');
+      throw ConceptException('Entity concept is not defined.');
     }
     Attribute attribute = _concept.attributes.singleWhereCode(name);
     if (attribute == null) {
       String msg = '${_concept.code}.$name is not correct attribute name.';
-      throw new UpdateException(msg);
+      throw UpdateException(msg);
     }
 
     if (string == null || string == 'null') {
@@ -339,7 +358,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
       try {
         return setAttribute(name, DateTime.parse(string));
       } on ArgumentError catch (e) {
-        throw new TypeException('${_concept.code}.${attribute.code} '
+        throw TypeException('${_concept.code}.${attribute.code} '
             'attribute value is not DateTime: $e');
       }
     } else if (attribute.type.code == 'bool') {
@@ -348,21 +367,21 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
       } else if (string == 'false') {
         return setAttribute(name, false);
       } else {
-        throw new TypeException('${attribute.code} '
+        throw TypeException('${attribute.code} '
             'attribute value is not bool.');
       }
     } else if (attribute.type.code == 'int') {
       try {
         return setAttribute(name, int.parse(string));
       } on FormatException catch (e) {
-        throw new TypeException('${attribute.code} '
+        throw TypeException('${attribute.code} '
             'attribute value is not int: $e');
       }
     } else if (attribute.type.code == 'double') {
       try {
         return setAttribute(name, double.parse(string));
       } on FormatException catch (e) {
-        throw new TypeException('${attribute.code} '
+        throw TypeException('${attribute.code} '
             'attribute value is not double: $e');
       }
     } else if (attribute.type.code == 'num') {
@@ -372,7 +391,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
         try {
           return setAttribute(name, double.parse(string));
         } on FormatException catch (e2) {
-          throw new TypeException(
+          throw TypeException(
               '${attribute.code} attribute value is not num: $e1; $e2');
         }
       }
@@ -380,8 +399,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
       try {
         return setAttribute(name, Uri.parse(string));
       } on ArgumentError catch (e) {
-        throw new TypeException(
-            '${attribute.code} attribute value is not Uri: $e');
+        throw TypeException('${attribute.code} attribute value is not Uri: $e');
       }
     } else {
       // other
@@ -397,34 +415,36 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
     }
   }
 
+  @override
   ConceptEntity getParent(String name) => _parentMap[name];
 
+  @override
   bool setParent(String name, ConceptEntity entity) {
     if (_concept == null) {
-      throw new ConceptException('Entity concept is not defined.');
+      throw ConceptException('Entity concept is not defined.');
     }
     Parent parent = _concept.parents.singleWhereCode(name);
     if (parent == null) {
       String msg = '${_concept.code}.$name is not correct parent entity name.';
-      throw new UpdateException(msg);
+      throw UpdateException(msg);
     }
 
     if (entity != null) {
       if (getParent(name) == null) {
         _parentMap[name] = entity;
-        var reference = new Reference(entity.oid.toString(),
-            entity.concept.code, entity.concept.entryConcept.code);
+        var reference = Reference(entity.oid.toString(), entity.concept.code,
+            entity.concept.entryConcept.code);
         _referenceMap[name] = reference;
         return true;
       } else if (parent.update) {
         _parentMap[name] = entity;
-        var reference = new Reference(entity.oid.toString(),
-            entity.concept.code, entity.concept.entryConcept.code);
+        var reference = Reference(entity.oid.toString(), entity.concept.code,
+            entity.concept.entryConcept.code);
         _referenceMap[name] = reference;
         return true;
       } else {
         String msg = '${_concept.code}.${parent.code} is not updateable.';
-        throw new UpdateException(msg);
+        throw UpdateException(msg);
       }
     }
     return false;
@@ -432,16 +452,18 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
 
   Entities getInternalChild(String name) => _internalChildMap[name];
 
+  @override
   Entities getChild(String name) => _childMap[name];
 
+  @override
   bool setChild(String name, Entities entities) {
     if (_concept == null) {
-      throw new ConceptException('Entity concept is not defined.');
+      throw ConceptException('Entity concept is not defined.');
     }
     Child child = _concept.children.singleWhereCode(name);
     if (child == null) {
       String msg = '${_concept.code}.$name is not correct child entities name.';
-      throw new UpdateException(msg);
+      throw UpdateException(msg);
     }
     if (child.update) {
       _childMap[name] = entities;
@@ -451,7 +473,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
       return true;
     } else {
       String msg = '${_concept.code}.${child.code} is not updateable.';
-      throw new UpdateException(msg);
+      throw UpdateException(msg);
     }
   }
 
@@ -476,9 +498,10 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
    * Copies the entity (oid, code, attributes and neighbors).
    * It is not a deep copy.
    */
+  @override
   E copy() {
     if (_concept == null) {
-      throw new ConceptException('Entity concept is not defined.');
+      throw ConceptException('Entity concept is not defined.');
     }
     E entity = newEntity();
 
@@ -536,6 +559,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
     return entity;
   }
 
+  @override
   int get hashCode => _oid.hashCode;
 
   /**
@@ -580,6 +604,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
    * http://work.j832.com/2014/05/equality-and-dart.html
    * http://stackoverflow.com/questions/29567322/how-does-a-set-determine-that-two-objects-are-equal-in-dart
    */
+  @override
   bool operator ==(Object other) {
     if (other is ConceptEntity) {
       ConceptEntity entity = other;
@@ -622,7 +647,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
    */
   bool equalContent(E entity) {
     if (_concept == null) {
-      throw new ConceptException('Entity concept is not defined.');
+      throw ConceptException('Entity concept is not defined.');
     }
     if (_code != entity.code) {
       return false;
@@ -651,6 +676,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
    * if it is equal to 0 they are equal and
    * if the result is greater than 0 then the first is greater than the second.
    */
+  @override
   int compareTo(E entity) {
     if (code != null) {
       return _code.compareTo(entity.code);
@@ -660,7 +686,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
       return compareAttributes(entity);
     } else {
       String msg = '${_concept.code} concept does not have attributes.';
-      throw new IdException(msg);
+      throw IdException(msg);
     }
   }
 
@@ -686,6 +712,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
   /**
    * Returns a string that represents this entity by using oid and code.
    */
+  @override
   String toString() {
     if (_concept != null) {
       if (_code == null) {
@@ -710,7 +737,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
       bool withChildren: true,
       bool withInternalChildren: true}) {
     if (_concept == null) {
-      throw new ConceptException('Entity concept is not defined.');
+      throw ConceptException('Entity concept is not defined.');
     }
     var s = prefix;
     if (!_concept.entry || (_concept.entry && _concept.parents.length > 0)) {
@@ -790,14 +817,15 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
     print('');
   }
 
-  String toJson() => JSON.encode(toJsonMap());
+  @override
+  String toJson() => jsonEncode(toJsonMap());
 
   Map<String, Object> toJsonMap() {
-    Map<String, Object> entityMap = new Map<String, Object>();
+    Map<String, Object> entityMap = <String, Object>{};
     for (Parent parent in _concept.parents) {
       ConceptEntity parentEntity = getParent(parent.code);
       if (parentEntity != null) {
-        var reference = new Map<String, String>();
+        var reference = <String, String>{};
         reference['oid'] = parentEntity.oid.toString();
         reference['parent'] = parentEntity.concept.code;
         reference['entry'] = parentEntity.concept.entryConcept.code;
@@ -823,8 +851,9 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
     return entityMap;
   }
 
+  @override
   void fromJson(String entityJson) {
-    Map<String, Object> entityMap = JSON.decode(entityJson);
+    Map<String, Object> entityMap = jsonDecode(entityJson);
     fromJsonMap(entityMap);
   }
 
@@ -840,12 +869,12 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
         timeStamp = int.parse(key);
       }
     } on FormatException catch (e) {
-      throw new TypeException('${entityMap['oid']} oid is not int: $e');
+      throw TypeException('${entityMap['oid']} oid is not int: $e');
     }
     if (timeStamp != null) {
       var beforeUpdateOid = concept.updateOid;
       concept.updateOid = true;
-      oid = new Oid.ts(timeStamp);
+      oid = Oid.ts(timeStamp);
       concept.updateOid = beforeUpdateOid;
     }
 
@@ -863,7 +892,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
         whenAddedTime = DateTime.parse(when);
       }
     } on FormatException catch (e) {
-      throw new TypeException(
+      throw TypeException(
           '${entityMap['whenAdded']} whenAdded is not DateTime: $e');
     }
     whenAdded = whenAddedTime;
@@ -874,7 +903,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
         whenSetTime = DateTime.parse(when);
       }
     } on FormatException catch (e) {
-      throw new TypeException(
+      throw TypeException(
           '${entityMap['whenSet']} whenSet is not DateTime: $e');
     }
     whenSet = whenSetTime;
@@ -885,7 +914,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
         whenRemovedTime = DateTime.parse(when);
       }
     } on FormatException catch (e) {
-      throw new TypeException(
+      throw TypeException(
           '${entityMap['whenRemoved']} whenRemoved is not DateTime: $e');
     }
     whenRemoved = whenRemovedTime;
@@ -927,14 +956,14 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
       var parentReference = entityMap[parent.code];
       if (parentReference == 'null') {
         if (parent.minc != '0') {
-          throw new ParentException('${parent.code} parent cannot be null.');
+          throw ParentException('${parent.code} parent cannot be null.');
         }
       } else {
         String parentOidString = parentReference['oid'];
         String parentConceptCode = parentReference['parent'];
         String entryConceptCode = parentReference['entry'];
         Reference reference =
-            new Reference(parentOidString, parentConceptCode, entryConceptCode);
+            Reference(parentOidString, parentConceptCode, entryConceptCode);
         Oid parentOid = reference.oid;
         setReference(parent.code, reference);
 
@@ -957,7 +986,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi {
               entry concept for parent: ${entryConceptCode}            
               ---------------------------------------------
             """;
-            throw new ParentException(msg);
+            throw ParentException(msg);
           } // else
         } // if
       } // else

@@ -16,7 +16,7 @@ abstract class EntitiesApi<E extends EntityApi<E>> implements Iterable<E> {
 
   EntityApi internalSingle(Oid oid);
 
-  E singleWhereCode(String code);
+  E? singleWhereCode(String code);
 
   E singleWhereId(IdApi id);
 
@@ -24,8 +24,9 @@ abstract class EntitiesApi<E extends EntityApi<E>> implements Iterable<E> {
 
   EntitiesApi<E> copy();
 
-  EntitiesApi<E> order([int compare(E a, E b)]); // sort, but not in place
-  EntitiesApi<E> selectWhere(bool f(E entity));
+  EntitiesApi<E> order(
+      [int Function(E a, E b) compare]); // sort, but not in place
+  EntitiesApi<E> selectWhere(bool Function(E entity) f);
 
   EntitiesApi<E> selectWhereAttribute(String code, Object attribute);
 
@@ -33,18 +34,17 @@ abstract class EntitiesApi<E extends EntityApi<E>> implements Iterable<E> {
 
   EntitiesApi<E> skipFirst(int n);
 
-  EntitiesApi<E> skipFirstWhile(bool f(E entity));
+  EntitiesApi<E> skipFirstWhile(bool Function(E entity) f);
 
   EntitiesApi<E> takeFirst(int n);
 
-  EntitiesApi<E> takeFirstWhile(bool f(E entity));
+  EntitiesApi<E> takeFirstWhile(bool Function(E entity) f);
 
   EntitiesApi internalChild(Oid oid);
 
   void clear();
 
-  void sort([int compare(E a, E b)]); // in place sort
-
+  void sort([int Function(E a, E b) compare]); // in place sort
   bool preAdd(E entity);
 
   bool add(E entity);
@@ -103,7 +103,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   @override
   Concept get concept => _concept;
 
-  void set concept(Concept concept) {
+  set concept(Concept concept) {
     _concept = concept;
     pre = true;
     post = true;
@@ -133,11 +133,11 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   E get single => _entityList.single;
 
   @override
-  bool any(bool f(E entity)) => _entityList.any(f);
+  bool any(bool Function(E entity) f) => _entityList.any(f);
 
   @override
   bool contains(E entity) {
-    E element = _oidEntityMap[entity.oid.timeStamp];
+    E element = _oidEntityMap[entity.oid.timeStamp]!;
     if (entity == element) {
       return true;
     }
@@ -148,47 +148,49 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   E elementAt(int index) => _entityList.elementAt(index); // should we keep it?
   E at(int index) => elementAt(index); // should we keep it?
   @override
-  bool every(bool f(E entity)) => _entityList.every(f);
+  bool every(bool Function(E entity) f) => _entityList.every(f);
 
   @override
-  Iterable expand(Iterable f(E entity)) =>
+  Iterable expand(Iterable Function(E entity) f) =>
       _entityList.expand(f); // should we keep it?
   @override
-  E firstWhere(bool f(E entity), {E orElse()}) => _entityList.firstWhere(f);
+  E firstWhere(bool Function(E entity) f, {E Function() orElse}) =>
+      _entityList.firstWhere(f);
 
   @override
   dynamic fold(initialValue, combine(previousValue, E entity)) =>
       _entityList.fold(initialValue, combine);
 
   @override
-  void forEach(bool f(E entity)) => _entityList.forEach(f);
+  void forEach(bool Function(E entity) f) => _entityList.forEach(f);
 
   @override
   String join([String separator = '']) => _entityList.join(separator);
 
   @override
-  E lastWhere(bool f(E entity), {E orElse()}) => _entityList.lastWhere(f);
+  E lastWhere(bool Function(E entity) f, {E Function() orElse}) =>
+      _entityList.lastWhere(f);
 
   @override
-  Iterable map(f(E entity)) => _entityList.map(f);
+  Iterable map(Function(E entity) f) => _entityList.map(f);
 
   @override
-  E reduce(E combine(E value, E entity)) =>
+  E reduce(E Function(E value, E entity) combine) =>
       _entityList.reduce(combine); // E? value
   @override
-  E singleWhere(bool f(E entity)) => _entityList.singleWhere(f);
+  E singleWhere(bool Function(E entity) f) => _entityList.singleWhere(f);
 
   @override
   Iterable<E> skip(int n) => _entityList.skip(n);
 
   @override
-  Iterable<E> skipWhile(bool f(E entity)) => _entityList.skipWhile(f);
+  Iterable<E> skipWhile(bool Function(E entity) f) => _entityList.skipWhile(f);
 
   @override
   Iterable<E> take(int n) => _entityList.take(n);
 
   @override
-  Iterable<E> takeWhile(bool f(E entity)) => _entityList.takeWhile(f);
+  Iterable<E> takeWhile(bool Function(E entity) f) => _entityList.takeWhile(f);
 
   @override
   List<E> toList({bool growable: true}) => _entityList.toList(growable: true);
@@ -197,13 +199,13 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   Set<E> toSet() => _entityList.toSet();
 
   @override
-  Iterable<E> where(bool f(E entity)) => _entityList.where(f);
+  Iterable<E> where(bool Function(E entity) f) => _entityList.where(f);
 
   List<E> get internalList => _entityList;
 
   // set for Polymer only:
   // entities.internalList = toObservable(entities.internalList);
-  void set internalList(List<E> observableList) {
+  set internalList(List<E> observableList) {
     _entityList = observableList;
   }
 
@@ -280,7 +282,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   }
 
   @override
-  E singleWhereCode(String code) {
+  E? singleWhereCode(String code) {
     return _codeEntityMap[code];
   }
 
@@ -322,7 +324,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
    * the Entity.compareTo method will be used (code if not null, otherwise id).
    */
   @override
-  Entities<E> order([int compare(E a, E b)]) {
+  Entities<E> order([int Function(E a, E b) compare]) {
     if (_concept == null) {
       throw ConceptException('Entities.order: concept is not defined.');
     }
@@ -430,7 +432,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   }
 
   @override
-  Entities<E> skipFirstWhile(bool f(E entity)) {
+  Entities<E> skipFirstWhile(bool Function(E entity) f) {
     if (_concept == null) {
       throw ConceptException(
           'Entities.skipFirstWhile: concept is not defined.');
@@ -467,7 +469,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   }
 
   @override
-  Entities<E> takeFirstWhile(bool f(E entity)) {
+  Entities<E> takeFirstWhile(bool Function(E entity) f) {
     if (_concept == null) {
       throw ConceptException(
           'Entities.takeFirstWhile: concept is not defined.');
@@ -486,7 +488,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   }
 
   @override
-  String toJson() => JSON.encode(toJsonList());
+  String toJson() => jsonEncode(toJsonList());
 
   List<Map<String, Object>> toJsonList() {
     List<Map<String, Object>> entityList = <Map<String, Object>>[];
@@ -498,7 +500,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
 
   @override
   void fromJson(String entitiesJson) {
-    List<Map<String, Object>> entitiesList = JSON.decode(entitiesJson);
+    List<Map<String, Object>> entitiesList = jsonDecode(entitiesJson);
     fromJsonList(entitiesList);
   }
 
@@ -552,7 +554,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
    * the Entity.compareTo method will be used (code if not null, otherwise id).
    */
   @override
-  void sort([int compare(E a, E b)]) {
+  void sort([int Function(E a, E b) compare]) {
     // in place sort
     _entityList.sort(compare);
   }

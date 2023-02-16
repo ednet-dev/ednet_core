@@ -1,49 +1,59 @@
 part of ednet_core;
 
 abstract class ActionApi {
-
   bool get done;
+
   bool get undone;
+
   bool get redone;
 
-  bool doit();
-  bool undo();
-  bool redo();
+  bool doIt();
 
+  bool undo();
+
+  bool redo();
 }
 
 abstract class TransactionApi extends ActionApi {
-
   void add(ActionApi action);
-  PastApi get past;
 
+  PastApi get past;
 }
 
 abstract class BasicAction implements ActionApi {
-
-  String name;
-  String category;
+  final String name;
+  late String category;
   String state = 'started';
-  String description;
-
-  DomainSession session;
-
+  String? description;
+  final DomainSession session;
   bool partOfTransaction = false;
 
   BasicAction(this.name, this.session);
 
-  bool doit();
+  @override
+  bool doIt();
+
+  @override
   bool undo();
+
+  @override
   bool redo();
 
   bool get started => state == 'started' ? true : false;
+
+  @override
   bool get done => state == 'done' ? true : false;
+
+  @override
   bool get undone => state == 'undone' ? true : false;
+
+  @override
   bool get redone => state == 'redone' ? true : false;
 
+  @override
   toString() => 'action: $name; state: $state -- description: $description';
 
-  void display({String title: 'BasicAction'}) {
+  display({String title: 'BasicAction'}) {
     print('');
     print('======================================');
     print('$title                                ');
@@ -52,18 +62,17 @@ abstract class BasicAction implements ActionApi {
     print('$this');
     print('');
   }
-
 }
 
 abstract class EntitiesAction extends BasicAction {
-
   Entities entities;
   ConceptEntity entity;
 
-  EntitiesAction(String name, DomainSession session,
-                 this.entities, this.entity) : super(name, session);
+  EntitiesAction(String name, DomainSession session, this.entities, this.entity)
+      : super(name, session);
 
-  bool doit() {
+  @override
+  bool doIt() {
     bool done = false;
     if (state == 'started') {
       if (name == 'add') {
@@ -71,8 +80,8 @@ abstract class EntitiesAction extends BasicAction {
       } else if (name == 'remove') {
         done = entities.remove(entity);
       } else {
-        throw new ActionException(
-        'Allowed actions on entities for doit are add or remove.');
+        throw ActionException(
+            'Allowed actions on entities for doit are add or remove.');
       }
       if (done) {
         state = 'done';
@@ -85,6 +94,7 @@ abstract class EntitiesAction extends BasicAction {
     return done;
   }
 
+  @override
   bool undo() {
     bool undone = false;
     if (state == 'done' || state == 'redone') {
@@ -93,8 +103,8 @@ abstract class EntitiesAction extends BasicAction {
       } else if (name == 'remove') {
         undone = entities.add(entity);
       } else {
-        throw new ActionException(
-          'Allowed actions on entities for undo are add or remove.');
+        throw ActionException(
+            'Allowed actions on entities for undo are add or remove.');
       }
       if (undone) {
         state = 'undone';
@@ -106,6 +116,7 @@ abstract class EntitiesAction extends BasicAction {
     return undone;
   }
 
+  @override
   bool redo() {
     bool redone = false;
     if (state == 'undone') {
@@ -114,8 +125,8 @@ abstract class EntitiesAction extends BasicAction {
       } else if (name == 'remove') {
         redone = entities.remove(entity);
       } else {
-        throw new ActionException(
-        'Allowed actions on entities for redo are add or remove.');
+        throw ActionException(
+            'Allowed actions on entities for redo are add or remove.');
       }
       if (redone) {
         state = 'redone';
@@ -126,40 +137,34 @@ abstract class EntitiesAction extends BasicAction {
     }
     return redone;
   }
-
 }
 
 class AddAction extends EntitiesAction {
-
-  AddAction(DomainSession session, Entities entities,
-            ConceptEntity entity) : super('add', session, entities, entity) {
+  AddAction(DomainSession session, Entities entities, ConceptEntity entity)
+      : super('add', session, entities, entity) {
     category = 'entity';
   }
-
 }
 
 class RemoveAction extends EntitiesAction {
-
-  RemoveAction(DomainSession session, Entities entities,
-               ConceptEntity entity) : super('remove', session, entities, entity) {
+  RemoveAction(DomainSession session, Entities entities, ConceptEntity entity)
+      : super('remove', session, entities, entity) {
     category = 'entity';
   }
-
 }
 
 abstract class EntityAction extends BasicAction {
-
   ConceptEntity entity;
   String property;
   Object before;
   Object after;
 
-  EntityAction(DomainSession session, this.entity, this.property, this.after) :
-    super('set', session) {
-    before = entity.getAttribute(property);
-  }
+  EntityAction(DomainSession session, this.entity, this.property, this.after)
+      : before = entity.getAttribute(property),
+        super('set', session);
 
-  bool doit() {
+  @override
+  bool doIt() {
     bool done = false;
     if (state == 'started') {
       if (name == 'set' && category == 'attribute') {
@@ -169,8 +174,8 @@ abstract class EntityAction extends BasicAction {
       } else if (name == 'set' && category == 'child') {
         done = entity.setChild(property, after);
       } else {
-        throw new ActionException(
-          'Allowed actions on entity for doit are set attribute, parent or child.');
+        throw ActionException(
+            'Allowed actions on entity for doit are set attribute, parent or child.');
       }
       if (done) {
         state = 'done';
@@ -183,18 +188,19 @@ abstract class EntityAction extends BasicAction {
     return done;
   }
 
+  @override
   bool undo() {
     bool undone = false;
     if (state == 'done' || state == 'redone') {
       if (name == 'set' && category == 'attribute') {
         undone = entity.setAttribute(property, before);
       } else if (name == 'set' && category == 'parent') {
-        undone = entity.setParent(property, before);
+        undone = entity.setParent(property, before as ConceptEntity);
       } else if (name == 'set' && category == 'child') {
         undone = entity.setChild(property, before);
       } else {
-        throw new ActionException(
-          'Allowed actions on entity for undo are set attribute, parent or child.');
+        throw ActionException(
+            'Allowed actions on entity for undo are set attribute, parent or child.');
       }
       if (undone) {
         state = 'undone';
@@ -206,18 +212,20 @@ abstract class EntityAction extends BasicAction {
     return undone;
   }
 
+  @override
   bool redo() {
     bool redone = false;
     if (state == 'undone') {
       if (name == 'set' && category == 'attribute') {
         redone = entity.setAttribute(property, after);
       } else if (name == 'set' && category == 'parent') {
-        redone = entity.setParent(property, after);
+        redone =
+            entity.setParent(property, after as ConceptEntity<ConceptEntity>);
       } else if (name == 'set' && category == 'child') {
-        redone = entity.setChild(property, after);
+        redone = entity.setChild(property, after as Entities<ConceptEntity>);
       } else {
-        throw new ActionException(
-          'Allowed actions on entity for redo are set attribute, parent or child.');
+        throw ActionException(
+            'Allowed actions on entity for redo are set attribute, parent or child.');
       }
       if (redone) {
         state = 'redone';
@@ -229,57 +237,53 @@ abstract class EntityAction extends BasicAction {
     return redone;
   }
 
+  @override
   toString() => 'action: $name; category: $category; state: $state -- '
-                'property: $property; before: $before; after: $after';
-
+      'property: $property; before: $before; after: $after';
 }
 
 class SetAttributeAction extends EntityAction {
-
   SetAttributeAction(DomainSession session, ConceptEntity entity,
-                     String property, Object after) :
-    super(session, entity, property, after) {
+      String property, Object after)
+      : super(session, entity, property, after) {
     category = 'attribute';
   }
-
 }
 
 class SetParentAction extends EntityAction {
-
-  SetParentAction(DomainSession session, ConceptEntity entity,
-                  String property, Object after) :
-    super(session, entity, property, after) {
+  SetParentAction(DomainSession session, ConceptEntity entity, String property,
+      Object after)
+      : super(session, entity, property, after) {
     category = 'parent';
   }
-
 }
 
 class SetChildAction extends EntityAction {
-
-  SetChildAction(DomainSession session, ConceptEntity entity,
-                 String property, Object after) :
-    super(session, entity, property, after) {
+  SetChildAction(DomainSession session, ConceptEntity entity, String property,
+      Object after)
+      : super(session, entity, property, after) {
     category = 'child';
   }
-
 }
 
 class Transaction extends BasicAction implements TransactionApi {
+  final Past _actions;
 
-  Past _actions;
+  Transaction(String name, DomainSession session)
+      : _actions = Past(),
+        super(name, session);
 
-  Transaction(String name, DomainSession session) : super(name, session) {
-    _actions = new Past();
-  }
-
+  @override
   Past get past => _actions;
 
+  @override
   void add(BasicAction action) {
     _actions.add(action);
     action.partOfTransaction = true;
   }
 
-  bool doit() {
+  @override
+  bool doIt() {
     bool done = false;
     if (state == 'started') {
       done = _actions.doAll();
@@ -294,6 +298,7 @@ class Transaction extends BasicAction implements TransactionApi {
     return done;
   }
 
+  @override
   bool undo() {
     bool undone = false;
     if (state == 'done' || state == 'redone') {
@@ -308,6 +313,7 @@ class Transaction extends BasicAction implements TransactionApi {
     return undone;
   }
 
+  @override
   bool redo() {
     bool redone = false;
     if (state == 'undone') {
@@ -321,9 +327,4 @@ class Transaction extends BasicAction implements TransactionApi {
     }
     return redone;
   }
-
 }
-
-
-
-

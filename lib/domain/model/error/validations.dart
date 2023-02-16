@@ -1,79 +1,75 @@
 part of ednet_core;
 
 abstract class ValidationExceptionsApi {
-
   int get length;
-  void add(ValidationException exception);
-  void clear();
-  List<ValidationException> toList();
 
+  void add(ValidationException exception);
+
+  void clear();
+
+  List<ValidationException> toList();
 }
 
 class ValidationException implements Exception {
+  final String category;
+  final String message;
 
-  String category;
-  String message;
+  const ValidationException(this.category, this.message);
 
-  ValidationException(this.category);
-
-  /**
-   * Returns a string that represents the error.
-   */
+  /// Returns a string that represents the error.
+  @override
   String toString() {
-    return '${category}: ${message}';
+    return '$category: $message';
   }
 
-  /**
-   * Displays (prints) an exception.
-   */
-  void display({String prefix:''}) {
-    print('${prefix}******************************************');
-    print('${prefix}${category}                               ');
-    print('${prefix}******************************************');
-    print('${prefix}message: ${message}');
-    print('${prefix}******************************************');
+  /// Displays (prints) an exception.
+  display({String prefix = ''}) {
+    print('$prefix******************************************');
+    print('$prefix$category                               ');
+    print('$prefix******************************************');
+    print('${prefix}message: $message');
+    print('$prefix******************************************');
     print('');
   }
-
 }
 
 class ValidationExceptions implements ValidationExceptionsApi {
+  final List<ValidationException> _exceptionList;
 
-  List<ValidationException> _exceptionList;
+  const ValidationExceptions() : _exceptionList = const <ValidationException>[];
 
-  ValidationExceptions() {
-    _exceptionList = new List<ValidationException>();
-  }
-
+  @override
   int get length => _exceptionList.length;
+
   bool get isEmpty => length == 0;
+
   Iterator<ValidationException> get iterator => _exceptionList.iterator;
 
+  @override
   void add(ValidationException exception) {
     _exceptionList.add(exception);
   }
 
+  @override
   void clear() {
     _exceptionList.clear();
   }
 
+  @override
   List<ValidationException> toList() => _exceptionList.toList();
 
-  /**
-   * Returns a string that represents the exceptions.
-   */
+  /// Returns a string that represents the exceptions.
+  @override
   String toString() {
     var messages = '';
-    for (var exception in this) {
-      messages = '${exception.toString()} \n${messages}';
+    for (var exception in _exceptionList) {
+      messages = '${exception.toString()} \n$messages';
     }
     return messages;
   }
 
-  /**
-   * Displays (prints) a title, then exceptions.
-   */
-  void display({String title:'Entities', bool withOid:true}) {
+  /// Displays (prints) a title, then exceptions.
+  void display({String title: 'Entities', bool withOid: true}) {
     if (title == 'Entities') {
       title = 'Errors';
     }
@@ -83,8 +79,7 @@ class ValidationExceptions implements ValidationExceptionsApi {
     print('************************************************');
     print('');
     for (ValidationException exception in _exceptionList) {
-      exception.display(prefix:'*** ');
+      exception.display(prefix: '*** ');
     }
   }
-
 }

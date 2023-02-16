@@ -1,19 +1,17 @@
 part of ednet_core;
 
 class Attributes extends Entities<Property> {
-
+  @override
   List<Attribute> toList({bool growable: true}) {
-    var attributeList = new List<Attribute>();
+    var attributeList = <Attribute>[];
     for (var attribute in this) {
       attributeList.add(attribute);
     }
     return attributeList;
   }
-
 }
 
 class Attribute extends Property {
-
   bool guid = false;
   var init;
   int increment;
@@ -23,21 +21,23 @@ class Attribute extends Property {
 
   AttributeType _type;
 
-  Attribute(Concept sourceConcept, String attributeCode) :
-    super(sourceConcept, attributeCode) {
+  Attribute(Concept sourceConcept, String attributeCode)
+      : super(sourceConcept, attributeCode) {
     sourceConcept.attributes.add(this);
     // default type is String
     type = sourceConcept.model.domain.getType('String');
   }
-  
+
+  @override
   void set required(bool req) {
     super.required = req;
     if (req && !sourceConcept.hasId) {
       essential = true;
     }
   }
-  
+
   AttributeType get type => _type;
+
   void set type(AttributeType attributeType) {
     _type = attributeType;
     if (attributeType != null) {
@@ -46,11 +46,11 @@ class Attribute extends Property {
   }
 
   bool get derive => _derive;
+
   void set derive(bool derive) {
     _derive = derive;
     if (_derive) {
       update = false;
     }
   }
-  
 }

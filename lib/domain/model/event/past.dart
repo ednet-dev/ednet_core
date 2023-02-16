@@ -1,47 +1,56 @@
 part of ednet_core;
 
 abstract class PastApi implements SourceOfPastReactionApi {
-
   void add(ActionApi action);
+
   List<ActionApi> get actions;
+
   void clear();
+
   bool get empty;
+
   bool get undoLimit;
+
   bool get redoLimit;
 
-  bool doit();
-  bool undo();
-  bool redo();
+  bool doIt();
 
+  bool undo();
+
+  bool redo();
 }
 
 class Past implements PastApi {
-
   int cursor = 0;
-  List<BasicAction> _actions;
+  @override
+  final List<BasicAction> actions;
 
-  List<PastReactionApi> _pastReactions;
+  final List<PastReactionApi> pastReactions;
 
-  Past() {
-    _actions = new List<BasicAction>();
-    _pastReactions = new List<PastReactionApi>();
-  }
+  Past({
+    this.actions = const <BasicAction>[],
+    this.pastReactions = const <PastReactionApi>[],
+  });
 
-  List<BasicAction> get actions => _actions;
+  @override
+  bool get empty => actions.isEmpty;
 
-  bool get empty => _actions.isEmpty;
+  @override
   bool get undoLimit => empty || cursor == 0;
-  bool get redoLimit => empty || cursor == _actions.length;
 
-  void add(BasicAction action) {
+  @override
+  bool get redoLimit => empty || cursor == actions.length;
+
+  @override
+  void add(ActionApi action) {
     _removeRightOfCursor();
-    _actions.add(action);
+    actions.add(action as BasicAction);
     _moveCursorForward();
   }
 
   void _removeRightOfCursor() {
-    for (int i = _actions.length - 1; i >= cursor; i--) {
-      _actions.removeRange(i, i + 1);
+    for (int i = actions.length - 1; i >= cursor; i--) {
+      actions.removeRange(i, i + 1);
     }
   }
 
@@ -70,36 +79,40 @@ class Past implements PastApi {
     _notifyUndoRedo();
   }
 
+  @override
   void clear() {
     cursor = 0;
-    _actions.clear();
+    actions.clear();
     _notifyUndoRedo();
   }
 
-  bool doit() {
+  @override
+  bool doIt() {
     bool done = false;
     if (!empty) {
-      BasicAction action = _actions[cursor];
-      done = action.doit();
+      BasicAction action = actions[cursor];
+      done = action.doIt();
       _moveCursorForward();
     }
     return done;
   }
 
+  @override
   bool undo() {
     bool undone = false;
     if (!empty) {
       _moveCursorBackward();
-      BasicAction action = _actions[cursor];
+      BasicAction action = actions[cursor];
       undone = action.undo();
     }
     return undone;
   }
 
+  @override
   bool redo() {
     bool redone = false;
     if (!empty && !redoLimit) {
-      BasicAction action = _actions[cursor];
+      BasicAction action = actions[cursor];
       redone = action.redo();
       _moveCursorForward();
     }
@@ -109,8 +122,8 @@ class Past implements PastApi {
   bool doAll() {
     bool allDone = true;
     cursor = 0;
-    while (cursor < _actions.length) {
-      if (!doit()) {
+    while (cursor < actions.length) {
+      if (!doIt()) {
         allDone = false;
       }
     }
@@ -130,7 +143,7 @@ class Past implements PastApi {
   bool redoAll() {
     bool allRedone = true;
     cursor = 0;
-    while (cursor < _actions.length) {
+    while (cursor < actions.length) {
       if (!redo()) {
         allRedone = false;
       }
@@ -138,46 +151,54 @@ class Past implements PastApi {
     return allRedone;
   }
 
-  void startPastReaction(PastReactionApi reaction) { _pastReactions.add(reaction); }
-  void cancelPastReaction(PastReactionApi reaction) {
-    _pastReactions.remove(reaction);
+  @override
+  void startPastReaction(PastReactionApi reaction) {
+    pastReactions.add(reaction);
   }
 
+  @override
+  void cancelPastReaction(PastReactionApi reaction) {
+    pastReactions.remove(reaction);
+  }
+
+  @override
   void notifyCannotUndo() {
-    for (PastReactionApi reaction in _pastReactions) {
+    for (PastReactionApi reaction in pastReactions) {
       reaction.reactCannotUndo();
     }
   }
 
+  @override
   void notifyCanUndo() {
-    for (PastReactionApi reaction in _pastReactions) {
+    for (PastReactionApi reaction in pastReactions) {
       reaction.reactCanUndo();
     }
   }
 
+  @override
   void notifyCanRedo() {
-    for (PastReactionApi reaction in _pastReactions) {
+    for (PastReactionApi reaction in pastReactions) {
       reaction.reactCanRedo();
     }
   }
 
+  @override
   void notifyCannotRedo() {
-    for (PastReactionApi reaction in _pastReactions) {
+    for (PastReactionApi reaction in pastReactions) {
       reaction.reactCannotRedo();
     }
   }
 
-  void display([String title='Past Actions']) {
+  void display([String title = 'Past Actions']) {
     print('');
     print('======================================');
     print('$title                                ');
     print('======================================');
     print('');
     print('cursor: $cursor');
-    for (BasicAction action in _actions) {
+    for (BasicAction action in actions) {
       action.display();
     }
     print('');
   }
-
 }

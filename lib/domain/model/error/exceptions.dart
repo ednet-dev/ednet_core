@@ -6,6 +6,7 @@ class DartlingException implements Exception {
 
   DartlingException(this.message);
 
+  @override
   toString() => '*** $message ***';
 
 }

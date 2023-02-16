@@ -1,11 +1,8 @@
 part of ednet_core;
 
-class Concepts extends Entities<Concept> {
-
-}
+class Concepts extends Entities<Concept> {}
 
 class Concept extends ConceptEntity<Concept> {
-
   bool entry = true;
   bool abstract = false;
 
@@ -17,74 +14,70 @@ class Concept extends ConceptEntity<Concept> {
   bool updateWhen = false;
   bool add = true;
   bool remove = true;
-  String description;
-  
+  late String description;
+
   // to allow for a specific plural name, different from
   // the plural name derivation in ConceptEntity
-  String _codes; // code (in) plural
-  String _codesFirstLetterLower;
-  String _codesLowerUnderscore; // lower letters and undescore separator
-  String label;
-  String labels;
+  late String _codes; // code (in) plural
+  late String _codesFirstLetterLower;
+  String? _codesLowerUnderscore; // lower letters and undescore separator
+  late String? label;
+  late String? labels;
 
   Model model;
 
-  Attributes attributes;
-  Parents parents; // destination parent neighbors
-  Children children; // destination child neighbors
+  late Attributes attributes;
+  late Parents parents; // destination parent neighbors
+  late Children children; // destination child neighbors
 
-  Parents sourceParents;
-  Children sourceChildren;
+  late Parents sourceParents;
+  late Children sourceChildren;
 
   Concept(this.model, String conceptCode) {
     code = conceptCode;
     model.concepts.add(this);
 
-    attributes = new Attributes();
+    attributes = Attributes();
 
-    parents = new Parents();
-    children = new Children();
+    parents = Parents();
+    children = Children();
 
-    sourceParents = new Parents();
-    sourceChildren = new Children();
+    sourceParents = Parents();
+    sourceChildren = Children();
   }
-  
-  void set code(String code) {
+
+  @override
+  set code(String code) {
     super.code = code;
-    if (label == null) {
-      label = camelCaseSeparator(code, ' ');
-    }
-    if (labels == null) {
-      labels = camelCaseSeparator(codes, ' ');
-    }
+    label ??= camelCaseSeparator(code, ' ');
+    labels ??= camelCaseSeparator(codes, ' ');
   }
-  
+
+  @override
   int get hashCode => _oid.hashCode;
-  
-  /**
-  * Two concepts are equal if their oids are equal.
-  */
+
+  /// Two concepts are equal if their oids are equal.
+  @override
   bool equals(Concept concept) {
     if (_oid.equals(concept.oid)) {
       return true;
     }
     return false;
   }
-  
-  /**
-   * == see:
-   * https://www.dartlang.org/docs/dart-up-and-running/contents/ch02.html#op-equality
-   *
-   * Evolution:
-   *
-   * If x===y, return true.
-   * Otherwise, if either x or y is null, return false.
-   * Otherwise, return the result of x.equals(y).
-   *
-   * The newest spec is:
-   * a) if either x or y is null, do identical(x, y)
-   * b) otherwise call operator ==
-   */
+
+  /// == see:
+  /// https://www.dartlang.org/docs/dart-up-and-running/contents/ch02.html#op-equality
+  ///
+  /// Evolution:
+  ///
+  /// If x===y, return true.
+  /// Otherwise, if either x or y is null, return false.
+  /// Otherwise, return the result of x.equals(y).
+  ///
+  /// The newest spec is:
+  /// a) if either x or y is null, do identical(x, y)
+  /// b) otherwise call operator ==
+  @override
   bool operator ==(Object other) {
     if (other is Concept) {
       Concept concept = other;
@@ -103,50 +96,50 @@ class Concept extends ConceptEntity<Concept> {
   }
 
   String get codes {
-    if (_codes == null) {
-      _codes = plural(_code);
-    }
+    _codes ??= plural(_code);
     return _codes;
   }
-  void set codes(String codes) {
+
+  set codes(String codes) {
     _codes = codes;
   }
 
   String get codesFirstLetterLower {
-    if (_codesFirstLetterLower == null) {
-      _codesFirstLetterLower = firstLetterLower(codes);
-    }
+    _codesFirstLetterLower ??= firstLetterLower(codes);
     return _codesFirstLetterLower;
   }
-  void set codesFirstLetterLower(String codesFirstLetterLower) {
+
+  set codesFirstLetterLower(String codesFirstLetterLower) {
     _codesFirstLetterLower = codesFirstLetterLower;
   }
 
   String get codesLowerUnderscore {
-    if (_codesLowerUnderscore == null) {
-      _codesLowerUnderscore = camelCaseLowerSeparator(codes, '_');
-    }
-    return _codesLowerUnderscore;
+    _codesLowerUnderscore ??= camelCaseLowerSeparator(codes, '_');
+    return _codesLowerUnderscore!;
   }
-  void set codesLowerUnderscore(String codesLowerUnderscore) {
+
+  set codesLowerUnderscore(String codesLowerUnderscore) {
     _codesLowerUnderscore = codesLowerUnderscore;
   }
 
+  @override
   Attribute getAttribute(String attributeCode) =>
       attributes.singleWhereCode(attributeCode);
 
   Parent getDestinationParent(String parentCode) =>
       parents.singleWhereCode(parentCode);
+
   Child getDestinationChild(String childCode) =>
       children.singleWhereCode(childCode);
 
   Parent getSourceParent(String parentCode) =>
       sourceParents.singleWhereCode(parentCode);
+
   Child getSourceChild(String childCode) =>
       sourceChildren.singleWhereCode(childCode);
 
   List<Attribute> get requiredAttributes {
-    var requiredList= new List<Attribute>();
+    var requiredList = List<Attribute>();
     for (Attribute attribute in attributes) {
       if (attribute.required) {
         requiredList.add(attribute);
@@ -154,9 +147,9 @@ class Concept extends ConceptEntity<Concept> {
     }
     return requiredList;
   }
-  
+
   List<Attribute> get identifierAttributes {
-    var identifierList= new List<Attribute>();
+    var identifierList = List<Attribute>();
     for (Attribute attribute in attributes) {
       if (attribute.identifier) {
         identifierList.add(attribute);
@@ -164,9 +157,9 @@ class Concept extends ConceptEntity<Concept> {
     }
     return identifierList;
   }
-  
+
   List<Attribute> get nonIdentifierAttributes {
-    var nonIdentifierList= new List<Attribute>();
+    var nonIdentifierList = List<Attribute>();
     for (Attribute attribute in attributes) {
       if (!attribute.identifier) {
         nonIdentifierList.add(attribute);
@@ -174,9 +167,9 @@ class Concept extends ConceptEntity<Concept> {
     }
     return nonIdentifierList;
   }
-  
+
   List<Attribute> get incrementAttributes {
-    var incrementList= new List<Attribute>();
+    var incrementList = List<Attribute>();
     for (Attribute attribute in attributes) {
       if (attribute.increment != null) {
         incrementList.add(attribute);
@@ -184,9 +177,9 @@ class Concept extends ConceptEntity<Concept> {
     }
     return incrementList;
   }
-  
+
   List<Attribute> get nonIncrementAttributes {
-    var nonIncrementList= new List<Attribute>();
+    var nonIncrementList = List<Attribute>();
     for (Attribute attribute in attributes) {
       if (attribute.increment == null) {
         nonIncrementList.add(attribute);
@@ -194,9 +187,9 @@ class Concept extends ConceptEntity<Concept> {
     }
     return nonIncrementList;
   }
-  
+
   List<Attribute> get essentialAttributes {
-    var essentialList= new List<Attribute>();
+    var essentialList = List<Attribute>();
     for (Attribute attribute in attributes) {
       if (attribute.essential) {
         essentialList.add(attribute);
@@ -204,9 +197,9 @@ class Concept extends ConceptEntity<Concept> {
     }
     return essentialList;
   }
-  
+
   List<Parent> get externalParents {
-    var externalList = new List<Parent>();
+    var externalList = List<Parent>();
     for (Parent parent in parents) {
       if (parent.external) {
         externalList.add(parent);
@@ -214,9 +207,9 @@ class Concept extends ConceptEntity<Concept> {
     }
     return externalList;
   }
-  
+
   List<Parent> get externalRequiredParents {
-    var externalRequiredList = new List<Parent>();
+    var externalRequiredList = List<Parent>();
     for (Parent parent in parents) {
       if (parent.external && parent.required) {
         externalRequiredList.add(parent);
@@ -224,9 +217,9 @@ class Concept extends ConceptEntity<Concept> {
     }
     return externalRequiredList;
   }
-  
+
   List<Child> get internalChildren {
-    var internalList = new List<Child>();
+    var internalList = List<Child>();
     for (Child child in children) {
       if (child.internal) {
         internalList.add(child);
@@ -236,12 +229,12 @@ class Concept extends ConceptEntity<Concept> {
   }
 
   List<Property> get singleValueProperties {
-    var propertyList = new List<Property>();
+    var propertyList = List<Property>();
     propertyList.addAll(attributes.toList());
     propertyList.addAll(parents.toList());
     return propertyList;
   }
-  
+
   bool get hasTwinParent {
     for (Parent parent in parents) {
       if (parent.twin) {
@@ -250,7 +243,7 @@ class Concept extends ConceptEntity<Concept> {
     }
     return false;
   }
-  
+
   bool get hasReflexiveParent {
     for (Parent parent in parents) {
       if (parent.reflexive) {
@@ -259,7 +252,7 @@ class Concept extends ConceptEntity<Concept> {
     }
     return false;
   }
-  
+
   bool get hasTwinChild {
     for (Child child in children) {
       if (child.twin) {
@@ -268,7 +261,7 @@ class Concept extends ConceptEntity<Concept> {
     }
     return false;
   }
-  
+
   bool get hasReflexiveChild {
     for (Child child in children) {
       if (child.reflexive) {
@@ -286,7 +279,7 @@ class Concept extends ConceptEntity<Concept> {
     }
     return false;
   }
-  
+
   bool get hasAttributeId {
     for (Attribute attribute in attributes) {
       if (attribute.identifier) {
@@ -295,7 +288,7 @@ class Concept extends ConceptEntity<Concept> {
     }
     return false;
   }
-  
+
   bool get hasParentId {
     for (Parent parent in parents) {
       if (parent.identifier) {
@@ -305,23 +298,24 @@ class Concept extends ConceptEntity<Concept> {
     return false;
   }
 
+  @override
   Id get id {
-    return new Id(this);
+    return Id(this);
   }
 
   bool isAttributeSensitive(String attributeCode) {
     Attribute a = attributes.singleWhereCode(attributeCode);
-    return a!= null && a.sensitive ? true : false;
+    return a != null && a.sensitive ? true : false;
   }
 
   bool isParentSensitive(String parentCode) {
     Parent p = parents.singleWhereCode(parentCode);
-    return p!= null && p.sensitive ? true : false;
+    return p != null && p.sensitive ? true : false;
   }
 
   bool isChildSensitive(String childCode) {
     Child c = children.singleWhereCode(childCode);
-    return c!= null && c.sensitive ? true : false;
+    return c != null && c.sensitive ? true : false;
   }
 
   bool isPropertySensitive(String propertyCode) {
@@ -339,7 +333,7 @@ class Concept extends ConceptEntity<Concept> {
           return parent.destinationConcept.entryConcept;
         }
       }
-      throw new ParentException('No internal parent for the ${code} concept');
+      throw ParentException('No internal parent for the ${code} concept');
     }
   }
 
@@ -349,24 +343,22 @@ class Concept extends ConceptEntity<Concept> {
     } else {
       for (Parent parent in parents) {
         if (parent.internal) {
-          return
-            '${parent.destinationConcept.entryConceptThisConceptInternalPath}'
-            '${code}';
+          return '${parent.destinationConcept.entryConceptThisConceptInternalPath}'
+              '${code}';
         }
       }
-      throw new ParentException('No internal parent for the ${code} concept');
+      throw ParentException('No internal parent for the ${code} concept');
     }
   }
 
   List<String> get childCodeInternalPaths {
-    var childList = new List<String>();
+    var childList = List<String>();
     for (Child child in children) {
       Concept sourceConcept = child.sourceConcept;
       String entryConceptSourceConceptInternalPath =
           sourceConcept.entryConceptThisConceptInternalPath;
       Concept destinationConcept = child.destinationConcept;
-      String childCodeInternalPath =
-          '${entryConceptSourceConceptInternalPath}'
+      String childCodeInternalPath = '${entryConceptSourceConceptInternalPath}'
           '_${child.code}_${destinationConcept.code}';
       childList.add(childCodeInternalPath);
       if (!child.reflexive) {
@@ -375,8 +367,4 @@ class Concept extends ConceptEntity<Concept> {
     }
     return childList;
   }
-
 }
-
-  
-
