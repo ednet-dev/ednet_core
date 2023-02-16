@@ -1,4 +1,4 @@
-part of policies;
+part of ednet_core;
 
 class EntityPolicy {
   String id;

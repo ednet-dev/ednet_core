@@ -1,4 +1,4 @@
-part of events;
+part of ednet_core;
 
 class EntityEvent {
   String topic;

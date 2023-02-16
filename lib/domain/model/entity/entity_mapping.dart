@@ -1,4 +1,4 @@
-part of entities;
+part of ednet_core;
 
 abstract class EntityMapping extends Entity {
 //   factory EntityMapping.fromYaml(Map<dynamic, dynamic> yaml) {

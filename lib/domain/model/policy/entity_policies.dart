@@ -1,4 +1,4 @@
-part of policies;
+part of ednet_core;
 
 abstract class EntityPolicies {
   List<EntityPolicy> get policies;

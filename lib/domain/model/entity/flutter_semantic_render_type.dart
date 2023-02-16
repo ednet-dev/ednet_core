@@ -1,4 +1,4 @@
-part of entities;
+part of ednet_core;
 
 enum FlutterSemanticRenderType {
   bool,

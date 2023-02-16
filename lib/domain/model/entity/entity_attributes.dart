@@ -1,4 +1,4 @@
-part of entities;
+part of ednet_core;
 
 class EntityAttributes with Serializable {
   final List<EntityAttribute> attributes;
