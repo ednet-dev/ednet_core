@@ -3,7 +3,7 @@ part of ednet_core;
 class Oid implements Comparable<Oid> {
   static int _increment = 0;
 
-  late int _timeStamp;
+  int _timeStamp = 0;
 
   Oid() {
     DateTime nowDate = DateTime.now();

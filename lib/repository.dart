@@ -1,31 +1,29 @@
 part of ednet_core;
 
 abstract class RepoApi {
-
   void add(DomainModelsApi domainModels);
-  Domains get domains;
-  DomainModelsApi getDomainModels(String domainCode);
-  void gen(String library, [bool specific=true]);
 
+  Domains get domains;
+
+  DomainModelsApi getDomainModels(String domainCode);
+
+  void gen(String library, [bool specific = true]);
 }
 
 //class Repo implements RepoApi {
 class Repo {
-  
   String code;
 
-  Domains _domains;
+  final Domains _domains;
 
-  Map<String, DomainModels> _domainModelsMap;
+  final Map<String, DomainModels> _domainModelsMap;
 
-  Repo([this.code='Dartling']) {
-    _domains = new Domains();
-    _domainModelsMap = new Map<String, DomainModels>();
-  }
+  Repo([this.code = 'EDNet'])
+      : _domains = Domains(),
+        _domainModelsMap = <String, DomainModels>{};
 
-  Repo.from(this._domains, [this.code='Dartling']) {
-    _domainModelsMap = new Map<String, DomainModels>();
-  }
+  Repo.from(this._domains, [this.code = 'EDNet'])
+      : _domainModelsMap = const <String, DomainModels>{};
 
   void add(DomainModels domainModels) {
     var domainCode = domainModels.domain.code;
@@ -33,7 +31,7 @@ class Repo {
     if (models == null) {
       _domainModelsMap[domainCode] = domainModels;
     } else {
-      throw new CodeException(
+      throw CodeException(
           '$domainCode domain code exists already in the repository.');
     }
   }
@@ -41,13 +39,13 @@ class Repo {
   Domains get domains => _domains;
 
   DomainModels getDomainModels(String domainCode) =>
-      _domainModelsMap[domainCode];
-  
-  void gen(String library, [bool specific=true]) {
+      _domainModelsMap[domainCode]!;
+
+  void gen(String library, [bool specific = true]) {
     title('lib folder');
     subTitle('repository');
     print(genRepository(this, library));
-    
+
     for (Domain domain in domains) {
       subTitle('libraries');
       for (Model model in domain.models) {
@@ -57,7 +55,7 @@ class Repo {
         print(genDartlingLibraryApp(model));
       }
     }
-    
+
     title('You should not change the generated code in the lib/gen folder.');
     for (Domain domain in domains) {
       subTitle('${domain.code} domain models');
@@ -71,11 +69,11 @@ class Repo {
         }
       }
     }
-    
-    if (specific) {    
+
+    if (specific) {
       for (Domain domain in domains) {
         title('You may change the generated code in the '
-              'lib/${domain.codeFirstLetterLower} folder.');
+            'lib/${domain.codeFirstLetterLower} folder.');
         subTitle('${domain.code} domain');
         print(genDomain(domain, library));
         for (Model model in domain.models) {
@@ -86,7 +84,8 @@ class Repo {
             print(genConcept(concept, library));
           }
           for (Concept entryConcept in model.entryConcepts) {
-            subTitle('${domain.code}.${model.code}.${entryConcept.code} model tests');
+            subTitle(
+                '${domain.code}.${model.code}.${entryConcept.code} model tests');
             print(genDartlingTest(this, model, entryConcept));
           }
         }
@@ -96,7 +95,7 @@ class Repo {
         title('Specific gen and test code in the test folder.');
         for (Model model in domain.models) {
           subTitle('Code generation of the '
-                   '${domain.code}.${model.code} model');
+              '${domain.code}.${model.code} model');
           print(genDartlingGen(model));
         }
       }
@@ -111,11 +110,12 @@ class Repo {
     }
   }
 
-  void title(String title, [String title1='']) {
+  void title(String title, [String title1 = '']) {
     print('');
     print('==================================================================');
     print('$title                                                            ');
-    print('$title1                                                            ');
+    print(
+        '$title1                                                            ');
     print('==================================================================');
     print('');
   }
@@ -127,5 +127,4 @@ class Repo {
     print('-----------------------------------------------------');
     print('');
   }
-
 }

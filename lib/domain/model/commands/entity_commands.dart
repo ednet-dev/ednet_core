@@ -1,4 +1,4 @@
-part of commands;
+part of ednet_core;
 
 abstract class EntityCommands {
   List<EntityCommand> get commands;

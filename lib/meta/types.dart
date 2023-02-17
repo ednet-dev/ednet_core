@@ -1,13 +1,10 @@
 part of ednet_core;
 
-class AttributeTypes extends Entities<AttributeType> {
-
-}
+class AttributeTypes extends Entities<AttributeType> {}
 
 class AttributeType extends ConceptEntity<AttributeType> {
-
-  String base; 
-  int length;
+  late String base;
+  late int length;
 
   Domain domain;
 
@@ -70,30 +67,29 @@ class AttributeType extends ConceptEntity<AttributeType> {
     code = typeCode;
     domain.types.add(this);
   }
-  
+
   bool isEmail(String email) {
-    var regexp = new RegExp(
-        r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b');
+    var regexp = RegExp(r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b');
     return regexp.hasMatch(email);
   }
-  
+
   validate(String value) {
     if (base == 'num') {
       try {
         num.parse(value);
-      } on FormatException catch (e) {
+      } on FormatException {
         return false;
       }
     } else if (base == 'int') {
       try {
         int.parse(value);
-      } on FormatException catch (e) {
+      } on FormatException {
         return false;
       }
     } else if (base == 'double') {
       try {
         double.parse(value);
-      } on FormatException catch (e) {
+      } on FormatException {
         return false;
       }
     } else if (base == 'bool') {
@@ -103,7 +99,7 @@ class AttributeType extends ConceptEntity<AttributeType> {
     } else if (base == 'DateTime') {
       try {
         DateTime.parse(value);
-      } on FormatException catch (e) {
+      } on FormatException {
         return false;
       }
     } else if (base == 'Duration') {
@@ -118,19 +114,16 @@ class AttributeType extends ConceptEntity<AttributeType> {
     }
     return true;
   }
-  
-  /**
-   * Compares two values based on their type.
-   * If the result is less than 0 then the first id is less than the second,
-   * if it is equal to 0 they are equal and
-   * if the result is greater than 0 then the first is greater than the second.
-   */
+
+  /// Compares two values based on their type.
+  /// If the result is less than 0 then the first id is less than the second,
+  /// if it is equal to 0 they are equal and
+  /// if the result is greater than 0 then the first is greater than the second.
   int compare(var value1, var value2) {
     var compare = 0;
     if (base == 'String') {
       compare = value1.compareTo(value2);
-    } else if (base == 'num' ||
-      base == 'int' || base == 'double') {
+    } else if (base == 'num' || base == 'int' || base == 'double') {
       compare = value1.compareTo(value2);
     } else if (base == 'bool') {
       compare = value1.toString().compareTo(value2.toString());
@@ -141,10 +134,9 @@ class AttributeType extends ConceptEntity<AttributeType> {
     } else if (base == 'Uri') {
       compare = value1.toString().compareTo(value2.toString());
     } else {
-      String msg = 'cannot compare then order on this type: ${code} type.';
-      throw new OrderException(msg);
+      String msg = 'cannot compare then order on this type: $code type.';
+      throw OrderException(msg);
     }
     return compare;
   }
-
 }

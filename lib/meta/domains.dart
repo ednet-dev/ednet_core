@@ -1,51 +1,48 @@
 part of ednet_core;
 
 class Domains extends Entities<Domain> {
-
-  Domain getDomain(String code) => singleWhereCode(code);
-
+  Domain? getDomain(String code) => singleWhereCode(code);
 }
 
 class Domain extends ConceptEntity<Domain> {
-
   String description;
 
-  Domain domain;
+  late Domain domain;
 
   Domains domains;
   AttributeTypes types;
   Models models;
 
-  Domain([String domainCode = 'Default']) {
+  Domain([String domainCode = 'Default'])
+      : domains = Domains(),
+        types = AttributeTypes(),
+        models = Models(),
+        description = 'please define description' {
     super.code = domainCode;
-    domains = new Domains();
-    types = new AttributeTypes();
-    models = new Models();
     if (domainCode == 'Default') {
       description = 'Default domain to keep types and models.';
     }
 
-    new AttributeType(this, 'String');
-    new AttributeType(this, 'num');
-    new AttributeType(this, 'int');
-    new AttributeType(this, 'double');
-    new AttributeType(this, 'bool');
-    new AttributeType(this, 'DateTime');
-    new AttributeType(this, 'Uri');
-    new AttributeType(this, 'Email');
-    new AttributeType(this, 'Telephone');
-    new AttributeType(this, 'Name');
-    new AttributeType(this, 'Description');
-    new AttributeType(this, 'Money');
-    new AttributeType(this, 'dynamic');
-    new AttributeType(this, 'Other');
+    AttributeType(this, 'String');
+    AttributeType(this, 'num');
+    AttributeType(this, 'int');
+    AttributeType(this, 'double');
+    AttributeType(this, 'bool');
+    AttributeType(this, 'DateTime');
+    AttributeType(this, 'Uri');
+    AttributeType(this, 'Email');
+    AttributeType(this, 'Telephone');
+    AttributeType(this, 'Name');
+    AttributeType(this, 'Description');
+    AttributeType(this, 'Money');
+    AttributeType(this, 'dynamic');
+    AttributeType(this, 'Other');
     assert(types.length == 14);
   }
 
-  Domain getDomain(String domainCode) => domains.singleWhereCode(domainCode);
+  Domain? getDomain(String domainCode) => domains.singleWhereCode(domainCode);
 
-  Model getModel(String modelCode) => models.singleWhereCode(modelCode);
+  Model? getModel(String modelCode) => models.singleWhereCode(modelCode);
 
-  AttributeType getType(String typeCode) => types.singleWhereCode(typeCode);
-
+  AttributeType? getType(String typeCode) => types.singleWhereCode(typeCode);
 }

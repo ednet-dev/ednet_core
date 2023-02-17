@@ -2,10 +2,10 @@ part of ednet_core;
 
 class Attributes extends Entities<Property> {
   @override
-  List<Attribute> toList({bool growable: true}) {
+  List<Attribute> toList({bool growable = true}) {
     var attributeList = <Attribute>[];
     for (var attribute in this) {
-      attributeList.add(attribute);
+      attributeList.add(attribute as Attribute);
     }
     return attributeList;
   }
@@ -14,12 +14,12 @@ class Attributes extends Entities<Property> {
 class Attribute extends Property {
   bool guid = false;
   var init;
-  int increment;
-  int sequence;
+  int? increment;
+  int? sequence;
   bool _derive = false;
-  int length;
+  late int length;
 
-  AttributeType _type;
+  AttributeType? _type;
 
   Attribute(Concept sourceConcept, String attributeCode)
       : super(sourceConcept, attributeCode) {
@@ -29,25 +29,23 @@ class Attribute extends Property {
   }
 
   @override
-  void set required(bool req) {
+  set required(bool req) {
     super.required = req;
     if (req && !sourceConcept.hasId) {
       essential = true;
     }
   }
 
-  AttributeType get type => _type;
+  AttributeType? get type => _type;
 
-  void set type(AttributeType attributeType) {
+  set type(AttributeType? attributeType) {
     _type = attributeType;
-    if (attributeType != null) {
-      length = attributeType.length;
-    }
+    length = attributeType != null ? attributeType.length : 0;
   }
 
   bool get derive => _derive;
 
-  void set derive(bool derive) {
+  set derive(bool derive) {
     _derive = derive;
     if (_derive) {
       update = false;

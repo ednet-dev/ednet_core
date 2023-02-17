@@ -1,7 +1,7 @@
 part of ednet_core;
 
-Attribute findNonIdAttribute(Concept concept) {
-  for (Attribute attribute in concept.attributes) {
+Attribute? findNonIdAttribute(Concept concept) {
+  for (Attribute attribute in concept.attributes as Iterable<Attribute>) {
     if (!attribute.identifier) {
       return attribute;
     }
@@ -9,8 +9,8 @@ Attribute findNonIdAttribute(Concept concept) {
   return null;
 }
 
-Attribute findNonRequiredAttribute(Concept concept) {
-  for (Attribute attribute in concept.attributes) {
+Attribute? findNonRequiredAttribute(Concept concept) {
+  for (Attribute attribute in concept.attributes as Iterable<Attribute>) {
     if (!attribute.required) {
       return attribute;
     }
@@ -18,8 +18,8 @@ Attribute findNonRequiredAttribute(Concept concept) {
   return null;
 }
 
-Attribute findRequiredNonIdAttribute(Concept concept) {
-  for (Attribute attribute in concept.attributes) {
+Attribute? findRequiredNonIdAttribute(Concept concept) {
+  for (Attribute attribute in concept.attributes as Iterable<Attribute>) {
     if (attribute.required && !attribute.identifier) {
       return attribute;
     }
@@ -27,12 +27,11 @@ Attribute findRequiredNonIdAttribute(Concept concept) {
   return null;
 }
 
-Attribute findIdAttribute(Concept concept) {
-  for (Attribute attribute in concept.attributes) {
+Attribute? findIdAttribute(Concept concept) {
+  for (Attribute attribute in concept.attributes as Iterable<Attribute>) {
     if (attribute.identifier) {
       return attribute;
     }
   }
   return null;
 }
-

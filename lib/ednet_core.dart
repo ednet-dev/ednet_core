@@ -39,11 +39,49 @@ part 'gen/random_data.dart';
 
 part 'gen/search.dart';
 
-part 'domain/model/event/actions.dart';
+part 'domain/model/event/actions/action_api.dart';
+
+part 'domain/model/event/actions/add_action.dart';
+
+part 'domain/model/event/actions/basic_action.dart';
+
+part 'domain/model/event/actions/entity_action.dart';
+
+part 'domain/model/event/actions/entities_action.dart';
+
+part 'domain/model/event/actions/remove_action.dart';
+
+part 'domain/model/event/actions/set_attribute_action.dart';
+
+part 'domain/model/event/actions/set_child_action.dart';
+
+part 'domain/model/event/actions/set_parent_action.dart';
+
+part 'domain/model/event/actions/transaction.dart';
+
+part 'domain/model/event/actions/transaction_api.dart';
 
 part 'domain/model/event/past.dart';
 
 part 'domain/model/event/reactions.dart';
+
+part 'domain/model/commands/entity_command.dart';
+
+part 'domain/model/commands/entity_command_factory.dart';
+
+part 'domain/model/commands/entity_commands.dart';
+
+part 'domain/model/policy/entity_policies.dart';
+
+part 'domain/model/policy/entity_policy.dart';
+
+part 'domain/model/policy/entity_policy_factory.dart';
+
+part 'domain/model/events/entity_event.dart';
+
+part 'domain/model/events/entity_event_factory.dart';
+
+part 'domain/model/events/entity_events.dart';
 
 part 'domain/model/error/exceptions.dart';
 
@@ -51,13 +89,19 @@ part 'domain/model/error/validations.dart';
 
 part 'domain/model/transfer/json.dart';
 
-part 'domain/model/entities.dart';
+part 'domain/model/entity/entities.dart';
 
-part 'domain/model/entity.dart';
+part 'domain/model/entity/concept_entity.dart';
+
+part 'domain/model/entity/entity_api.dart';
+
+part 'domain/model/entity/id.dart';
+
+part 'domain/model/entity/id_api.dart';
+
+part 'domain/model/entity/entities_api.dart';
 
 part 'domain/model/entries.dart';
-
-part 'domain/model/id.dart';
 
 part 'domain/model/oid.dart';
 
@@ -69,6 +113,8 @@ part 'meta/children.dart';
 
 part 'meta/concepts.dart';
 
+part 'meta/concept.dart';
+
 part 'meta/domains.dart';
 
 part 'meta/models.dart';
@@ -76,6 +122,8 @@ part 'meta/models.dart';
 part 'meta/neighbor.dart';
 
 part 'meta/parents.dart';
+
+part 'meta/parent.dart';
 
 part 'meta/property.dart';
 
