@@ -1,17 +1,17 @@
 part of ednet_core;
 
-class DartlingException implements Exception {
+class EDNetException implements Exception {
 
   final String message;
 
-  DartlingException(this.message);
+  EDNetException(this.message);
 
   @override
   toString() => '*** $message ***';
 
 }
 
-class ActionException extends DartlingException {
+class ActionException extends EDNetException {
 
   ActionException(String message) : super(message);
 
@@ -23,43 +23,43 @@ class AddException extends ActionException {
 
 }
 
-class CodeException extends DartlingException {
+class CodeException extends EDNetException {
 
   CodeException(String message) : super(message);
 
 }
 
-class ConceptException extends DartlingException {
+class ConceptException extends EDNetException {
 
   ConceptException(String message) : super(message);
 
 }
 
-class IdException extends DartlingException {
+class IdException extends EDNetException {
 
   IdException(String message) : super(message);
 
 }
 
-class JsonException extends DartlingException {
+class JsonException extends EDNetException {
 
   JsonException(String message) : super(message);
 
 }
 
-class OidException extends DartlingException {
+class OidException extends EDNetException {
 
   OidException(String message) : super(message);
 
 }
 
-class OrderException extends DartlingException {
+class OrderException extends EDNetException {
 
   OrderException(String message) : super(message);
 
 }
 
-class ParentException extends DartlingException {
+class ParentException extends EDNetException {
 
   ParentException(String message) : super(message);
 
@@ -71,7 +71,7 @@ class RemoveException extends ActionException {
 
 }
 
-class TypeException extends DartlingException {
+class TypeException extends EDNetException {
 
   TypeException(String message) : super(message);
 

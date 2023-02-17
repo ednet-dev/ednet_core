@@ -11,27 +11,27 @@ part 'domain/session.dart';
 
 part 'repository.dart';
 
-part 'gen/dartling_repository.dart';
+part 'gen/ednet_repository.dart';
 
-part 'gen/dartling_library.dart';
+part 'gen/ednet_library.dart';
 
-part 'gen/dartling_library_app.dart';
+part 'gen/ednet_library_app.dart';
 
-part 'gen/dartling_domain_generic.dart';
+part 'gen/ednet_domain_generic.dart';
 
-part 'gen/dartling_domain_specific.dart';
+part 'gen/ednet_domain_specific.dart';
 
-part 'gen/dartling_model_generic.dart';
+part 'gen/ednet_model_generic.dart';
 
-part 'gen/dartling_model_specific.dart';
+part 'gen/ednet_model_specific.dart';
 
-part 'gen/dartling_concept_generic.dart';
+part 'gen/ednet_concept_generic.dart';
 
-part 'gen/dartling_concept_specific.dart';
+part 'gen/ednet_concept_specific.dart';
 
-part 'gen/dartling_test.dart';
+part 'gen/ednet_test.dart';
 
-part 'gen/dartling_web.dart';
+part 'gen/ednet_web.dart';
 
 part 'gen/random.dart';
 

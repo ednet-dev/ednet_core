@@ -50,9 +50,9 @@ class Repo {
       subTitle('libraries');
       for (Model model in domain.models) {
         subTitle('${domain.code}.${model.code} model library');
-        print(genDartlingLibrary(model));
+        print(genEDNetLibrary(model));
         subTitle('${domain.code}.${model.code} model app library');
-        print(genDartlingLibraryApp(model));
+        print(genEDNetLibraryApp(model));
       }
     }
 
@@ -86,7 +86,7 @@ class Repo {
           for (Concept entryConcept in model.entryConcepts) {
             subTitle(
                 '${domain.code}.${model.code}.${entryConcept.code} model tests');
-            print(genDartlingTest(this, model, entryConcept));
+            print(genEDNetTest(this, model, entryConcept));
           }
         }
       }
@@ -96,7 +96,7 @@ class Repo {
         for (Model model in domain.models) {
           subTitle('Code generation of the '
               '${domain.code}.${model.code} model');
-          print(genDartlingGen(model));
+          print(genEDNetGen(model));
         }
       }
 
@@ -104,7 +104,7 @@ class Repo {
         title('Specific code in the web folder.');
         for (Model model in domain.models) {
           subTitle('${domain.code}.${model.code} model web page');
-          print(genDartlingWeb(model));
+          print(genEDNetWeb(model));
         }
       }
     }

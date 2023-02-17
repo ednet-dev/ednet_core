@@ -1,6 +1,6 @@
 part of ednet_core;
 
-String genDartlingLibraryApp(Model model) {
+String genEDNetLibraryApp(Model model) {
   Domain domain = model.domain;
 
   var sc = ' \n';
@@ -20,8 +20,8 @@ String genDartlingLibraryApp(Model model) {
   sc = '${sc}import "dart:math"; \n';
   sc = '${sc} \n';
 
-  sc = '${sc}import "package:dartling/dartling.dart"; \n';
-  sc = '${sc}import "package:dartling_default_app/dartling_default_app.dart"; \n';
+  sc = '${sc}import "package:Ednet/Ednet.dart"; \n';
+  sc = '${sc}import "package:ednet_default_app/ednet_default_app.dart"; \n';
   sc = '${sc} \n';
   sc = '${sc}import "package:${domain.codeLowerUnderscore}_'
        '${model.codeLowerUnderscore}/${domain.codeLowerUnderscore}_'

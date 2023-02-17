@@ -10,7 +10,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   Entities();
 
   @override
-  var exceptions = const ValidationExceptions();
+  ValidationExceptions exceptions = const ValidationExceptions();
   @override
   Entities<E>? source;
 
@@ -160,7 +160,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     if (selectionEntities.isNotEmpty) {
       return selectionEntities.first;
     }
-    throw DartlingException(
+    throw EDNetException(
         'E firstWhereAttribute(String code, Object attribute): code = $code, attribute = $attribute');
   }
 
@@ -169,7 +169,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     if (!isEmpty) {
       return _entityList[randomGen.nextInt(length)];
     }
-    throw DartlingException('E random(): length = $length');
+    throw EDNetException('E random(): length = $length');
   }
 
   @override

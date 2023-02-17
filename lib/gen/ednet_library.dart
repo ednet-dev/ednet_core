@@ -8,7 +8,7 @@ http://opensource.org/licenses/
 http://en.wikipedia.org/wiki/BSD_license
 3-clause license ("New BSD License" or "Modified BSD License")
 
-Copyright (c) 2012, dartling project authors
+Copyright (c) 2012, Ednet project authors
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright
       notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of the dartling nor the
+    * Neither the name of the Ednet nor the
       names of its contributors may be used to endorse or promote products
       derived from this software without specific prior written permission.
 
@@ -35,28 +35,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 ''';
 
-String genDartlingLibrary(Model model) {
+String genEDNetLibrary(Model model) {
   Domain domain = model.domain;
 
   var sc = ' \n';
-  sc = '${sc}// lib/'
+  sc = '$sc// lib/'
        '${domain.codeLowerUnderscore}_${model.codeLowerUnderscore}.dart \n';
-  sc = '${sc} \n';
+  sc = '$sc \n';
 
-  sc = '${sc}${license} \n';
-  sc = '${sc} \n';
+  sc = '$sc$license \n';
+  sc = '$sc \n';
 
   sc = '${sc}library ${domain.codeLowerUnderscore}_${model.codeLowerUnderscore}; \n';
-  sc = '${sc} \n';
+  sc = '$sc \n';
 
-  sc = '${sc}//import "dart:convert"; \n';
-  sc = '${sc}//import "dart:math"; \n';
-  sc = '${sc} \n';
+  sc = '$sc//import "dart:convert"; \n';
+  sc = '$sc//import "dart:math"; \n';
+  sc = '$sc \n';
 
-  sc = '${sc}import "package:dartling/dartling.dart"; \n';
-  sc = '${sc} \n';
+  sc = '${sc}import "package:Ednet/Ednet.dart"; \n';
+  sc = '$sc \n';
   sc = '${sc}part "destructive_repository.dart"; \n';
-  sc = '${sc} \n';
+  sc = '$sc \n';
   
   sc = '${sc}part "gen/${domain.codeLowerUnderscore}/models.dart"; \n';
   sc = '${sc}part "gen/${domain.codeLowerUnderscore}/'
@@ -65,7 +65,7 @@ String genDartlingLibrary(Model model) {
     sc = '${sc}part "gen/${domain.codeLowerUnderscore}/'
          '${model.codeLowerUnderscore}/${concept.codesLowerUnderscore}.dart"; \n';
   } 
-  sc = '${sc} \n';
+  sc = '$sc \n';
 
   sc = '${sc}part "${domain.codeLowerUnderscore}/domain.dart"; \n';
   sc = '${sc}part "${domain.codeLowerUnderscore}/'
@@ -78,7 +78,7 @@ String genDartlingLibrary(Model model) {
        '${model.codeLowerUnderscore}/json/data.dart"; \n';
   sc = '${sc}part "${domain.codeLowerUnderscore}/'
        '${model.codeLowerUnderscore}/json/model.dart"; \n';
-  sc = '${sc} \n';
+  sc = '$sc \n';
 
   return sc;
 }

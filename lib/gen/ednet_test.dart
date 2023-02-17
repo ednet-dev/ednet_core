@@ -1,6 +1,6 @@
 part of ednet_core;
 
-String genDartlingGen(Model model) {
+String genEDNetGen(Model model) {
   Domain domain = model.domain;
 
   var sc = ' \n';
@@ -40,7 +40,7 @@ String genDartlingGen(Model model) {
   return sc;
 }
 
-String genDartlingTest(Repo repo, Model model, Concept entryConcept) {
+String genEDNetTest(Repo repo, Model model, Concept entryConcept) {
   Domain domain = model.domain;
 
   var sc = ' \n';
@@ -51,7 +51,7 @@ String genDartlingTest(Repo repo, Model model, Concept entryConcept) {
   sc = '$sc \n';
 
   sc = '${sc}import "package:test/test.dart"; \n';
-  sc = '${sc}import "package:dartling/dartling.dart"; \n';
+  sc = '${sc}import "package:Ednet/Ednet.dart"; \n';
   sc = '${sc}import "package:${domain.codeLowerUnderscore}_'
       '${model.codeLowerUnderscore}/${domain.codeLowerUnderscore}_'
       '${model.codeLowerUnderscore}.dart"; \n';
@@ -193,8 +193,8 @@ String genDartlingTest(Repo repo, Model model, Concept entryConcept) {
   sc = '$sc \n';
 
   sc = '$sc    test("Not found $entity by new oid", () { \n';
-  sc = '$sc      var dartlingOid = new Oid.ts(1345648254063); \n';
-  sc = '$sc      var $entity = $entities.singleWhereOid(dartlingOid); \n';
+  sc = '$sc      var ednetOid = new Oid.ts(1345648254063); \n';
+  sc = '$sc      var $entity = $entities.singleWhereOid(ednetOid); \n';
   sc = '$sc      expect($entity, isNull); \n';
   sc = '$sc    }); \n';
   sc = '$sc \n';

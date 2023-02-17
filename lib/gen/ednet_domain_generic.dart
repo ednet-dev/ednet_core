@@ -8,7 +8,7 @@ String genModels(Domain domain, String library) {
   sc = '${sc}class ${domain.code}Models extends DomainModels { \n';
   sc = '${sc} \n';
   sc = '${sc}  ${domain.code}Models(Domain domain) : super(domain) { \n';
-  sc = '${sc}    // fromJsonToModel function from dartling/lib/domain/model/transfer.json.dart \n';
+  sc = '${sc}    // fromJsonToModel function from Ednet/lib/domain/model/transfer.json.dart \n';
   sc = '${sc} \n';
   for (Model model in domain.models) {
     sc = '${sc}    Model model = fromJsonToModel(${domain.codeFirstLetterLower}'

@@ -1,6 +1,6 @@
 part of ednet_core;
 
-String genDartlingWeb(Model model) {
+String genEDNetWeb(Model model) {
   Domain domain = model.domain;
 
   var sc = ' \n';
@@ -10,7 +10,7 @@ String genDartlingWeb(Model model) {
 
   sc = '${sc}import "dart:html"; \n';
   sc = '${sc} \n';
-  sc = '${sc}import "package:dartling_default_app/dartling_default_app.dart"; \n';
+  sc = '${sc}import "package:ednet_default_app/ednet_default_app.dart"; \n';
   sc = '${sc}import "package:${domain.codeLowerUnderscore}_'
        '${model.codeLowerUnderscore}/${domain.codeLowerUnderscore}_'
        '${model.codeLowerUnderscore}.dart"; \n';

@@ -57,7 +57,7 @@ class Model extends ConceptEntity<Model> {
     var msg = """
       Not all entry concepts are ordered by external parent count (from low to high). 
       There is an entry concept in your model that has more than 9 external neighbors.
-      Inform the dartling authors to increase this restriction.
+      Inform the Ednet authors to increase this restriction.
     """;
     throw ConceptException(msg);
   }
@@ -70,7 +70,7 @@ class Model extends ConceptEntity<Model> {
     Concept? concept = concepts.singleWhereCode(entryConceptCode);
     //
     // if (concept == null) {
-    //   throw DartlingException(
+    //   throw EDNetException(
     //       '  Concept getEntryConcept(String entryConceptCode)');
     // }
     if (!(concept?.entry ?? false)) {
