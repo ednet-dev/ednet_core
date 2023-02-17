@@ -20,7 +20,7 @@ String genConceptGen(Concept concept, String library) {
     sc = '$sc  ${concept.code}Gen(Concept concept) { \n';
     sc = '$sc    this.concept = concept; \n';
     var generatedConcepts = <Concept>[];
-    for (Child child in concept.children as Iterable<Child>) {
+    for (Child child in concept.children as Iterable)  {
       Concept destinationConcept = child.destinationConcept;
       if (!generatedConcepts.contains(destinationConcept)) {
         generatedConcepts.add(destinationConcept);
@@ -40,7 +40,7 @@ String genConceptGen(Concept concept, String library) {
   if (id.length > 0) {
     sc = '$sc  ${concept.code}Gen.withId(Concept concept';
     if (id.referenceLength > 0) {
-      for (Parent parent in concept.parents as Iterable<Parent>) {
+      for (Parent parent in concept.parents as Iterable)  {
         if (parent.identifier) {
           Concept destinationConcept = parent.destinationConcept;
           sc = '$sc, ${destinationConcept.code} ${parent.code}';
@@ -48,7 +48,7 @@ String genConceptGen(Concept concept, String library) {
       }
     }
     if (id.attributeLength > 0) {
-      for (Attribute attribute in concept.attributes as Iterable<Attribute>) {
+      for (Attribute attribute in concept.attributes as Iterable) {
         if (attribute.identifier) {
           sc = '$sc, ${attribute.type?.base} ${attribute.code}';
         }
@@ -58,14 +58,14 @@ String genConceptGen(Concept concept, String library) {
     sc = '$sc    this.concept = concept; \n';
 
     if (id.referenceLength > 0) {
-      for (Parent parent in concept.parents as Iterable<Parent>) {
+      for (Parent parent in concept.parents as Iterable)  {
         if (parent.identifier) {
           sc = '$sc    setParent("${parent.code}", ${parent.code}); \n';
         }
       }
     }
     if (id.attributeLength > 0) {
-      for (Attribute attribute in concept.attributes as Iterable<Attribute>) {
+      for (Attribute attribute in concept.attributes as Iterable) {
         if (attribute.identifier) {
           sc = '$sc    setAttribute("${attribute.code}", '
               '${attribute.code}); \n';
@@ -73,7 +73,7 @@ String genConceptGen(Concept concept, String library) {
       }
     }
     var generatedConcepts = <Concept>[];
-    for (Child child in concept.children as Iterable<Child>) {
+    for (Child child in concept.children as Iterable)  {
       Concept destinationConcept = child.destinationConcept;
       if (!generatedConcepts.contains(destinationConcept)) {
         generatedConcepts.add(destinationConcept);
@@ -88,7 +88,7 @@ String genConceptGen(Concept concept, String library) {
     sc = '$sc \n';
   }
 
-  for (Parent parent in concept.parents as Iterable<Parent>) {
+  for (Parent parent in concept.parents as Iterable)  {
     Concept destinationConcept = parent.destinationConcept;
     sc = '$sc  Reference get ${parent.code}Reference => '
         'getReference("${parent.code}"); \n ';
@@ -101,14 +101,14 @@ String genConceptGen(Concept concept, String library) {
         'setParent("${parent.code}", p); } \n ';
     sc = '$sc \n';
   }
-  for (Attribute attribute in concept.attributes as Iterable<Attribute>) {
+  for (Attribute attribute in concept.attributes as Iterable) {
     sc = '$sc  ${attribute.type?.base} get ${attribute.code} => '
         'getAttribute("${attribute.code}"); \n ';
     sc = '$sc void set ${attribute.code}(${attribute.type?.base} a) { '
         'setAttribute("${attribute.code}", a); } \n ';
     sc = '$sc \n';
   }
-  for (Child child in concept.children as Iterable<Child>) {
+  for (Child child in concept.children as Iterable)  {
     Concept destinationConcept = child.destinationConcept;
     sc = '$sc  ${destinationConcept.codes} get ${child.code} => '
         'getChild("${child.code}"); \n ';
@@ -122,7 +122,7 @@ String genConceptGen(Concept concept, String library) {
   sc = '$sc \n';
 
   if (id.attributeLength == 1) {
-    for (Attribute attribute in concept.attributes as Iterable<Attribute>) {
+    for (Attribute attribute in concept.attributes as Iterable) {
       if (attribute.identifier) {
         sc = '$sc  int ${attribute.code}CompareTo(${concept.code} other) { \n';
         if (attribute.type?.code == 'Uri') {

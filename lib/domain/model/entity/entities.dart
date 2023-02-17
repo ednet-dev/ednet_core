@@ -1,7 +1,7 @@
 part of ednet_core;
 
 class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
-  late Concept _concept;
+  Concept? _concept;
   var _entityList = <E>[];
   final _oidEntityMap = <int, E>{};
   final _codeEntityMap = <String, E>{};
@@ -27,7 +27,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     return entities;
   }
 
-  set concept(Concept concept) {
+  set concept(Concept? concept) {
     _concept = concept;
     pre = true;
     post = true;
@@ -41,7 +41,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   }
 
   @override
-  Concept get concept => _concept;
+  Concept? get concept => _concept;
 
   @override
   E get first => _entityList.first;
@@ -190,9 +190,9 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     if (foundEntity != null) {
       return foundEntity;
     }
-    if (_concept.children.isNotEmpty) {
+    if (_concept != null && _concept!.children.isNotEmpty) {
       for (ConceptEntity entity in _entityList) {
-        for (Child child in _concept.children as Iterable<Child>) {
+        for (Child child in _concept!.children as Iterable) {
           if (child.internal) {
             Entities? childEntities = entity.getChild(child.code);
             ConceptEntity? childEntity = childEntities?.internalSingle(oid);
@@ -215,9 +215,9 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     if (foundEntity != null) {
       return this;
     }
-    if (_concept.children.isNotEmpty) {
+    if (_concept != null && _concept!.children.isNotEmpty) {
       for (ConceptEntity entity in _entityList) {
-        for (Child child in _concept.children as Iterable<Child>) {
+        for (Child child in _concept!.children as Iterable) {
           if (child.internal) {
             Entities? childEntities = entity.getChild(child.code);
             ConceptEntity? childEntity = childEntities?.internalSingle(oid);
@@ -244,7 +244,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   @override
   E? singleWhereAttributeId(String code, Object attribute) {
     return singleWhereId(
-        (Id(_concept) as IdApi<E>)..setAttribute(code, attribute));
+        (Id(_concept!) as IdApi<E>)..setAttribute(code, attribute));
   }
 
   /// Copies the entities.
@@ -319,7 +319,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     for (E entity in _entityList) {
-      for (Attribute a in _concept.attributes as Iterable<Attribute>) {
+      for (Attribute a in _concept!.attributes as Iterable) {
         if (a.code == code) {
           if (entity.getAttribute(a.code) == attribute) {
             selectedEntities.add(entity);
@@ -345,7 +345,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     for (E entity in _entityList) {
-      for (Parent p in _concept.parents as Iterable<Parent>) {
+      for (Parent p in _concept!.parents as Iterable) {
         if (p.code == code) {
           if (entity.getParent(p.code) == parent) {
             selectedEntities.add(entity);
@@ -478,7 +478,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
   @override
   String toString() {
     if (_concept != null) {
-      return '${_concept.code}: entities:$length';
+      return '${_concept!.code}: entities:$length';
     }
     return 'Concept is null';
   }
@@ -514,8 +514,8 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     if (_concept == null) {
       throw ConceptException('Entities.add: concept is not defined.');
     }
-    if (!(_concept.add)) {
-      throw AddException('An entity cannot be added to ${_concept.codes}.');
+    if (!(_concept!.add)) {
+      throw AddException('An entity cannot be added to ${_concept?.codes}.');
     }
 
     bool result = true;
@@ -527,7 +527,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
         maxInt = int.parse(maxc);
         if (length == maxInt) {
           const category = 'max cardinality';
-          final message = '${_concept.codes}.max is $maxc.';
+          final message = '${_concept?.codes}.max is $maxc.';
           var exception = ValidationException(category, message);
 
           exceptions.add(exception);
@@ -540,7 +540,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     }
 
     // increment and required validation
-    for (Attribute a in _concept.attributes as Iterable<Attribute>) {
+    for (Attribute a in _concept!.attributes as Iterable) {
       if (a.increment != null) {
         if (length == 0) {
           entity.setAttribute(a.code, a.increment!);
@@ -557,17 +557,17 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
         }
       } else if (a.required && entity.getAttribute(a.code) == null) {
         const category = 'required';
-        final message = '${entity.concept.code}.${a.code} attribute is null.';
+        final message = '${entity.concept?.code}.${a.code} attribute is null.';
         final exception = ValidationException(category, message);
 
         exceptions.add(exception);
         result = false;
       }
     }
-    for (Parent p in _concept.parents as Iterable<Parent>) {
+    for (Parent p in _concept?.parents as Iterable) {
       if (p.required && p.code != null && entity.getParent(p.code) == null) {
         const category = 'required';
-        final message = '${entity.concept.code}.${p.code} parent is null.';
+        final message = '${entity.concept?.code}.${p.code} parent is null.';
         final exception = ValidationException(category, message);
 
         exceptions.add(exception);
@@ -578,7 +578,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     // uniqueness validation
     if (entity.code != null && singleWhereCode(entity.code) != null) {
       const category = 'unique';
-      final message = '${entity.concept.code}.code is not unique.';
+      final message = '${entity.concept?.code}.code is not unique.';
       final exception = ValidationException(category, message);
 
       exceptions.add(exception);
@@ -587,7 +587,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     if (entity.id != null && singleWhereId(entity.id as IdApi<E>) != null) {
       const category = 'unique';
       final message =
-          '${entity.concept.code}.id ${entity.id.toString()} is not unique.';
+          '${entity.concept?.code}.id ${entity.id.toString()} is not unique.';
       ValidationException exception = ValidationException(category, message);
 
       exceptions.add(exception);
@@ -623,7 +623,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
           pre = false;
           post = false;
           if (!remove(entity)) {
-            var msg = '${entity.concept.code} entity (${entity.oid}) '
+            var msg = '${entity.concept?.code} entity (${entity.oid}) '
                 'was added, post was not successful, remove was not successful';
             throw RemoveException(msg);
           } else {
@@ -634,8 +634,8 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
         }
       } else {
         // not propagated
-        var msg = '${entity.concept.code} entity (${entity.oid}) '
-            'was not added - propagation to the source ${source?.concept.code} '
+        var msg = '${entity.concept?.code} entity (${entity.oid}) '
+            'was not added - propagation to the source ${source?.concept?.code} '
             'entities was not successful';
         throw AddException(msg);
       }
@@ -677,9 +677,9 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     if (_concept == null) {
       throw ConceptException('Entities.remove: concept is not defined.');
     }
-    if (!_concept.remove) {
+    if (!(_concept?.remove ?? false)) {
       throw RemoveException(
-          'An entity cannot be removed from ${_concept.codes}.');
+          'An entity cannot be removed from ${_concept?.codes}.');
     }
 
     bool result = true;
@@ -691,7 +691,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
         minInt = int.parse(minc);
         if (length == minInt) {
           const category = 'min';
-          final message = '${_concept.codes}.min is $minc.';
+          final message = '${_concept?.codes}.min is $minc.';
           ValidationException exception =
               ValidationException(category, message);
 
@@ -733,7 +733,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
             pre = false;
             post = false;
             if (!add(entity)) {
-              var msg = '${entity.concept.code} entity (${entity.oid}) '
+              var msg = '${entity.concept?.code} entity (${entity.oid}) '
                   'was removed, post was not successful, add was not successful';
               throw AddException(msg);
             } else {
@@ -745,8 +745,8 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
         }
       } else {
         // not propagated
-        var msg = '${entity.concept.code} entity (${entity.oid}) '
-            'was not removed - propagation to the source ${source!.concept.code} '
+        var msg = '${entity.concept?.code} entity (${entity.oid}) '
+            'was not removed - propagation to the source ${source!.concept?.code} '
             'entities was not successful';
         throw RemoveException(msg);
       }
@@ -786,7 +786,7 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
         beforeEntity.code == afterEntity.code &&
         beforeEntity.id == afterEntity.id) {
       throw UpdateException(
-          '${_concept.codes}.update can only be used if oid, code or id set.');
+          '${_concept?.codes}.update can only be used if oid, code or id set.');
     }
     if (remove(beforeEntity)) {
       if (add(afterEntity)) {
@@ -796,18 +796,18 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
         if (add(beforeEntity)) {
           const category = 'update';
           final message =
-              '${_concept.codes}.update fails to add after update entity.';
+              '${_concept?.codes}.update fails to add after update entity.';
           var exception = ValidationException(category, message);
           exceptions.add(exception);
         } else {
           throw UpdateException(
-              '${_concept.codes}.update fails to add back before update entity.');
+              '${_concept?.codes}.update fails to add back before update entity.');
         }
       }
     } else {
       const category = 'update';
       final message =
-          '${_concept.codes}.update fails to remove before update entity.';
+          '${_concept?.codes}.update fails to remove before update entity.';
       var exception = ValidationException(category, message);
 
       exceptions.add(exception);
@@ -864,9 +864,9 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
       bool withInternalChildren = true}) {
     var s = prefix;
 
-    bool thereIsNoEntry = !(_concept.entry);
-    bool thereIsEntry = _concept.entry;
-    bool thereIsParent = _concept.parents.isNotEmpty;
+    bool thereIsNoEntry = !(_concept?.entry ?? false);
+    bool thereIsEntry = _concept?.entry ?? false;
+    bool thereIsParent = _concept?.parents.isNotEmpty ?? false;
 
     if (thereIsNoEntry || (thereIsEntry && thereIsParent)) {
       s = '$prefix  ';
@@ -903,24 +903,6 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
     _idEntityMap.forEach((k, v) {
       print('id $k: $v');
     });
-  }
-
-  @override
-  Iterable<R> cast<R>() {
-    /// Provides a view of this iterable as an iterable of R instances.
-    final it = () sync* {
-      for (var e in this as Iterable<R>) {
-        yield e;
-      }
-    }();
-    // If this iterable only contains instances of R, all operations will work correctly. If any operation tries to access an element that is not an instance of R, the access will throw instead.
-    try {
-      it.elementAt(0);
-    } on TypeError catch (_) {
-      throw TypeError();
-    }
-    // When the returned iterable creates a new object that depends on the type R, e.g., from toList, it will have exactly the type R.
-    return it;
   }
 
   @override
@@ -985,5 +967,22 @@ class Entities<E extends ConceptEntity<E>> implements EntitiesApi<E> {
         }
       }
     }
+  }
+
+  @override
+  Iterable<E> cast<E>() {
+    final it = () sync* {
+      for (var e in this) {
+        yield e;
+      }
+    }();
+    // If this iterable only contains instances of R, all operations will work correctly. If any operation tries to access an element that is not an instance of R, the access will throw instead.
+    try {
+      it.elementAt(0);
+    } on TypeError catch (_) {
+      throw TypeError();
+    }
+    // When the returned iterable creates a new object that depends on the type R, e.g., from toList, it will have exactly the type R.
+    return it as Iterable<E>;
   }
 }

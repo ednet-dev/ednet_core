@@ -18,7 +18,7 @@ String genConcept(Concept concept, String library) {
   if (id.length > 0) {
     sc = '$sc  ${concept.code}.withId(Concept concept';
     if (id.referenceLength > 0) {
-      for (Parent parent in concept.parents as Iterable<Parent>) {
+      for (Parent parent in concept.parents as Iterable)  {
         if (parent.identifier) {
           Concept destinationConcept = parent.destinationConcept;
           sc = '$sc, ${destinationConcept.code} ${parent.code}';
@@ -26,7 +26,7 @@ String genConcept(Concept concept, String library) {
       }
     }
     if (id.attributeLength > 0) {
-      for (Attribute attribute in concept.attributes as Iterable<Attribute>) {
+      for (Attribute attribute in concept.attributes as Iterable) {
         if (attribute.identifier) {
           sc = '$sc, ${attribute.type?.base} ${attribute.code}';
         }
@@ -35,14 +35,14 @@ String genConcept(Concept concept, String library) {
     sc = '$sc) : \n';
     sc = '$sc    super.withId(concept';
     if (id.referenceLength > 0) {
-      for (Parent parent in concept.parents as Iterable<Parent>) {
+      for (Parent parent in concept.parents as Iterable)  {
         if (parent.identifier) {
           sc = '$sc, ${parent.code}';
         }
       }
     }
     if (id.attributeLength > 0) {
-      for (Attribute attribute in concept.attributes as Iterable<Attribute>) {
+      for (Attribute attribute in concept.attributes as Iterable) {
         if (attribute.identifier) {
           sc = '$sc, ${attribute.code}';
         }

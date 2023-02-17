@@ -9,7 +9,7 @@ abstract class EntityApi<E extends EntityApi<E>> implements Comparable {
 
   IdApi get id;
 
-  String get code;
+  String? get code;
 
   /// Log
   DateTime? whenAdded;

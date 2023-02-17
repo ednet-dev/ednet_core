@@ -538,7 +538,7 @@ String genEDNetTest(Repo repo, Model model, Concept entryConcept) {
       '$sc      expect(random$entity2.oid, equals(random${entity2}Copy.oid)); \n';
   sc = '$sc      expect(random$entity2.code, '
       'equals(random${entity2}Copy.code)); \n';
-  for (Attribute attribute in entryConcept.attributes as Iterable<Attribute>) {
+  for (Attribute attribute in entryConcept.attributes as Iterable) {
     sc = '$sc      expect(random$entity2.${attribute.code}, '
         'equals(random${entity2}Copy.${attribute.code})); \n';
   }

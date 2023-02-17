@@ -85,26 +85,26 @@ ModelEntries createModelData(Model model) {
 }
 
 void testModelData(Model model) {
-  late ModelEntries entries;
+  ModelEntries? entries;
   group('Testing Model Data:', () {
     setUp(() {
       entries = createModelData(model);
       expect(entries, isNotNull);
     });
     tearDown(() {
-      entries.clear();
-      expect(entries.isEmpty, isTrue);
+      entries?.clear();
+      expect(entries?.isEmpty, isTrue);
     });
     test('Find Category and Web Link by Id', () {
-      var categories = entries.getEntry('Category');
-      Id categoryId = Id(entries.getConcept('Category'));
+      var categories = entries?.getEntry('Category');
+      Id categoryId = Id(entries!.getConcept('Category'));
       categoryId.setAttribute('name', 'Dart');
       var dartCategory =
-          categories.singleWhereId(categoryId as IdApi<ConceptEntity>);
+          categories?.singleWhereId(categoryId as IdApi<ConceptEntity>);
       expect(dartCategory, isNotNull);
       expect(dartCategory?.getAttribute('name'), equals('Dart'));
       var dartWebLinks = dartCategory?.getChild('webLinks');
-      Id dartHomeId = Id(entries.getConcept('WebLink'));
+      Id dartHomeId = Id(entries!.getConcept('WebLink'));
       dartHomeId.setParent('category', dartCategory as ConceptEntity);
       dartHomeId.setAttribute('subject', 'Dart Home');
       var dartHomeWebLink =
@@ -113,22 +113,22 @@ void testModelData(Model model) {
       expect(dartHomeWebLink?.getAttribute('subject'), equals('Dart Home'));
     });
     test('Sort Categories by Id (code not used, id is name)', () {
-      var categories = entries.getEntry('Category');
-      categories.sort();
+      var categories = entries?.getEntry('Category');
+      categories!.sort();
       categories.display(
           title: 'Categories Sorted By Id (code not used, id is name)');
     });
     test('Sort Dart Web Links by Name', () {
-      var categories = entries.getEntry('Category');
-      var dartCategory = categories.firstWhereAttribute('name', 'Dart');
+      var categories = entries?.getEntry('Category');
+      var dartCategory = categories?.firstWhereAttribute('name', 'Dart');
       expect(dartCategory, isNotNull);
-      var dartWebLinks = dartCategory.getChild('webLinks');
+      var dartWebLinks = dartCategory?.getChild('webLinks');
       dartWebLinks?.sort();
       dartWebLinks?.display(title: 'Sorted Dart Web Links');
     });
     test('New Category with Id', () {
-      var categories = entries.getEntry('Category');
-      var categoryCount = categories.length;
+      var categories = entries?.getEntry('Category');
+      var categoryCount = categories!.length;
       var webFrameworkCategory = ConceptEntity<Concept>();
       webFrameworkCategory.concept = categories.concept;
       webFrameworkCategory.setAttribute('name', 'Web Framework');
@@ -140,8 +140,8 @@ void testModelData(Model model) {
       categories.display(title: 'Categories Including Web Framework');
     });
     test('New WebLink No Category Error', () {
-      var categories = entries.getEntry('Category');
-      var dartCategory = categories.firstWhereAttribute('name', 'Dart');
+      var categories = entries?.getEntry('Category');
+      var dartCategory = categories!.firstWhereAttribute('name', 'Dart');
       expect(dartCategory, isNotNull);
 
       var dartWebLinks = dartCategory.getChild('webLinks');
@@ -169,9 +169,9 @@ void testModelData(Model model) {
     });
     test('From Link Model to JSON', () {
       var entryConceptCode = 'Category';
-      var json = entries.fromEntryToJson(entryConceptCode);
+      var json = entries?.fromEntryToJson(entryConceptCode);
       expect(json, isNotNull);
-      entries.displayEntryJson(entryConceptCode);
+      entries?.displayEntryJson(entryConceptCode);
     });
   });
 }
