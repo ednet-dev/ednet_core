@@ -1,12 +1,12 @@
 part of ednet_core;
 
-abstract class EntityAction extends BasicAction {
+abstract class IEntityCommand extends IBasicCommand {
   Entity entity;
   String property;
   Object? before;
   Object after;
 
-  EntityAction(DomainSession session, this.entity, this.property, this.after)
+  IEntityCommand(DomainSession session, this.entity, this.property, this.after)
       : before = entity.getAttribute(property),
         super('set', session);
 
@@ -21,14 +21,14 @@ abstract class EntityAction extends BasicAction {
       } else if (name == 'set' && category == 'child') {
         done = entity.setChild(property, after as Entities<Entity>);
       } else {
-        throw ActionException(
-            'Allowed actions on entity for doIt are set attribute, parent or child.');
+        throw CommandException(
+            'Allowed commands on entity for doIt are set attribute, parent or child.');
       }
       if (done) {
         state = 'done';
         if (!partOfTransaction) {
           session.past.add(this);
-          session.domainModels.notifyActionReactions(this);
+          session.domainModels.notifyCommandReactions(this);
         }
       }
     }
@@ -46,13 +46,13 @@ abstract class EntityAction extends BasicAction {
       } else if (name == 'set' && category == 'child') {
         undone = entity.setChild(property, before as Entities<Entity>);
       } else {
-        throw ActionException(
-            'Allowed actions on entity for undo are set attribute, parent or child.');
+        throw CommandException(
+            'Allowed commands on entity for undo are set attribute, parent or child.');
       }
       if (undone) {
         state = 'undone';
         if (!partOfTransaction) {
-          session.domainModels.notifyActionReactions(this);
+          session.domainModels.notifyCommandReactions(this);
         }
       }
     }
@@ -66,18 +66,17 @@ abstract class EntityAction extends BasicAction {
       if (name == 'set' && category == 'attribute') {
         redone = entity.setAttribute(property, after);
       } else if (name == 'set' && category == 'parent') {
-        redone =
-            entity.setParent(property, after as Entity<Entity>);
+        redone = entity.setParent(property, after as Entity<Entity>);
       } else if (name == 'set' && category == 'child') {
         redone = entity.setChild(property, after as Entities<Entity>);
       } else {
-        throw ActionException(
-            'Allowed actions on entity for redo are set attribute, parent or child.');
+        throw CommandException(
+            'Allowed commands on entity for redo are set attribute, parent or child.');
       }
       if (redone) {
         state = 'redone';
         if (!partOfTransaction) {
-          session.domainModels.notifyActionReactions(this);
+          session.domainModels.notifyCommandReactions(this);
         }
       }
     }
@@ -85,6 +84,6 @@ abstract class EntityAction extends BasicAction {
   }
 
   @override
-  toString() => 'action: $name; category: $category; state: $state -- '
+  toString() => 'command: $name; category: $category; state: $state -- '
       'property: $property; before: $before; after: $after';
 }

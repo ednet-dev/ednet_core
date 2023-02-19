@@ -1,12 +1,12 @@
 part of ednet_core;
 
-abstract class DomainSessionApi {
-  DomainModelsApi get domainModels;
+abstract class IDomainSession {
+  IDomainModels get domainModels;
 
-  PastApi get past;
+  IPast get past;
 }
 
-class DomainSession implements DomainSessionApi {
+class DomainSession implements IDomainSession {
   final DomainModels _domainModels;
   final Past _past;
 

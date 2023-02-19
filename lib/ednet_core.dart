@@ -39,49 +39,39 @@ part 'gen/random_data.dart';
 
 part 'gen/search.dart';
 
-part 'domain/model/event/actions/action_api.dart';
+part 'domain/model/commands/add_command.dart';
 
-part 'domain/model/event/actions/add_action.dart';
+part 'domain/model/commands/interfaces/i_basic_command.dart';
 
-part 'domain/model/event/actions/basic_action.dart';
+part 'domain/model/commands/interfaces/i_entity_command.dart';
 
-part 'domain/model/event/actions/entity_action.dart';
+part 'domain/model/commands/interfaces/i_entities_command.dart';
 
-part 'domain/model/event/actions/entities_action.dart';
+part 'domain/model/commands/interfaces/i_command.dart';
 
-part 'domain/model/event/actions/remove_action.dart';
+part 'domain/model/commands/interfaces/i_transaction.dart';
 
-part 'domain/model/event/actions/set_attribute_action.dart';
+part 'domain/model/commands/remove_command.dart';
 
-part 'domain/model/event/actions/set_child_action.dart';
+part 'domain/model/commands/set_attribute_command.dart';
 
-part 'domain/model/event/actions/set_parent_action.dart';
+part 'domain/model/commands/set_child_command.dart';
 
-part 'domain/model/event/actions/transaction.dart';
+part 'domain/model/commands/set_parent_command.dart';
 
-part 'domain/model/event/actions/transaction_api.dart';
+part 'domain/model/commands/transaction.dart';
 
 part 'domain/model/event/past.dart';
 
-part 'domain/model/event/reactions.dart';
+part 'domain/model/event/interfaces/i_past_command.dart';
 
-// part 'domain/model/commands/entity_command.dart';
+part 'domain/model/event/interfaces/i_command_reaction.dart';
 
-// part 'domain/model/commands/entity_command_factory.dart';
+part 'domain/model/event/interfaces/i_past.dart';
 
-// part 'domain/model/commands/entity_commands.dart';
+part 'domain/model/event/interfaces/i_source_of_command_reaction.dart';
 
-// part 'domain/model/policy/entity_policies.dart';
-//
-// part 'domain/model/policy/entity_policy.dart';
-//
-// part 'domain/model/policy/entity_policy_factory.dart';
-
-// part 'domain/model/events/entity_event.dart';
-//
-// part 'domain/model/events/entity_event_factory.dart';
-//
-// part 'domain/model/events/entity_events.dart';
+part 'domain/model/event/interfaces/i_source_of_past_reaction.dart';
 
 part 'domain/model/transfer/json.dart';
 
@@ -125,28 +115,7 @@ part 'meta/property.dart';
 
 part 'meta/types.dart';
 
-part 'domain/model/entity/wip/dart_basic_types.dart';
-
-//
-// part 'domain/model/entity/wip/entity_attributes.dart';
-//
-// part 'domain/model/entity/entity_description.dart';
-//
-// part 'domain/model/entity/wip/entity_id.dart';
-//
-// part 'domain/model/entity/entity_identity.dart';
-
-part 'domain/model/entity/wip/entity_mapping.dart';
-
-// part 'domain/model/entity/entity_name.dart';
-//
-// part 'domain/model/entity/entity_tags.dart';
-
-part 'domain/model/entity/wip/flutter_semantic_render_type.dart';
-
-// part 'domain/model/entity/semantic_attribute_format.dart';
-
-part 'domain/model/entity/wip/semantic_attribute_type.dart';
+part 'domain/model/primitives/dart_basic_types.dart';
 
 part 'domain/core/serializable.dart';
 
@@ -159,3 +128,5 @@ part 'domain/model/error/i_validation_exception.dart';
 part 'domain/model/error/validation_exception.dart';
 
 part 'domain/model/error/validation_exceptions.dart';
+
+part 'domain/model/aggregate_root/aggregate_root.dart';

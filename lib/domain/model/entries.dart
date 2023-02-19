@@ -1,6 +1,6 @@
 part of ednet_core;
 
-abstract class ModelEntriesApi {
+abstract class IModelEntries {
   Model get model;
 
   Concept getConcept(String conceptCode);
@@ -28,7 +28,7 @@ abstract class ModelEntriesApi {
   void fromJson(String json);
 }
 
-class ModelEntries implements ModelEntriesApi {
+class ModelEntries implements IModelEntries {
   final Model _model;
 
   late Map<String, Entities> _entryEntitiesMap;

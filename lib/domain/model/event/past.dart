@@ -1,56 +1,36 @@
 part of ednet_core;
 
-abstract class PastApi implements SourceOfPastReactionApi {
-  void add(ActionApi action);
-
-  List<ActionApi> get actions;
-
-  void clear();
-
-  bool get empty;
-
-  bool get undoLimit;
-
-  bool get redoLimit;
-
-  bool doIt();
-
-  bool undo();
-
-  bool redo();
-}
-
-class Past implements PastApi {
+class Past implements IPast {
   int cursor = 0;
   @override
-  final List<BasicAction> actions;
+  final List<IBasicCommand> commands;
 
-  final List<PastReactionApi> pastReactions;
+  final List<IPastCommand> pastReactions;
 
   Past({
-    this.actions = const <BasicAction>[],
-    this.pastReactions = const <PastReactionApi>[],
+    this.commands = const <IBasicCommand>[],
+    this.pastReactions = const <IPastCommand>[],
   });
 
   @override
-  bool get empty => actions.isEmpty;
+  bool get empty => commands.isEmpty;
 
   @override
   bool get undoLimit => empty || cursor == 0;
 
   @override
-  bool get redoLimit => empty || cursor == actions.length;
+  bool get redoLimit => empty || cursor == commands.length;
 
   @override
-  void add(ActionApi action) {
+  void add(ICommand action) {
     _removeRightOfCursor();
-    actions.add(action as BasicAction);
+    commands.add(action as IBasicCommand);
     _moveCursorForward();
   }
 
   void _removeRightOfCursor() {
-    for (int i = actions.length - 1; i >= cursor; i--) {
-      actions.removeRange(i, i + 1);
+    for (int i = commands.length - 1; i >= cursor; i--) {
+      commands.removeRange(i, i + 1);
     }
   }
 
@@ -82,7 +62,7 @@ class Past implements PastApi {
   @override
   void clear() {
     cursor = 0;
-    actions.clear();
+    commands.clear();
     _notifyUndoRedo();
   }
 
@@ -90,7 +70,7 @@ class Past implements PastApi {
   bool doIt() {
     bool done = false;
     if (!empty) {
-      BasicAction action = actions[cursor];
+      IBasicCommand action = commands[cursor];
       done = action.doIt();
       _moveCursorForward();
     }
@@ -102,7 +82,7 @@ class Past implements PastApi {
     bool undone = false;
     if (!empty) {
       _moveCursorBackward();
-      BasicAction action = actions[cursor];
+      IBasicCommand action = commands[cursor];
       undone = action.undo();
     }
     return undone;
@@ -112,7 +92,7 @@ class Past implements PastApi {
   bool redo() {
     bool redone = false;
     if (!empty && !redoLimit) {
-      BasicAction action = actions[cursor];
+      IBasicCommand action = commands[cursor];
       redone = action.redo();
       _moveCursorForward();
     }
@@ -122,7 +102,7 @@ class Past implements PastApi {
   bool doAll() {
     bool allDone = true;
     cursor = 0;
-    while (cursor < actions.length) {
+    while (cursor < commands.length) {
       if (!doIt()) {
         allDone = false;
       }
@@ -143,7 +123,7 @@ class Past implements PastApi {
   bool redoAll() {
     bool allRedone = true;
     cursor = 0;
-    while (cursor < actions.length) {
+    while (cursor < commands.length) {
       if (!redo()) {
         allRedone = false;
       }
@@ -152,52 +132,52 @@ class Past implements PastApi {
   }
 
   @override
-  void startPastReaction(PastReactionApi reaction) {
+  void startPastReaction(IPastCommand reaction) {
     pastReactions.add(reaction);
   }
 
   @override
-  void cancelPastReaction(PastReactionApi reaction) {
+  void cancelPastReaction(IPastCommand reaction) {
     pastReactions.remove(reaction);
   }
 
   @override
   void notifyCannotUndo() {
-    for (PastReactionApi reaction in pastReactions) {
+    for (IPastCommand reaction in pastReactions) {
       reaction.reactCannotUndo();
     }
   }
 
   @override
   void notifyCanUndo() {
-    for (PastReactionApi reaction in pastReactions) {
+    for (IPastCommand reaction in pastReactions) {
       reaction.reactCanUndo();
     }
   }
 
   @override
   void notifyCanRedo() {
-    for (PastReactionApi reaction in pastReactions) {
+    for (IPastCommand reaction in pastReactions) {
       reaction.reactCanRedo();
     }
   }
 
   @override
   void notifyCannotRedo() {
-    for (PastReactionApi reaction in pastReactions) {
+    for (IPastCommand reaction in pastReactions) {
       reaction.reactCannotRedo();
     }
   }
 
-  void display([String title = 'Past Actions']) {
+  void display([String title = 'Past Commands']) {
     print('');
     print('======================================');
     print('$title                                ');
     print('======================================');
     print('');
     print('cursor: $cursor');
-    for (BasicAction action in actions) {
-      action.display();
+    for (IBasicCommand command in commands) {
+      command.display();
     }
     print('');
   }

@@ -1,11 +1,11 @@
 part of ednet_core;
 
 abstract class RepoApi {
-  void add(DomainModelsApi domainModels);
+  void add(IDomainModels domainModels);
 
   Domains get domains;
 
-  DomainModelsApi getDomainModels(String domainCode);
+  IDomainModels getDomainModels(String domainCode);
 
   void gen(String library, [bool specific = true]);
 }

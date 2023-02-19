@@ -1,6 +1,6 @@
 part of ednet_core;
 
-abstract class ActionApi {
+abstract class ICommand {
   bool get done;
 
   bool get undone;

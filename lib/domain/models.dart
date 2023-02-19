@@ -1,28 +1,28 @@
 part of ednet_core;
 
-abstract class DomainModelsApi implements SourceOfActionReactionApi {
-  void add(ModelEntriesApi modelEntries);
+abstract class IDomainModels implements ISourceOfCommandReaction {
+  void add(IModelEntries modelEntries);
 
   Domain get domain;
 
   Model? getModel(String modelCode);
 
-  ModelEntriesApi? getModelEntries(String modelCode);
+  IModelEntries? getModelEntries(String modelCode);
 
-  DomainSessionApi newSession();
+  IDomainSession newSession();
 }
 
-class DomainModels implements DomainModelsApi {
+class DomainModels implements IDomainModels {
   final Domain _domain;
 
   final Map<String, ModelEntries> _modelEntriesMap;
 
   // for transactions to be able to use multiple models
-  final List<ActionReactionApi> _actionReactions;
+  final List<ICommandReaction> _actionReactions;
 
   DomainModels(this._domain)
       : _modelEntriesMap = <String, ModelEntries>{},
-        _actionReactions = <ActionReactionApi>[];
+        _actionReactions = <ICommandReaction>[];
 
   void addModelEntries(ModelEntries modelEntries) {
     var domainCode = modelEntries.model.domain.code;
@@ -59,24 +59,24 @@ class DomainModels implements DomainModelsApi {
   }
 
   @override
-  void startActionReaction(ActionReactionApi reaction) {
+  void startCommandReaction(ICommandReaction reaction) {
     _actionReactions.add(reaction);
   }
 
   @override
-  void cancelActionReaction(ActionReactionApi reaction) {
+  void cancelCommandReaction(ICommandReaction reaction) {
     int index = _actionReactions.indexOf(reaction, 0);
     _actionReactions.removeRange(index, 1);
   }
 
   @override
-  void add(ModelEntriesApi modelEntries) {
+  void add(IModelEntries modelEntries) {
     addModelEntries(modelEntries as ModelEntries);
   }
 
   @override
-  void notifyActionReactions(ActionApi action) {
-    for (ActionReactionApi reaction in _actionReactions) {
+  void notifyCommandReactions(ICommand action) {
+    for (ICommandReaction reaction in _actionReactions) {
       reaction.react(action);
     }
   }

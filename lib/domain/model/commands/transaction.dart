@@ -1,32 +1,32 @@
 part of ednet_core;
 
-class Transaction extends BasicAction implements TransactionApi {
-  final Past _actions;
+class Transaction extends IBasicCommand implements ITransaction {
+  final Past _commands;
 
   Transaction(String name, DomainSession session)
-      : _actions = Past(),
+      : _commands = Past(),
         super(name, session);
 
   @override
-  Past get past => _actions;
+  Past get past => _commands;
 
   @override
-  void add(action) {
-    _actions.add(action);
-    (action as BasicAction).partOfTransaction = true;
+  void add(command) {
+    _commands.add(command);
+    (command as IBasicCommand).partOfTransaction = true;
   }
 
   @override
   bool doIt() {
     bool done = false;
     if (state == 'started') {
-      done = _actions.doAll();
+      done = _commands.doAll();
       if (done) {
         state = 'done';
         session.past.add(this);
-        session.domainModels.notifyActionReactions(this);
+        session.domainModels.notifyCommandReactions(this);
       } else {
-        _actions.undoAll();
+        _commands.undoAll();
       }
     }
     return done;
@@ -36,12 +36,12 @@ class Transaction extends BasicAction implements TransactionApi {
   bool undo() {
     bool undone = false;
     if (state == 'done' || state == 'redone') {
-      undone = _actions.undoAll();
+      undone = _commands.undoAll();
       if (undone) {
         state = 'undone';
-        session.domainModels.notifyActionReactions(this);
+        session.domainModels.notifyCommandReactions(this);
       } else {
-        _actions.doAll();
+        _commands.doAll();
       }
     }
     return undone;
@@ -51,12 +51,12 @@ class Transaction extends BasicAction implements TransactionApi {
   bool redo() {
     bool redone = false;
     if (state == 'undone') {
-      redone = _actions.redoAll();
+      redone = _commands.redoAll();
       if (redone) {
         state = 'redone';
-        session.domainModels.notifyActionReactions(this);
+        session.domainModels.notifyCommandReactions(this);
       } else {
-        _actions.undoAll();
+        _commands.undoAll();
       }
     }
     return redone;

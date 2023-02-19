@@ -1,6 +1,6 @@
 part of ednet_core;
 
-abstract class BasicAction implements ActionApi {
+abstract class IBasicCommand implements ICommand {
   final String name;
   late String category;
   String state = 'started';
@@ -8,7 +8,7 @@ abstract class BasicAction implements ActionApi {
   final DomainSession session;
   bool partOfTransaction = false;
 
-  BasicAction(this.name, this.session);
+  IBasicCommand(this.name, this.session);
 
   @override
   bool doIt();
@@ -31,9 +31,9 @@ abstract class BasicAction implements ActionApi {
   bool get redone => state == 'redone' ? true : false;
 
   @override
-  toString() => 'action: $name; state: $state -- description: $description';
+  toString() => 'command: $name; state: $state -- description: $description';
 
-  display({String title: 'BasicAction'}) {
+  display({String title: 'BasicCommand'}) {
     print('');
     print('======================================');
     print('$title                                ');

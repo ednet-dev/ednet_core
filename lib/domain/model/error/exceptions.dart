@@ -11,13 +11,13 @@ class EDNetException implements Exception {
 
 }
 
-class ActionException extends EDNetException {
+class CommandException extends EDNetException {
 
-  ActionException(String message) : super(message);
+  CommandException(String message) : super(message);
 
 }
 
-class AddException extends ActionException {
+class AddException extends CommandException {
 
   AddException(String message) : super(message);
 
@@ -65,7 +65,7 @@ class ParentException extends EDNetException {
 
 }
 
-class RemoveException extends ActionException {
+class RemoveException extends CommandException {
 
   RemoveException(String message) : super(message);
 
@@ -77,7 +77,7 @@ class TypeException extends EDNetException {
 
 }
 
-class UpdateException extends ActionException {
+class UpdateException extends CommandException {
 
   UpdateException(String message) : super(message);
 
