@@ -1,39 +1,6 @@
 part of ednet_core;
 
-abstract class ValidationExceptionsApi {
-  int get length;
-
-  void add(ValidationException exception);
-
-  void clear();
-
-  List<ValidationException> toList();
-}
-
-class ValidationException implements Exception {
-  final String category;
-  final String message;
-
-  const ValidationException(this.category, this.message);
-
-  /// Returns a string that represents the error.
-  @override
-  String toString() {
-    return '$category: $message';
-  }
-
-  /// Displays (prints) an exception.
-  display({String prefix = ''}) {
-    print('$prefix******************************************');
-    print('$prefix$category                               ');
-    print('$prefix******************************************');
-    print('${prefix}message: $message');
-    print('$prefix******************************************');
-    print('');
-  }
-}
-
-class ValidationExceptions implements ValidationExceptionsApi {
+class ValidationExceptions implements IValidationExceptions {
   final List<ValidationException> _exceptionList;
 
   const ValidationExceptions() : _exceptionList = const <ValidationException>[];

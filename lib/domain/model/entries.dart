@@ -5,13 +5,13 @@ abstract class ModelEntriesApi {
 
   Concept getConcept(String conceptCode);
 
-  EntitiesApi getEntry(String entryConceptCode);
+  IEntities getEntry(String entryConceptCode);
 
-  EntityApi? single(Oid oid);
+  IEntity? single(Oid oid);
 
-  EntityApi? internalSingle(String entryConceptCode, Oid oid);
+  IEntity? internalSingle(String entryConceptCode, Oid oid);
 
-  EntitiesApi? internalChild(String entryConceptCode, Oid oid);
+  IEntities? internalChild(String entryConceptCode, Oid oid);
 
   bool get isEmpty;
 
@@ -57,9 +57,9 @@ class ModelEntries implements ModelEntriesApi {
   //   }
   // }
 
-  ConceptEntity newEntity(String conceptCode) {
+  Entity newEntity(String conceptCode) {
     var concept = getConcept(conceptCode);
-    var conceptEntity = ConceptEntity<Concept>();
+    var conceptEntity = Entity<Concept>();
     conceptEntity.concept = concept;
     return conceptEntity;
   }
@@ -77,7 +77,7 @@ class ModelEntries implements ModelEntriesApi {
       _entryEntitiesMap[entryConceptCode]!;
 
   @override
-  ConceptEntity? single(Oid oid) {
+  Entity? single(Oid oid) {
     for (Concept entryConcept in _model.entryConcepts) {
       var entity = internalSingle(entryConcept.code, oid);
       if (entity != null) return entity;
@@ -86,7 +86,7 @@ class ModelEntries implements ModelEntriesApi {
   }
 
   @override
-  ConceptEntity? internalSingle(String entryConceptCode, Oid oid) {
+  Entity? internalSingle(String entryConceptCode, Oid oid) {
     Entities entryEntities = getEntry(entryConceptCode);
     return entryEntities.internalSingle(oid);
   }

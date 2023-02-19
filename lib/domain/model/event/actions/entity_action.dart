@@ -1,7 +1,7 @@
 part of ednet_core;
 
 abstract class EntityAction extends BasicAction {
-  ConceptEntity entity;
+  Entity entity;
   String property;
   Object? before;
   Object after;
@@ -17,9 +17,9 @@ abstract class EntityAction extends BasicAction {
       if (name == 'set' && category == 'attribute') {
         done = entity.setAttribute(property, after);
       } else if (name == 'set' && category == 'parent') {
-        done = entity.setParent(property, after as ConceptEntity);
+        done = entity.setParent(property, after as Entity);
       } else if (name == 'set' && category == 'child') {
-        done = entity.setChild(property, after as Entities<ConceptEntity>);
+        done = entity.setChild(property, after as Entities<Entity>);
       } else {
         throw ActionException(
             'Allowed actions on entity for doIt are set attribute, parent or child.');
@@ -42,9 +42,9 @@ abstract class EntityAction extends BasicAction {
       if (name == 'set' && category == 'attribute') {
         undone = entity.setAttribute(property, before);
       } else if (name == 'set' && category == 'parent') {
-        undone = entity.setParent(property, before as ConceptEntity);
+        undone = entity.setParent(property, before as Entity);
       } else if (name == 'set' && category == 'child') {
-        undone = entity.setChild(property, before as Entities<ConceptEntity>);
+        undone = entity.setChild(property, before as Entities<Entity>);
       } else {
         throw ActionException(
             'Allowed actions on entity for undo are set attribute, parent or child.');
@@ -67,9 +67,9 @@ abstract class EntityAction extends BasicAction {
         redone = entity.setAttribute(property, after);
       } else if (name == 'set' && category == 'parent') {
         redone =
-            entity.setParent(property, after as ConceptEntity<ConceptEntity>);
+            entity.setParent(property, after as Entity<Entity>);
       } else if (name == 'set' && category == 'child') {
-        redone = entity.setChild(property, after as Entities<ConceptEntity>);
+        redone = entity.setChild(property, after as Entities<Entity>);
       } else {
         throw ActionException(
             'Allowed actions on entity for redo are set attribute, parent or child.');

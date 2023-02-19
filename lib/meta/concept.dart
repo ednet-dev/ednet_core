@@ -1,6 +1,6 @@
 part of ednet_core;
 
-class Concept extends ConceptEntity<Concept> {
+class Concept extends Entity<Concept> {
   bool entry = true;
   bool abstract = false;
 

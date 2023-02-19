@@ -2,7 +2,7 @@ part of ednet_core;
 
 class AttributeTypes extends Entities<AttributeType> {}
 
-class AttributeType extends ConceptEntity<AttributeType> {
+class AttributeType extends Entity<AttributeType> {
   late String base;
   late int length;
 

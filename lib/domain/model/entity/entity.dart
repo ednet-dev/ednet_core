@@ -1,6 +1,6 @@
 part of ednet_core;
 
-class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
+class Entity<E extends Entity<E>> implements IEntity<E> {
   Concept? _concept;
   var _oid = Oid();
   String? _code;
@@ -14,15 +14,15 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
 
   // cannot use T since a parent is of a different type
   Map<String, Reference> _referenceMap = <String, Reference>{};
-  Map<String, ConceptEntity<E>?> _parentMap = <String, ConceptEntity<E>?>{};
+  Map<String, Entity<E>?> _parentMap = <String, Entity<E>?>{};
   Map<String, Entities<E>> _childMap = <String, Entities<E>>{};
   Map<String, Entities<E>> _internalChildMap = <String, Entities<E>>{};
 
   bool pre = false;
   bool post = false;
 
-  ConceptEntity<E> newEntity() {
-    var conceptEntity = ConceptEntity<E>();
+  Entity<E> newEntity() {
+    var conceptEntity = Entity<E>();
     conceptEntity.concept = _concept;
     return conceptEntity;
   }
@@ -40,7 +40,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
     _concept = concept;
     _attributeMap = <String, Object>{};
     _referenceMap = <String, Reference>{};
-    _parentMap = <String, ConceptEntity<E>>{};
+    _parentMap = <String, Entity<E>>{};
     _childMap = <String, Entities<E>>{};
     _internalChildMap = <String, Entities<E>>{};
 
@@ -379,14 +379,14 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
   }
 
   @override
-  ConceptEntity<E>? getParent(String name) => _parentMap[name];
+  Entity<E>? getParent(String name) => _parentMap[name];
 
   Entities getInternalChild(String name) => _internalChildMap[name]!;
 
   @override
   Entities? getChild(String? name) => _childMap[name];
 
-  bool setAttributesFrom(ConceptEntity entity) {
+  bool setAttributesFrom(Entity entity) {
     bool allSet = true;
     if (entity.whenSet?.millisecondsSinceEpoch != null &&
         whenSet?.millisecondsSinceEpoch != null &&
@@ -412,7 +412,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
     if (_concept == null) {
       throw ConceptException('Entity concept is not defined.');
     }
-    ConceptEntity<E> entity = newEntity();
+    Entity<E> entity = newEntity();
 
     var beforeUpdateOid = entity.concept?.updateOid ?? false;
     entity.concept?.updateOid = true;
@@ -454,7 +454,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
     }
 
     for (Child child in _concept?.children as Iterable)  {
-      entity.setChild(child.code, _childMap[child.code] as EntitiesApi<E>);
+      entity.setChild(child.code, _childMap[child.code] as IEntities<E>);
     }
 
     return entity as E;
@@ -503,8 +503,8 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
   /// http://stackoverflow.com/questions/29567322/how-does-a-set-determine-that-two-objects-are-equal-in-dart
   @override
   bool operator ==(Object other) {
-    if (other is ConceptEntity) {
-      ConceptEntity entity = other;
+    if (other is Entity) {
+      Entity entity = other;
       if (identical(this, entity)) {
         return true;
       } else {
@@ -696,7 +696,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
   Map<String, Object> toJsonMap() {
     Map<String, Object> entityMap = <String, Object>{};
     for (Parent parent in _concept?.parents as Iterable)  {
-      ConceptEntity? parentEntity = getParent(parent.code);
+      Entity? parentEntity = getParent(parent.code);
       if (parentEntity != null) {
         var reference = <String, String>{};
         reference['oid'] = parentEntity.oid.toString();
@@ -731,7 +731,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
 
   /// Loads data from a json map.
   void fromJsonMap(Map<String, Object> entityMap,
-      [ConceptEntity? internalParent]) {
+      [Entity? internalParent]) {
     int timeStamp = 0;
     try {
       var key = entityMap['oid'];
@@ -808,14 +808,14 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
 
   /// Loads neighbors from a json map.
   void _neighborsFromJsonMap(Map<String, Object> entityMap,
-      [ConceptEntity? internalParent]) {
+      [Entity? internalParent]) {
     for (Child child in concept!.children as Iterable)  {
       if (child.internal) {
         List<Map<String, Object>> entitiesList =
             entityMap[child.code] as List<Map<String, Object>>;
         var childEntities = getChild(child.code);
         childEntities?.fromJsonList(entitiesList, this);
-        setChild(child.code, childEntities as EntitiesApi<E>);
+        setChild(child.code, childEntities as IEntities<E>);
       }
     }
 
@@ -838,7 +838,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
           setReference(parent.code, reference);
           if (parent.internal) {
             if (parentOid == internalParent?.oid) {
-              setParent(parent.code, internalParent as ConceptEntity<E>);
+              setParent(parent.code, internalParent as Entity<E>);
             } else {
               var msg = """
 
@@ -865,7 +865,7 @@ class ConceptEntity<E extends ConceptEntity<E>> implements EntityApi<E> {
   }
 
   @override
-  bool setChild(String name, EntitiesApi<E> entities) {
+  bool setChild(String name, IEntities<E> entities) {
     {
       if (_concept == null) {
         throw ConceptException('Entity concept is not defined.');

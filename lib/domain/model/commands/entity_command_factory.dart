@@ -1,5 +1,5 @@
-part of ednet_core;
-
-abstract class EntityCommandFactory {
-  EntityCommand getCommand();
-}
+// part of ednet_core;
+//
+// abstract class EntityCommandFactory {
+//   EntityCommand getCommand();
+// }

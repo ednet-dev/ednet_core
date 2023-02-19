@@ -42,14 +42,14 @@ ModelEntries createModelData(Model model) {
   Entities categories = entries.getEntry('Category');
   assert(categories.isEmpty);
 
-  ConceptEntity dartCategory = ConceptEntity<Concept>();
+  Entity dartCategory = Entity<Concept>();
   dartCategory.concept = categories.concept;
   dartCategory.setAttribute('name', 'Dart');
   dartCategory.setAttribute('description', 'Dart Web language.');
   categories.add(dartCategory);
   assert(categories.length == 1);
 
-  ConceptEntity html5Category = ConceptEntity<Concept>();
+  Entity html5Category = Entity<Concept>();
   html5Category.concept = categories.concept;
   html5Category.setAttribute('name', 'HTML5');
   html5Category.setAttribute(
@@ -60,7 +60,7 @@ ModelEntries createModelData(Model model) {
   assert(dartWebLinks != null);
   assert(dartWebLinks!.isEmpty);
 
-  ConceptEntity dartHomeWebLink = ConceptEntity<Concept>();
+  Entity dartHomeWebLink = Entity<Concept>();
   dartHomeWebLink.concept = dartWebLinks!.concept;
   dartHomeWebLink.setAttribute('subject', 'Dart Home');
   dartHomeWebLink.setAttribute('url', 'http://www.dartlang.org/');
@@ -71,7 +71,7 @@ ModelEntries createModelData(Model model) {
   assert(dartWebLinks.length == 1);
   assert(dartHomeWebLink.getParent('category')?.getAttribute('name') == 'Dart');
 
-  ConceptEntity tryDartWebLink = ConceptEntity<Concept>();
+  Entity tryDartWebLink = Entity<Concept>();
   tryDartWebLink.concept = dartWebLinks.concept;
   tryDartWebLink.setAttribute('subject', 'Try Dart');
   tryDartWebLink.setAttribute('url', 'http://try.dartlang.org/');
@@ -101,15 +101,15 @@ void testModelData(Model model) {
       Id categoryId = Id(entries!.getConcept('Category'));
       categoryId.setAttribute('name', 'Dart');
       var dartCategory =
-          categories?.singleWhereId(categoryId as IdApi<ConceptEntity>);
+          categories?.singleWhereId(categoryId as IId<Entity>);
       expect(dartCategory, isNotNull);
       expect(dartCategory?.getAttribute('name'), equals('Dart'));
       var dartWebLinks = dartCategory?.getChild('webLinks');
       Id dartHomeId = Id(entries!.getConcept('WebLink'));
-      dartHomeId.setParent('category', dartCategory as ConceptEntity);
+      dartHomeId.setParent('category', dartCategory as Entity);
       dartHomeId.setAttribute('subject', 'Dart Home');
       var dartHomeWebLink =
-          dartWebLinks?.singleWhereId(dartHomeId as IdApi<ConceptEntity>);
+          dartWebLinks?.singleWhereId(dartHomeId as IId<Entity>);
       expect(dartHomeWebLink, isNotNull);
       expect(dartHomeWebLink?.getAttribute('subject'), equals('Dart Home'));
     });
@@ -130,7 +130,7 @@ void testModelData(Model model) {
     test('New Category with Id', () {
       var categories = entries?.getEntry('Category');
       var categoryCount = categories!.length;
-      var webFrameworkCategory = ConceptEntity<Concept>();
+      var webFrameworkCategory = Entity<Concept>();
       webFrameworkCategory.concept = categories.concept;
       webFrameworkCategory.setAttribute('name', 'Web Framework');
       expect(webFrameworkCategory, isNotNull);
@@ -146,7 +146,7 @@ void testModelData(Model model) {
       expect(dartCategory, isNotNull);
 
       var dartWebLinks = dartCategory.getChild('webLinks');
-      var dartHomeWebLink = ConceptEntity<Concept>();
+      var dartHomeWebLink = Entity<Concept>();
       dartHomeWebLink.concept = dartWebLinks!.concept;
       expect(dartHomeWebLink, isNotNull);
       expect(dartHomeWebLink.getParent('category'), isNull);

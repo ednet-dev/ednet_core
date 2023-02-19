@@ -2,7 +2,7 @@ part of ednet_core;
 
 class Models extends Entities<Model> {}
 
-class Model extends ConceptEntity<Model> {
+class Model extends Entity<Model> {
   String? author;
   String? description;
 

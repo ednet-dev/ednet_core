@@ -1,6 +1,6 @@
 part of ednet_core;
 
-class Id implements IdApi<Id> {
+class Id implements IId<Id> {
   final Concept _concept;
 
   final Map<String, Reference?> _referenceMap;
@@ -41,7 +41,7 @@ class Id implements IdApi<Id> {
     _referenceMap[code] = reference;
   }
 
-  void setParent(String code, ConceptEntity entity) {
+  void setParent(String code, Entity entity) {
     Reference reference = Reference(entity.oid.toString(), entity.concept!.code,
         entity.concept!.entryConcept.code);
     setReference(code, reference);

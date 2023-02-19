@@ -1,6 +1,6 @@
 part of ednet_core;
 
-abstract class Property extends ConceptEntity<Property> {
+abstract class Property extends Entity<Property> {
   String minc = '0';
   String maxc = '1';
   bool _id = false;

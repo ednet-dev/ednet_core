@@ -4,7 +4,7 @@ class Domains extends Entities<Domain> {
   Domain? getDomain(String code) => singleWhereCode(code);
 }
 
-class Domain extends ConceptEntity<Domain> {
+class Domain extends Entity<Domain> {
   String description;
 
   late Domain domain;

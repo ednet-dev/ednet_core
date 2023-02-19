@@ -1,13 +1,13 @@
 part of ednet_core;
 
-abstract class EntityApi<E extends EntityApi<E>> implements Comparable {
+abstract class IEntity<E extends IEntity<E>> implements Comparable {
   Concept? get concept;
 
-  ValidationExceptionsApi get exceptions;
+  IValidationExceptions get exceptions;
 
   Oid get oid;
 
-  IdApi get id;
+  IId get id;
 
   String? get code;
 
@@ -30,13 +30,13 @@ abstract class EntityApi<E extends EntityApi<E>> implements Comparable {
 
   bool setStringToAttribute(String name, String string);
 
-  EntityApi? getParent(String name);
+  IEntity? getParent(String name);
 
   bool setParent(String name, entity);
 
-  EntitiesApi? getChild(String name);
+  IEntities? getChild(String name);
 
-  bool setChild(String name, EntitiesApi<E> entities);
+  bool setChild(String name, IEntities<E> entities);
 
   E copy();
 

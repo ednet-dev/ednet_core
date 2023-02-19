@@ -2,7 +2,7 @@ part of ednet_core;
 
 abstract class EntitiesAction extends BasicAction {
   Entities entities;
-  ConceptEntity entity;
+  Entity entity;
 
   EntitiesAction(String name, DomainSession session, this.entities, this.entity)
       : super(name, session);
