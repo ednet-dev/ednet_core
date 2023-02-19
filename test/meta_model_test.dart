@@ -84,8 +84,9 @@ ModelEntries createModelData(Model model) {
   return entries;
 }
 
+var entries;
+
 void testModelData(Model model) {
-  ModelEntries? entries;
   group('Testing Model Data:', () {
     setUp(() {
       entries = createModelData(model);

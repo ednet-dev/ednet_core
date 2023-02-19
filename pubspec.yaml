@@ -1,5 +1,5 @@
 name: ednet_core
-description: Set of generic tools in modeling domain models based on domain-driven design.
+description: Set of generic tools in modeling domain models based on domain-driven design and event storming
 version: 0.0.1
 homepage: https://github.com/ednet/ednet_core
 

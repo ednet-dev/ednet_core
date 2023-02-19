@@ -73,7 +73,7 @@ class Model extends ConceptEntity<Model> {
     //   throw EDNetException(
     //       '  Concept getEntryConcept(String entryConceptCode)');
     // }
-    if (!(concept?.entry ?? false)) {
+    if (!(concept.entry)) {
       throw ConceptException(
           '$entryConceptCode concept is not entry. $entryConceptCode');
     }
