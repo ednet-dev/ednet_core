@@ -1,7 +1,7 @@
 part of ednet_core;
 
 class Entities<E extends Entity<E>> implements IEntities<E> {
-  Concept? _concept;
+  late Concept _concept;
   var _entityList = <E>[];
   final _oidEntityMap = <int, E>{};
   final _codeEntityMap = <String, E>{};
@@ -27,7 +27,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return entities;
   }
 
-  set concept(Concept? concept) {
+  set concept(Concept concept) {
     _concept = concept;
     pre = true;
     post = true;
@@ -41,7 +41,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   @override
-  Concept? get concept => _concept;
+  Concept get concept => _concept;
 
   @override
   E get first => _entityList.first;
@@ -146,8 +146,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   @override
   Iterable<E> where(bool Function(E entity) f) => _entityList.where(f);
 
-  List<E> get internalList => _entityList;
-
   // set for Polymer only:
   // entities.internalList = toObservable(entities.internalList);
   set internalList(List<E> observableList) {
@@ -175,7 +173,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   @override
   E? singleWhereOid(Oid oid) {
     if (_oidEntityMap[oid.timeStamp] != null) {
-      return _oidEntityMap[oid.timeStamp]!;
+      return _oidEntityMap[oid.timeStamp];
     }
 
     return null;
@@ -190,9 +188,10 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     if (foundEntity != null) {
       return foundEntity;
     }
-    if (_concept != null && _concept!.children.isNotEmpty) {
+
+    if (_concept.children.isNotEmpty) {
       for (Entity entity in _entityList) {
-        for (Child child in _concept!.children as Iterable) {
+        for (Child child in _concept.children as Iterable) {
           if (child.internal) {
             Entities? childEntities = entity.getChild(child.code);
             Entity? childEntity = childEntities?.internalSingle(oid);
@@ -215,9 +214,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     if (foundEntity != null) {
       return this;
     }
-    if (_concept != null && _concept!.children.isNotEmpty) {
+    if (_concept.children.isNotEmpty) {
       for (Entity entity in _entityList) {
-        for (Child child in _concept!.children as Iterable) {
+        for (Child child in _concept.children as Iterable) {
           if (child.internal) {
             Entities? childEntities = entity.getChild(child.code);
             Entity? childEntity = childEntities?.internalSingle(oid);
@@ -237,23 +236,25 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   @override
-  E? singleWhereId(IId<E> id) {
-    return _idEntityMap[id.toString()];
+  E singleWhereId(IId<E> id) {
+    var entity = _idEntityMap[id.toString()];
+    if (entity != null) {
+      return entity;
+    }
+
+    throw EDNetException('Entity not found: $id');
   }
 
   @override
-  E? singleWhereAttributeId(String code, Object attribute) {
+  E singleWhereAttributeId(String code, Object attribute) {
     return singleWhereId(
-        (Id(_concept!) as IId<E>)..setAttribute(code, attribute));
+        (Id(_concept) as IId<E>)..setAttribute(code, attribute));
   }
 
   /// Copies the entities.
   /// It is not a deep copy.
   @override
   Entities<E> copy() {
-    if (_concept == null) {
-      throw ConceptException('Entities.copy: concept is not defined.');
-    }
     Entities<E> copiedEntities = newEntities();
     copiedEntities.pre = false;
     copiedEntities.post = false;
@@ -272,9 +273,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   /// the Entity.compareTo method will be used (code if not null, otherwise id).
   @override
   Entities<E> order([int Function(E a, E b)? compare]) {
-    if (_concept == null) {
-      throw ConceptException('Entities.order: concept is not defined.');
-    }
     Entities<E> orderedEntities = newEntities();
     orderedEntities.pre = false;
     orderedEntities.post = false;
@@ -282,7 +280,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     List<E> sortedList = toList();
     // in place sort
     sortedList.sort(compare);
-    sortedList.forEach((entity) => orderedEntities.add(entity));
+    for (var entity in sortedList) {
+      orderedEntities.add(entity);
+    }
     orderedEntities.pre = true;
     orderedEntities.post = true;
     orderedEntities.propagateToSource = false;
@@ -292,15 +292,14 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   @override
   Entities<E> selectWhere(bool Function(E) f) {
-    if (_concept == null) {
-      throw ConceptException('Entities.selectWhere: concept is not defined.');
-    }
     Entities<E> selectedEntities = newEntities();
     selectedEntities.pre = false;
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     var selectedElements = _entityList.where(f);
-    selectedElements.forEach((entity) => selectedEntities.add(entity));
+    for (var entity in selectedElements) {
+      selectedEntities.add(entity);
+    }
     selectedEntities.pre = true;
     selectedEntities.post = true;
     selectedEntities.propagateToSource = true;
@@ -310,16 +309,12 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   @override
   Entities<E> selectWhereAttribute(String code, Object attribute) {
-    if (_concept == null) {
-      throw ConceptException(
-          'Entities.selectWhereAttribute($code, $attribute): concept is not defined.');
-    }
     Entities<E> selectedEntities = newEntities();
     selectedEntities.pre = false;
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     for (E entity in _entityList) {
-      for (Attribute a in _concept!.attributes as Iterable) {
+      for (Attribute a in _concept.attributes as Iterable) {
         if (a.code == code) {
           if (entity.getAttribute(a.code) == attribute) {
             selectedEntities.add(entity);
@@ -336,16 +331,12 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   @override
   Entities<E> selectWhereParent(String code, IEntity parent) {
-    if (_concept == null) {
-      throw ConceptException(
-          'Entities.selectWhereParent($code, $parent): concept is not defined.');
-    }
     Entities<E> selectedEntities = newEntities();
     selectedEntities.pre = false;
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     for (E entity in _entityList) {
-      for (Parent p in _concept!.parents as Iterable) {
+      for (Parent p in _concept.parents as Iterable) {
         if (p.code == code) {
           if (entity.getParent(p.code) == parent) {
             selectedEntities.add(entity);
@@ -362,15 +353,14 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   @override
   Entities<E> skipFirst(int n) {
-    if (_concept == null) {
-      throw ConceptException('Entities.skipFirst: concept is not defined.');
-    }
     Entities<E> selectedEntities = newEntities();
     selectedEntities.pre = false;
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     var selectedElements = _entityList.skip(n);
-    selectedElements.forEach((entity) => selectedEntities.add(entity));
+    for (var entity in selectedElements) {
+      selectedEntities.add(entity);
+    }
     selectedEntities.pre = true;
     selectedEntities.post = true;
     selectedEntities.propagateToSource = true;
@@ -380,16 +370,14 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   @override
   Entities<E> skipFirstWhile(bool Function(E entity) f) {
-    if (_concept == null) {
-      throw ConceptException(
-          'Entities.skipFirstWhile: concept is not defined.');
-    }
     Entities<E> selectedEntities = newEntities();
     selectedEntities.pre = false;
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     var selectedElements = _entityList.skipWhile(f);
-    selectedElements.forEach((entity) => selectedEntities.add(entity));
+    for (var entity in selectedElements) {
+      selectedEntities.add(entity);
+    }
     selectedEntities.pre = true;
     selectedEntities.post = true;
     selectedEntities.propagateToSource = true;
@@ -399,15 +387,14 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   @override
   Entities<E> takeFirst(int n) {
-    if (_concept == null) {
-      throw ConceptException('Entities.takeFirst: concept is not defined.');
-    }
     Entities<E> selectedEntities = newEntities();
     selectedEntities.pre = false;
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     var selectedElements = _entityList.take(n);
-    selectedElements.forEach((entity) => selectedEntities.add(entity));
+    for (var entity in selectedElements) {
+      selectedEntities.add(entity);
+    }
     selectedEntities.pre = true;
     selectedEntities.post = true;
     selectedEntities.propagateToSource = true;
@@ -417,16 +404,14 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   @override
   Entities<E> takeFirstWhile(bool Function(E entity) f) {
-    if (_concept == null) {
-      throw ConceptException(
-          'Entities.takeFirstWhile: concept is not defined.');
-    }
     Entities<E> selectedEntities = newEntities();
     selectedEntities.pre = false;
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     var selectedElements = _entityList.takeWhile(f);
-    selectedElements.forEach((entity) => selectedEntities.add(entity));
+    for (var entity in selectedElements) {
+      selectedEntities.add(entity);
+    }
     selectedEntities.pre = true;
     selectedEntities.post = true;
     selectedEntities.propagateToSource = true;
@@ -454,9 +439,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   /// Loads entities without validations to this, which must be empty.
   void fromJsonList(List<Map<String, Object>> entitiesList,
       [Entity? internalParent]) {
-    if (concept == null) {
-      throw ConceptException('entities concept does not exist.');
-    }
     if (length > 0) {
       throw JsonException('entities are not empty');
     }
@@ -477,10 +459,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   /// Returns a string that represents this entity by using oid and code.
   @override
   String toString() {
-    if (_concept != null) {
-      return '${_concept!.code}: entities:$length';
-    }
-    return 'Concept is null';
+    return '${_concept.code}: entities:$length';
   }
 
   @override
@@ -507,15 +486,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       return true;
     }
 
-    if (entity.concept == null) {
-      throw ConceptException(
-          'Entity(oid: ${entity.oid}) concept is not defined.');
-    }
-    if (_concept == null) {
-      throw ConceptException('Entities.add: concept is not defined.');
-    }
-    if (!(_concept!.add)) {
-      throw AddException('An entity cannot be added to ${_concept?.codes}.');
+    if (!(_concept.add)) {
+      throw AddException('An entity cannot be added to ${_concept.codes}.');
     }
 
     bool result = true;
@@ -527,7 +499,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         maxInt = int.parse(maxc);
         if (length == maxInt) {
           const category = 'max cardinality';
-          final message = '${_concept?.codes}.max is $maxc.';
+          final message = '${_concept.codes}.max is $maxc.';
           var exception = ValidationException(category, message);
 
           exceptions.add(exception);
@@ -540,7 +512,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
 
     // increment and required validation
-    for (Attribute a in _concept!.attributes as Iterable) {
+    for (Attribute a in _concept.attributes as Iterable) {
       if (a.increment != null) {
         if (length == 0) {
           entity.setAttribute(a.code, a.increment!);
@@ -557,17 +529,17 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         }
       } else if (a.required && entity.getAttribute(a.code) == null) {
         const category = 'required';
-        final message = '${entity.concept?.code}.${a.code} attribute is null.';
+        final message = '${entity.concept.code}.${a.code} attribute is null.';
         final exception = ValidationException(category, message);
 
         exceptions.add(exception);
         result = false;
       }
     }
-    for (Parent p in _concept?.parents as Iterable) {
-      if (p.required && p.code != null && entity.getParent(p.code) == null) {
+    for (Parent p in _concept.parents as Iterable) {
+      if (p.required && entity.getParent(p.code) == null) {
         const category = 'required';
-        final message = '${entity.concept?.code}.${p.code} parent is null.';
+        final message = '${entity.concept.code}.${p.code} parent is null.';
         final exception = ValidationException(category, message);
 
         exceptions.add(exception);
@@ -576,23 +548,12 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
 
     // uniqueness validation
-    if (entity.code != null && singleWhereCode(entity.code) != null) {
-      const category = 'unique';
-      final message = '${entity.concept?.code}.code is not unique.';
-      final exception = ValidationException(category, message);
+    const category = 'unique';
+    final message = '${entity.concept.code}.code is not unique.';
+    final exception = ValidationException(category, message);
 
-      exceptions.add(exception);
-      result = false;
-    }
-    if (entity.id != null && singleWhereId(entity.id as IId<E>) != null) {
-      const category = 'unique';
-      final message =
-          '${entity.concept?.code}.id ${entity.id.toString()} is not unique.';
-      ValidationException exception = ValidationException(category, message);
-
-      exceptions.add(exception);
-      result = false;
-    }
+    exceptions.add(exception);
+    result = false;
 
     return result;
   }
@@ -608,10 +569,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       if (propagated) {
         _entityList.add(entity);
         _oidEntityMap[entity.oid.timeStamp] = entity;
-        if (entity.code != null) {
-          _codeEntityMap[entity.code] = entity;
-        }
-        if (entity.concept != null && entity.id != null) {
+        _codeEntityMap[entity.code] = entity;
+        if (entity.id != null) {
           _idEntityMap[entity.id.toString()] = entity;
         }
         if (postAdd(entity)) {
@@ -623,7 +582,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           pre = false;
           post = false;
           if (!remove(entity)) {
-            var msg = '${entity.concept?.code} entity (${entity.oid}) '
+            var msg = '${entity.concept.code} entity (${entity.oid}) '
                 'was added, post was not successful, remove was not successful';
             throw RemoveException(msg);
           } else {
@@ -634,8 +593,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         }
       } else {
         // not propagated
-        var msg = '${entity.concept?.code} entity (${entity.oid}) '
-            'was not added - propagation to the source ${source?.concept?.code} '
+        var msg = '${entity.concept.code} entity (${entity.oid}) '
+            'was not added - propagation to the source ${source?.concept.code} '
             'entities was not successful';
         throw AddException(msg);
       }
@@ -647,14 +606,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   bool postAdd(E entity) {
     if (!post) {
       return true;
-    }
-
-    if (entity.concept == null) {
-      throw ConceptException(
-          'Entity(oid: ${entity.oid}) concept is not defined.');
-    }
-    if (_concept == null) {
-      throw ConceptException('Entities.add: concept is not defined.');
     }
 
     bool result = true;
@@ -670,16 +621,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       return true;
     }
 
-    if (entity.concept == null) {
-      throw ConceptException(
-          'Entity(oid: ${entity.oid}) concept is not defined.');
-    }
-    if (_concept == null) {
-      throw ConceptException('Entities.remove: concept is not defined.');
-    }
-    if (!(_concept?.remove ?? false)) {
+    if (!(_concept.remove)) {
       throw RemoveException(
-          'An entity cannot be removed from ${_concept?.codes}.');
+          'An entity cannot be removed from ${_concept.codes}.');
     }
 
     bool result = true;
@@ -691,7 +635,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         minInt = int.parse(minc);
         if (length == minInt) {
           const category = 'min';
-          final message = '${_concept?.codes}.min is $minc.';
+          final message = '${_concept.codes}.min is $minc.';
           ValidationException exception =
               ValidationException(category, message);
 
@@ -718,10 +662,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       if (propagated) {
         if (_entityList.remove(entity)) {
           _oidEntityMap.remove(entity.oid.timeStamp);
-          if (entity.code != null) {
-            _codeEntityMap.remove(entity.code);
-          }
-          if (entity.concept != null && entity.id != null) {
+          _codeEntityMap.remove(entity.code);
+          if (entity.id != null) {
             _idEntityMap.remove(entity.id.toString());
           }
           if (postRemove(entity)) {
@@ -733,7 +675,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
             pre = false;
             post = false;
             if (!add(entity)) {
-              var msg = '${entity.concept?.code} entity (${entity.oid}) '
+              var msg = '${entity.concept.code} entity (${entity.oid}) '
                   'was removed, post was not successful, add was not successful';
               throw AddException(msg);
             } else {
@@ -745,8 +687,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         }
       } else {
         // not propagated
-        var msg = '${entity.concept?.code} entity (${entity.oid}) '
-            'was not removed - propagation to the source ${source!.concept?.code} '
+        var msg = '${entity.concept.code} entity (${entity.oid}) '
+            'was not removed - propagation to the source ${source!.concept.code} '
             'entities was not successful';
         throw RemoveException(msg);
       }
@@ -758,14 +700,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   bool postRemove(E entity) {
     if (!post) {
       return true;
-    }
-
-    if (entity.concept == null) {
-      throw ConceptException(
-          'Entity(oid: ${entity.oid}) concept is not defined.');
-    }
-    if (_concept == null) {
-      throw ConceptException('Entities.add: concept is not defined.');
     }
 
     bool result = true;
@@ -786,7 +720,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         beforeEntity.code == afterEntity.code &&
         beforeEntity.id == afterEntity.id) {
       throw UpdateException(
-          '${_concept?.codes}.update can only be used if oid, code or id set.');
+          '${_concept.codes}.update can only be used if oid, code or id set.');
     }
     if (remove(beforeEntity)) {
       if (add(afterEntity)) {
@@ -796,18 +730,18 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         if (add(beforeEntity)) {
           const category = 'update';
           final message =
-              '${_concept?.codes}.update fails to add after update entity.';
+              '${_concept.codes}.update fails to add after update entity.';
           var exception = ValidationException(category, message);
           exceptions.add(exception);
         } else {
           throw UpdateException(
-              '${_concept?.codes}.update fails to add back before update entity.');
+              '${_concept.codes}.update fails to add back before update entity.');
         }
       }
     } else {
       const category = 'update';
       final message =
-          '${_concept?.codes}.update fails to remove before update entity.';
+          '${_concept.codes}.update fails to remove before update entity.';
       var exception = ValidationException(category, message);
 
       exceptions.add(exception);
@@ -818,7 +752,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   bool addFrom(Entities<E> entities) {
     bool allAdded = true;
     if (_concept == entities.concept) {
-      entities.forEach((entity) => add(entity) ? true : allAdded = false);
+      for (var entity in entities) {
+        add(entity) ? true : allAdded = false;
+      }
     } else {
       throw ConceptException('The concept of the argument is different.');
     }
@@ -828,7 +764,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   bool removeFrom(Entities<E> entities) {
     bool allRemoved = true;
     if (_concept == entities.concept) {
-      entities.forEach((entity) => remove(entity) ? true : allRemoved = false);
+      for (var entity in entities) {
+        remove(entity) ? true : allRemoved = false;
+      }
     } else {
       throw ConceptException('The concept of the argument is different.');
     }
@@ -864,9 +802,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       bool withInternalChildren = true}) {
     var s = prefix;
 
-    bool thereIsNoEntry = !(_concept?.entry ?? false);
-    bool thereIsEntry = _concept?.entry ?? false;
-    bool thereIsParent = _concept?.parents.isNotEmpty ?? false;
+    bool thereIsNoEntry = !(_concept.entry);
+    bool thereIsEntry = _concept.entry;
+    bool thereIsParent = _concept.parents.isNotEmpty;
 
     if (thereIsNoEntry || (thereIsEntry && thereIsParent)) {
       s = '$prefix  ';
@@ -970,7 +908,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   @override
-  Iterable<E> cast<E>() {
+  Iterable<T> cast<T>() {
     final it = () sync* {
       for (var e in this) {
         yield e;
@@ -983,6 +921,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       throw TypeError();
     }
     // When the returned iterable creates a new object that depends on the type R, e.g., from toList, it will have exactly the type R.
-    return it as Iterable<E>;
+    return it as Iterable<T>;
   }
 }

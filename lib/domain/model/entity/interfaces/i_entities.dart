@@ -2,7 +2,7 @@ part of ednet_core;
 
 // http://dartlangfr.net/dart-cheat-sheet/
 abstract class IEntities<E extends IEntity<E>> implements Iterable<E> {
-  Concept? get concept;
+  Concept get concept;
 
   IValidationExceptions get exceptions;
 
@@ -18,9 +18,9 @@ abstract class IEntities<E extends IEntity<E>> implements Iterable<E> {
 
   E singleWhereCode(String code);
 
-  E? singleWhereId(IId<E> id);
+  E singleWhereId(IId<E> id);
 
-  E? singleWhereAttributeId(String code, Object attribute);
+  E singleWhereAttributeId(String code, Object attribute);
 
   IEntities<E> copy();
 

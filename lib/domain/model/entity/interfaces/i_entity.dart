@@ -1,13 +1,13 @@
 part of ednet_core;
 
 abstract class IEntity<E extends IEntity<E>> implements Comparable {
-  Concept? get concept;
+  Concept get concept;
 
   IValidationExceptions get exceptions;
 
   Oid get oid;
 
-  IId get id;
+  IId? get id;
 
   String? get code;
 
