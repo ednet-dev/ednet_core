@@ -1,6 +1,6 @@
 part of ednet_core;
 
-String genRepository(Repo repo, String library) {
+String genRepository(Repository repo, String library) {
   var sc = 'part of ${library}; \n';
   sc = '${sc} \n';
   sc = '${sc}// lib/destructive_repository.dart \n';

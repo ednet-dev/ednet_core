@@ -9,7 +9,7 @@ part 'domain/models.dart';
 
 part 'domain/session.dart';
 
-part 'repository.dart';
+part 'i_repository.dart';
 
 part 'gen/ednet_repository.dart';
 

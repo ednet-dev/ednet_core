@@ -1,6 +1,6 @@
 part of ednet_core;
 
-abstract class RepoApi {
+abstract class IRepository {
   void add(IDomainModels domainModels);
 
   Domains get domains;
@@ -11,18 +11,18 @@ abstract class RepoApi {
 }
 
 //class Repo implements RepoApi {
-class Repo {
+class Repository {
   String code;
 
   final Domains _domains;
 
   final Map<String, DomainModels> _domainModelsMap;
 
-  Repo([this.code = 'EDNet'])
+  Repository([this.code = 'EDNet'])
       : _domains = Domains(),
         _domainModelsMap = <String, DomainModels>{};
 
-  Repo.from(this._domains, [this.code = 'EDNet'])
+  Repository.from(this._domains, [this.code = 'EDNet'])
       : _domainModelsMap = const <String, DomainModels>{};
 
   void add(DomainModels domainModels) {
