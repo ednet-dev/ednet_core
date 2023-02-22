@@ -95,6 +95,8 @@ part 'domain/model/reference.dart';
 
 part 'meta/attributes.dart';
 
+part 'meta/attribute.dart';
+
 part 'meta/children.dart';
 
 part 'meta/concepts.dart';
