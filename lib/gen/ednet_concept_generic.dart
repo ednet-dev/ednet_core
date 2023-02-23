@@ -10,7 +10,7 @@ String genConceptGen(Concept concept, String library) {
       '/${model.codeLowerUnderscore}/${concept.codesLowerUnderscore}.dart \n';
   sc = '$sc \n';
   sc = '${sc}abstract class ${concept.code}Gen extends '
-      'ConceptEntity<${concept.code}> { \n';
+      'Entity<${concept.code}> { \n';
   sc = '$sc \n';
   if (concept.children.isEmpty) {
     sc = '$sc  ${concept.code}Gen(Concept concept) { \n';

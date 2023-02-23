@@ -15,7 +15,7 @@ class Concept extends Entity<Concept> {
   late String description;
 
   // to allow for a specific plural name, different from
-  // the plural name derivation in ConceptEntity
+  // the plural name derivation in Entity
   String? _codes; // code (in) plural
   String? _codesFirstLetterLower;
   String? _codesLowerUnderscore; // lower letters and underscore separator

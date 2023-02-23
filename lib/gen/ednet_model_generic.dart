@@ -40,7 +40,7 @@ String genEntries(Model model, String library) {
   sc = '$sc  } \n';
   sc = '$sc \n';
 
-  sc = '$sc  ConceptEntity newEntity(String conceptCode) { \n';
+  sc = '$sc  Entity newEntity(String conceptCode) { \n';
   sc = '$sc    var concept = model.concepts.singleWhereCode(conceptCode); \n';
   sc = '$sc    if (concept == null) { \n';
   sc = '$sc      throw new ConceptError('

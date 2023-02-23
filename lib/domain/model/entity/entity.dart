@@ -487,8 +487,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   /*
   bool operator ==(Object other) {
-    if (other is ConceptEntity) {
-      ConceptEntity entity = other;
+    if (other is Entity) {
+      Entity entity = other;
       if (this == null && entity == null) {
         return true;
       } else if (this == null || entity == null) {
