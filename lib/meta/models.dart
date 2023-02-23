@@ -68,11 +68,11 @@ class Model extends Entity<Model> {
 
   Concept? getEntryConcept(String entryConceptCode) {
     Concept? concept = concepts.singleWhereCode(entryConceptCode);
-    //
-    // if (concept == null) {
-    //   throw EDNetException(
-    //       '  Concept getEntryConcept(String entryConceptCode)');
-    // }
+
+    if (concept == null) {
+      throw EDNetException(
+          '  Concept getEntryConcept(String entryConceptCode)');
+    }
     if (!(concept.entry)) {
       throw ConceptException(
           '$entryConceptCode concept is not entry. $entryConceptCode');
@@ -82,6 +82,6 @@ class Model extends Entity<Model> {
 
   int get conceptCount => concepts.length;
 
-  Concept getConcept(String conceptCode) =>
+  Concept? getConcept(String conceptCode) =>
       concepts.singleWhereCode(conceptCode);
 }

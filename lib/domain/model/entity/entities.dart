@@ -231,7 +231,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   @override
-  E singleWhereCode(String? code) {
+  E? singleWhereCode(String? code) {
     return _codeEntityMap[code]!;
   }
 

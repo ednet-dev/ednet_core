@@ -3,7 +3,7 @@ part of ednet_core;
 abstract class IModelEntries {
   Model get model;
 
-  Concept getConcept(String conceptCode);
+  Concept? getConcept(String conceptCode);
 
   IEntities getEntry(String entryConceptCode);
 
@@ -59,6 +59,11 @@ class ModelEntries implements IModelEntries {
 
   Entity newEntity(String conceptCode) {
     var concept = getConcept(conceptCode);
+
+    if (concept == null) {
+      throw EDNetException('Concept with code not found: ' + conceptCode);
+    }
+
     var conceptEntity = Entity<Concept>();
     conceptEntity.concept = concept;
     return conceptEntity;
@@ -68,7 +73,7 @@ class ModelEntries implements IModelEntries {
   Model get model => _model;
 
   @override
-  Concept getConcept(String conceptCode) {
+  Concept? getConcept(String conceptCode) {
     return _model.getConcept(conceptCode);
   }
 

@@ -16,7 +16,7 @@ abstract class IEntities<E extends IEntity<E>> implements Iterable<E> {
 
   IEntity? internalSingle(Oid oid);
 
-  E singleWhereCode(String code);
+  E? singleWhereCode(String code);
 
   E singleWhereId(IId<E> id);
 
