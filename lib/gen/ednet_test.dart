@@ -51,7 +51,7 @@ String genEDNetTest(Repository repo, Model model, Concept entryConcept) {
   sc = '$sc \n';
 
   sc = '${sc}import "package:test/test.dart"; \n';
-  sc = '${sc}import "package:Ednet/Ednet.dart"; \n';
+  sc = '${sc}import "package:ednet_core/ednet_core.dart"; \n';
   sc = '${sc}import "package:${domain.codeLowerUnderscore}_'
       '${model.codeLowerUnderscore}/${domain.codeLowerUnderscore}_'
       '${model.codeLowerUnderscore}.dart"; \n';

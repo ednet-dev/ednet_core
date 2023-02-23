@@ -57,7 +57,7 @@ class Model extends Entity<Model> {
     var msg = """
       Not all entry concepts are ordered by external parent count (from low to high). 
       There is an entry concept in your model that has more than 9 external neighbors.
-      Inform the Ednet authors to increase this restriction.
+      Inform the EDNetCore authors to increase this restriction.
     """;
     throw ConceptException(msg);
   }

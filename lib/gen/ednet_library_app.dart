@@ -20,7 +20,7 @@ String genEDNetLibraryApp(Model model) {
   sc = '${sc}import "dart:math"; \n';
   sc = '${sc} \n';
 
-  sc = '${sc}import "package:Ednet/Ednet.dart"; \n';
+  sc = '${sc}import "package:ednet_core/ednet_core.dart"; \n';
   sc = '${sc}import "package:ednet_default_app/ednet_default_app.dart"; \n';
   sc = '${sc} \n';
   sc = '${sc}import "package:${domain.codeLowerUnderscore}_'
