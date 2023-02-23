@@ -211,7 +211,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   @override
-  Object? getAttribute(String attributeCode) => _attributeMap[attributeCode];
+  K? getAttribute<K>(String attributeCode) =>
+      _attributeMap[attributeCode] as K?;
 
   @override
   bool setAttribute(String name, Object? value) {
@@ -584,7 +585,6 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       bool withOid: true,
       bool withChildren: true,
       bool withInternalChildren: true}) {
-
     var s = prefix;
     if (!(_concept.entry) ||
         ((_concept.entry) && _concept.parents.isNotEmpty)) {

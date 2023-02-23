@@ -16,7 +16,7 @@ abstract class IEntity<E extends IEntity<E>> implements Comparable {
   DateTime? whenSet;
   DateTime? whenRemoved;
 
-  Object? getAttribute(String attributeCode);
+  K? getAttribute<K>(String attributeCode);
 
   bool preSetAttribute(String name, Object value);
 
