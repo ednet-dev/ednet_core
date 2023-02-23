@@ -5,7 +5,7 @@ String genRepository(Repository repo, String library) {
   sc = '${sc} \n';
   sc = '${sc}// lib/destructive_repository.dart \n';
   sc = '${sc} \n';
-  sc = '${sc}class Repository extends Repo { \n';
+  sc = '${sc}class Repository extends Repository { \n';
   sc = '${sc} \n';
   sc = '${sc}  static const REPOSITORY = "Repository"; \n';
   sc = '${sc} \n';

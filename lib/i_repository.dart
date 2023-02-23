@@ -10,7 +10,7 @@ abstract class IRepository {
   void gen(String library, [bool specific = true]);
 }
 
-//class Repo implements RepoApi {
+//class Repository implements RepoApi {
 class Repository {
   String code;
 
