@@ -42,8 +42,8 @@ class Id implements IId<Id> {
   }
 
   void setParent(String code, Entity entity) {
-    Reference reference = Reference(entity.oid.toString(), entity.concept!.code,
-        entity.concept!.entryConcept.code);
+    Reference reference = Reference(entity.oid.toString(), entity.concept.code,
+        entity.concept.entryConcept.code);
     setReference(code, reference);
   }
 

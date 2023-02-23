@@ -162,7 +162,7 @@ class ModelEntries implements IModelEntries {
 
   void populateEntityReferences(Entities entities) {
     for (var entity in entities) {
-      for (Parent parent in entity.concept!.externalParents) {
+      for (Parent parent in entity.concept.externalParents) {
         Reference? reference = entity.getReference(parent.code);
         if (reference != null) {
           //String parentOidString = reference.parentOidString;
@@ -185,7 +185,7 @@ class ModelEntries implements IModelEntries {
           }
         }
       }
-      for (Child internalChild in entity.concept!.internalChildren) {
+      for (Child internalChild in entity.concept.internalChildren) {
         var childEntities = entity.getChild(internalChild.code);
         populateEntityReferences(childEntities!);
       }
