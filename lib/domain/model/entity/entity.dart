@@ -1,7 +1,7 @@
 part of ednet_core;
 
 class Entity<E extends Entity<E>> implements IEntity<E> {
-  late Concept _concept;
+  Concept? _concept;
   var _oid = Oid();
   String? _code;
   DateTime? _whenAdded;
@@ -23,18 +23,24 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   Entity<E> newEntity() {
     var entity = Entity<E>();
-    entity.concept = _concept;
+    entity.concept = _concept!;
     return entity;
   }
 
   Entities<E> newEntities() {
     var entities = Entities<E>();
-    entities.concept = _concept;
+    entities.concept = _concept!;
     return entities;
   }
 
   @override
-  Concept get concept => _concept;
+  Concept get concept {
+    if (_concept == null) {
+      throw EDNetException("concept is not set");
+    }
+
+    return _concept!;
+  }
 
   set concept(Concept concept) {
     _concept = concept;
@@ -47,7 +53,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     pre = true;
     post = true;
 
-    for (Attribute a in _concept.attributes.whereType<Attribute>()) {
+    for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
       if (a.init == null) {
         // _attributeMap[a.code] = null;
       } else if (a.type?.code == 'DateTime' && a.init == 'now') {
@@ -93,12 +99,12 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
     } // for
 
-    for (Parent parent in _concept.parents.whereType<Parent>()) {
+    for (Parent parent in _concept!.parents.whereType<Parent>()) {
       _referenceMap.remove(parent.code);
       _parentMap.remove(parent.code);
     }
 
-    for (Child child in _concept.children.whereType<Child>()) {
+    for (Child child in _concept!.children.whereType<Child>()) {
       var childEntities = Entities<E>();
       childEntities.concept = child.destinationConcept;
       _childMap[child.code] = childEntities;
@@ -112,7 +118,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   Oid get oid => _oid;
 
   set oid(Oid oid) {
-    if (_concept.updateOid) {
+    if (_concept!.updateOid) {
       _oid = oid;
     } else {
       throw OidException('Entity.oid cannot be updated.');
@@ -121,13 +127,16 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   @override
   Id? get id {
-    Id id = Id(_concept);
-    for (Parent p in _concept.parents.whereType<Parent>()) {
+    if (_concept == null) {
+      throw new ConceptException('Entity concept is not defined.');
+    }
+    Id id = Id(_concept!);
+    for (Parent p in _concept!.parents.whereType<Parent>()) {
       if (p.identifier) {
         id.setReference(p.code, _referenceMap[p.code]);
       }
     }
-    for (Attribute a in _concept.attributes.whereType<Attribute>()) {
+    for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
       if (a.identifier) {
         id.setAttribute(a.code, _attributeMap[a.code]);
       }
@@ -142,7 +151,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   String get code => _code ?? '';
 
   set code(String? code) {
-    if (_code == null || _concept.updateCode) {
+    if (_code == null || _concept!.updateCode) {
       _code = code;
     } else {
       throw CodeException('Entity.code cannot be updated.');
@@ -154,7 +163,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   @override
   set whenAdded(DateTime? whenAdded) {
-    if (_concept.updateWhen) {
+    if (_concept!.updateWhen) {
       _whenAdded = whenAdded;
     } else {
       throw UpdateException('Entity.whenAdded cannot be updated.');
@@ -166,7 +175,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   @override
   set whenSet(DateTime? whenSet) {
-    if (_concept.updateWhen) {
+    if (_concept!.updateWhen) {
       _whenSet = whenSet;
     } else {
       throw UpdateException('Entity.whenSet cannot be updated.');
@@ -178,7 +187,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   @override
   set whenRemoved(DateTime? whenRemoved) {
-    if (_concept.updateWhen) {
+    if (_concept!.updateWhen) {
       _whenRemoved = whenRemoved;
     } else {
       throw UpdateException('Entity.whenRemoved cannot be updated.');
@@ -207,6 +216,13 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   @override
   bool preSetAttribute(String name, Object? value) {
+    if (!pre) {
+      return true;
+    }
+
+    if (_concept == null) {
+      throw new ConceptException('Entity(oid: ${oid}) concept is not defined.');
+    }
     return true;
   }
 
@@ -218,15 +234,19 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   bool setAttribute(String name, Object? value) {
     bool updated = false;
     if (preSetAttribute(name, value)) {
-      var attribute = _concept.attributes.singleWhereCode(name);
+      if (_concept == null) {
+        throw new ConceptException('Entity concept is not defined.');
+      }
+
+      var attribute = _concept!.attributes.singleWhereCode(name);
       if (attribute == null) {
-        String msg = '${_concept.code}.$name is not correct attribute name.';
+        String msg = '${_concept!.code}.$name is not correct attribute name.';
         throw UpdateException(msg);
       }
       /*
        * validation done in Entities.preAdd
       if (value == null && attribute.minc != '0') {
-        String msg = '${_concept.code}.$name cannot be null.';
+        String msg = '${_concept!.code}.$name cannot be null.';
         throw new UpdateException(msg);
       }
       */
@@ -240,7 +260,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         updated = true;
         _whenSet = DateTime.now();
       } else {
-        String msg = '${_concept.code}.${attribute.code} is not updatable.';
+        String msg = '${_concept!.code}.${attribute.code} is not updatable.';
         throw UpdateException(msg);
       }
       if (postSetAttribute(name, value)) {
@@ -251,7 +271,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         pre = false;
         post = false;
         if (beforeValue == null || !setAttribute(name, beforeValue)) {
-          var msg = '${_concept.code}.${attribute.code} '
+          var msg = '${_concept!.code}.${attribute.code} '
               'was set to a new value, post was not successful, '
               'set to the before value was not successful';
           throw RemoveException(msg);
@@ -267,6 +287,13 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   @override
   bool postSetAttribute(String name, Object? value) {
+    if (!post) {
+      return true;
+    }
+
+    if (_concept == null) {
+      throw new ConceptException('Entity(oid: ${oid}) concept is not defined.');
+    }
     return true;
   }
 
@@ -279,10 +306,13 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   @override
   bool setStringToAttribute(String name, String string) {
+    if (_concept == null) {
+      throw new ConceptException('Entity concept is not defined.');
+    }
     Attribute? attribute =
-        _concept.attributes.singleWhereCode(name) as Attribute?;
+        _concept!.attributes.singleWhereCode(name) as Attribute?;
     if (attribute == null) {
-      String msg = '${_concept.code}.$name is not correct attribute name.';
+      String msg = '${_concept!.code}.$name is not correct attribute name.';
       throw UpdateException(msg);
     }
 
@@ -293,7 +323,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       try {
         return setAttribute(name, DateTime.parse(string));
       } on ArgumentError catch (e) {
-        throw TypeException('${_concept.code}.${attribute.code} '
+        throw TypeException('${_concept!.code}.${attribute.code} '
             'attribute value is not DateTime: $e');
       }
     } else if (attribute.type?.code == 'bool') {
@@ -364,7 +394,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         whenSet?.millisecondsSinceEpoch != null &&
         (whenSet!.millisecondsSinceEpoch <
             entity.whenSet!.millisecondsSinceEpoch)) {
-      for (Attribute attribute in _concept.nonIdentifierAttributes) {
+      for (Attribute attribute in _concept!.nonIdentifierAttributes) {
         var newValue = entity.getAttribute(attribute.code);
         var attributeSet = setAttribute(attribute.code, newValue);
         if (!attributeSet) {
@@ -381,6 +411,10 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   /// It is not a deep copy.
   @override
   E copy() {
+    if (_concept == null) {
+      throw new ConceptException('Entity concept is not defined.');
+    }
+
     Entity<E> entity = newEntity();
 
     var beforeUpdateOid = entity.concept.updateOid;
@@ -400,7 +434,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     entity.whenRemoved = _whenRemoved;
     concept.updateWhen = beforeUpdateWhen;
 
-    for (Attribute attribute in _concept.attributes.whereType<Attribute>()) {
+    for (Attribute attribute in _concept!.attributes.whereType<Attribute>()) {
       if (attribute.identifier) {
         var beforeUpdate = attribute.update;
         attribute.update = true;
@@ -411,7 +445,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
     }
 
-    for (Parent parent in _concept.parents.whereType<Parent>()) {
+    for (Parent parent in _concept!.parents.whereType<Parent>()) {
       if (parent.identifier) {
         var beforeUpdate = parent.update;
         parent.update = true;
@@ -422,7 +456,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
     }
 
-    for (Child child in _concept.children.whereType<Child>()) {
+    for (Child child in _concept!.children.whereType<Child>()) {
       entity.setChild(child.code, _childMap[child.code] as IEntities<E>);
     }
 
@@ -506,20 +540,24 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   /// Checks if the entity is equal in content to the given entity.
   /// Two entities are equal if they have the same content, ignoring oid and when.
   bool equalContent(E entity) {
+    if (_concept == null) {
+      throw new ConceptException('Entity concept is not defined.');
+    }
+
     if (_code != entity.code) {
       return false;
     }
-    for (Attribute a in _concept.attributes.whereType<Attribute>()) {
+    for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
       if (_attributeMap[a.code] != entity.getAttribute(a.code)) {
         return false;
       }
     }
-    for (Parent parent in _concept.parents.whereType<Parent>()) {
+    for (Parent parent in _concept!.parents.whereType<Parent>()) {
       if (_parentMap[parent.code] != entity.getParent(parent.code)) {
         return false;
       }
     }
-    for (Child child in _concept.children.whereType<Child>()) {
+    for (Child child in _concept!.children.whereType<Child>()) {
       if (_childMap[child.code] != entity.getChild(child.code)) {
         return false;
       }
@@ -535,12 +573,12 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   int compareTo(entity) {
     if (code.isNotEmpty) {
       return _code!.compareTo(entity.code);
-    } else if (entity.id != null) {
+    } else if (entity.id != null && id != null) {
       return id!.compareTo(entity.id);
     } else if (concept.attributes.isNotEmpty) {
       return compareAttributes(entity);
     } else {
-      String msg = '${_concept.code} concept does not have attributes.';
+      String msg = '${_concept!.code} concept does not have attributes.';
       throw IdException(msg);
     }
   }
@@ -568,9 +606,9 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   @override
   String toString() {
     if (_code == null) {
-      return '{${_concept.code}: {oid:${_oid.toString()}}}';
+      return '{${_concept!.code}: {oid:${_oid.toString()}}}';
     } else {
-      return '{${_concept.code}: {oid:${_oid.toString()}, code:$_code}}';
+      return '{${_concept!.code}: {oid:${_oid.toString()}, code:$_code}}';
     }
   }
 
@@ -584,9 +622,13 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       bool withOid = true,
       bool withChildren = true,
       bool withInternalChildren = true}) {
+    if (_concept == null) {
+      throw new ConceptException('Entity concept is not defined.');
+    }
+
     var s = prefix;
-    if (!(_concept.entry) ||
-        ((_concept.entry) && _concept.parents.isNotEmpty)) {
+    if (!(_concept!.entry) ||
+        ((_concept!.entry) && _concept!.parents.isNotEmpty)) {
       s = '$prefix  ';
     }
     print('$s------------------------------------');
@@ -603,7 +645,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     print('${s}whenRemoved: $_whenRemoved');
 
     _attributeMap.forEach((k, v) {
-      if (_concept.isAttributeSensitive(k)) {
+      if (_concept!.isAttributeSensitive(k)) {
         print('$s$k: **********');
       } else {
         print('$s$k: $v');
@@ -611,7 +653,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     });
 
     _parentMap.forEach((k, v) {
-      if (_concept.isParentSensitive(k)) {
+      if (_concept!.isParentSensitive(k)) {
         print('$s$k: **********');
       } else {
         print('$s$k: ${v.toString()}');
@@ -622,7 +664,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       if (withInternalChildren) {
         _internalChildMap.forEach((k, v) {
           print('$s$k:');
-          if (_concept.isChildSensitive(k)) {
+          if (_concept!.isChildSensitive(k)) {
             print('**********');
           } else {
             v.display(
@@ -636,7 +678,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       } else {
         _childMap.forEach((k, v) {
           print('$s$k:');
-          if (_concept.isChildSensitive(k)) {
+          if (_concept!.isChildSensitive(k)) {
             print('**********');
           } else {
             v.display(
@@ -658,7 +700,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   Map<String, Object> toJsonMap() {
     Map<String, Object> entityMap = <String, Object>{};
-    for (Parent parent in _concept.parents.whereType<Parent>()) {
+    for (Parent parent in _concept!.parents.whereType<Parent>()) {
       Entity? parentEntity = getParent(parent.code);
       if (parentEntity != null) {
         var reference = <String, String>{};
@@ -808,7 +850,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
               Internal parent oid is wrong, create issue for ${parent.code}
               on https://github.com/ednet-dev/cms/issues/new?title=_neighborsFromJsonMap%20bug                           
               ---------------------------------------------                            
-              entries.dart: entity.setParent(parent.code, internalParent); 
+              model_entries.dart: entity.setParent(parent.code, internalParent); 
               internal parent oid: ${internalParent?.oid}                  
               entity concept: ${concept.code}                   
               entity oid: $oid                                
@@ -828,31 +870,37 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   @override
   bool setChild(String name, IEntities<E> entities) {
-    {
-      Child? child = _concept.children.singleWhereCode(name) as Child?;
-      if (child == null) {
-        String msg =
-            '${_concept.code}.$name is not correct child entities name.';
-        throw UpdateException(msg);
+    if (_concept == null) {
+      throw new ConceptException('Entity concept is not defined.');
+    }
+
+    Child? child = _concept!.children.singleWhereCode(name) as Child?;
+    if (child == null) {
+      String msg =
+          '${_concept!.code}.$name is not correct child entities name.';
+      throw UpdateException(msg);
+    }
+    if (child.update) {
+      _childMap[name] = entities as Entities<E>;
+      if (child.internal) {
+        _internalChildMap[name] = entities;
       }
-      if (child.update) {
-        _childMap[name] = entities as Entities<E>;
-        if (child.internal) {
-          _internalChildMap[name] = entities;
-        }
-        return true;
-      } else {
-        String msg = '${_concept.code}.${child.code} is not updatable.';
-        throw UpdateException(msg);
-      }
+      return true;
+    } else {
+      String msg = '${_concept!.code}.${child.code} is not updatable.';
+      throw UpdateException(msg);
     }
   }
 
   @override
   bool setParent(String name, entity) {
-    Parent? parent = _concept.parents.singleWhereCode(name) as Parent?;
+    if (_concept == null) {
+      throw new ConceptException('Entity concept is not defined.');
+    }
+
+    Parent? parent = _concept!.parents.singleWhereCode(name) as Parent?;
     if (parent == null) {
-      String msg = '${_concept.code}.$name is not correct parent entity name.';
+      String msg = '${_concept!.code}.$name is not correct parent entity name.';
       throw UpdateException(msg);
     }
 
@@ -869,7 +917,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       _referenceMap[name] = reference;
       return true;
     } else {
-      String msg = '${_concept.code}.${parent.code} is not updatable.';
+      String msg = '${_concept!.code}.${parent.code} is not updatable.';
       throw UpdateException(msg);
     }
   }

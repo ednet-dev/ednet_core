@@ -87,7 +87,9 @@ part 'domain/model/entity/interfaces/i_id.dart';
 
 part 'domain/model/entity/interfaces/i_entities.dart';
 
-part 'domain/model/entries.dart';
+part 'domain/model/model_entries.dart';
+
+part 'domain/model/i_model_entries.dart';
 
 part 'domain/model/oid.dart';
 

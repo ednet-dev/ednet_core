@@ -114,6 +114,10 @@ Model createDomainModel() {
   return model;
 }
 
+class UserConcept extends Concept {
+  UserConcept(super.model, super.conceptCode);
+}
+
 ModelEntries createModelData(Model model) {
   var entries = new ModelEntries(model);
   Entities users = entries.getEntry('User');

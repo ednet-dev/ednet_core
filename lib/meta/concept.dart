@@ -77,12 +77,16 @@ class Concept extends Entity<Concept> {
   /// b) otherwise call operator ==
   @override
   bool operator ==(Object other) {
-    if (other is Concept) {
-      Concept concept = other;
+    if (other is Concept?) {
+      Concept? concept = other as Concept?;
       if (identical(this, concept)) {
         return true;
       } else {
-        return equals(concept);
+        if (concept == null) {
+          return false;
+        } else {
+          return equals(concept);
+        }
       }
     } else {
       return false;

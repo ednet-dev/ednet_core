@@ -6,7 +6,7 @@ String genEntries(Model model, String library) {
   var sc = 'part of $library; \n';
   sc = '$sc \n';
   sc = '$sc// lib/gen/${domain.codeLowerUnderscore}/'
-      '${model.codeLowerUnderscore}/entries.dart \n';
+      '${model.codeLowerUnderscore}/model_entries.dart \n';
   sc = '$sc \n';
   sc = '${sc}class ${model.code}Entries extends ModelEntries { \n';
   sc = '$sc \n';
@@ -25,7 +25,7 @@ String genEntries(Model model, String library) {
   sc = '$sc  } \n';
   sc = '$sc \n';
 
-  sc = '$sc  Entities newEntities(String conceptCode) { \n';
+  sc = '$sc  Entities? newEntities(String conceptCode) { \n';
   sc = '$sc    var concept = model.concepts.singleWhereCode(conceptCode); \n';
   sc = '$sc    if (concept == null) { \n';
   sc = '$sc      throw new ConceptError('
@@ -40,7 +40,7 @@ String genEntries(Model model, String library) {
   sc = '$sc  } \n';
   sc = '$sc \n';
 
-  sc = '$sc  Entity newEntity(String conceptCode) { \n';
+  sc = '$sc  Entity? newEntity(String conceptCode) { \n';
   sc = '$sc    var concept = model.concepts.singleWhereCode(conceptCode); \n';
   sc = '$sc    if (concept == null) { \n';
   sc = '$sc      throw new ConceptError('

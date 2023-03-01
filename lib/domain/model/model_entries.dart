@@ -1,33 +1,5 @@
 part of ednet_core;
 
-abstract class IModelEntries {
-  Model get model;
-
-  Concept? getConcept(String conceptCode);
-
-  IEntities getEntry(String entryConceptCode);
-
-  IEntity? single(Oid oid);
-
-  IEntity? internalSingle(String entryConceptCode, Oid oid);
-
-  IEntities? internalChild(String entryConceptCode, Oid oid);
-
-  bool get isEmpty;
-
-  void clear();
-
-  String fromEntryToJson(String entryConceptCode);
-
-  void fromJsonToEntry(String entryJson);
-
-  void populateEntryReferences(String entryJson);
-
-  String toJson();
-
-  void fromJson(String json);
-}
-
 class ModelEntries implements IModelEntries {
   final Model _model;
 
@@ -48,20 +20,27 @@ class ModelEntries implements IModelEntries {
     return entries;
   }
 
-  // Entities newEntities(String conceptCode) {
-  //   var concept = getConcept(conceptCode);
-  //   if (!concept.entry) {
-  //     var entities = Entities();
-  //     entities.concept = concept;
-  //     return entities;
-  //   }
-  // }
-
-  Entity newEntity(String conceptCode) {
+  Entities? newEntities(String conceptCode) {
     var concept = getConcept(conceptCode);
 
     if (concept == null) {
-      throw EDNetException('Concept with code not found: ' + conceptCode);
+      throw new ConceptException('${conceptCode} concept does not exist.');
+    }
+
+    if (!concept.entry) {
+      var entities = Entities<Concept>();
+      entities.concept = concept;
+      return entities;
+    }
+    return null;
+  }
+
+  Entity? newEntity(String conceptCode) {
+    var concept = getConcept(conceptCode);
+
+    if (concept == null) {
+      throw ConceptException(
+          'Concept with code does not exist: ' + conceptCode);
     }
 
     var conceptEntity = Entity<Concept>();

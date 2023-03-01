@@ -60,7 +60,7 @@ String genEDNetLibrary(Model model) {
   
   sc = '${sc}part "gen/${domain.codeLowerUnderscore}/models.dart"; \n';
   sc = '${sc}part "gen/${domain.codeLowerUnderscore}/'
-       '${model.codeLowerUnderscore}/entries.dart"; \n';
+       '${model.codeLowerUnderscore}/model_entries.dart"; \n';
   for (Concept concept in model.concepts) {
     sc = '${sc}part "gen/${domain.codeLowerUnderscore}/'
          '${model.codeLowerUnderscore}/${concept.codesLowerUnderscore}.dart"; \n';
