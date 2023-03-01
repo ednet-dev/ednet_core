@@ -1,9 +1,10 @@
 part of ednet_core;
 
-Model? fromJsonToModel(String json, Domain domain, String modelCode) {
+Model fromJsonToModel(String json, Domain domain, String modelCode) {
   if (json.trim() == '') {
-    return null;
+    throw EDNetException('Empty JSON string for Model parse');
   }
+
   Map<String, Object> boardMap = jsonDecode(json);
   List<Map<String, Object>> boxes =
       boardMap["boxes"] as List<Map<String, Object>>;
