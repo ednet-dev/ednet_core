@@ -103,6 +103,8 @@ part 'meta/concepts.dart';
 
 part 'meta/concept.dart';
 
+part 'meta/domain.dart';
+
 part 'meta/domains.dart';
 
 part 'meta/models.dart';

@@ -134,7 +134,7 @@ class Concept extends Entity<Concept> {
 
   List<Attribute> get requiredAttributes {
     var requiredList = <Attribute>[];
-    for (Attribute attribute in attributes as Iterable) {
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
       if (attribute.required) {
         requiredList.add(attribute);
       }
@@ -144,7 +144,7 @@ class Concept extends Entity<Concept> {
 
   List<Attribute> get identifierAttributes {
     var identifierList = <Attribute>[];
-    for (Attribute attribute in attributes as Iterable) {
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
       if (attribute.identifier) {
         identifierList.add(attribute);
       }
@@ -154,7 +154,7 @@ class Concept extends Entity<Concept> {
 
   List<Attribute> get nonIdentifierAttributes {
     var nonIdentifierList = <Attribute>[];
-    for (Attribute attribute in attributes as Iterable) {
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
       if (!attribute.identifier) {
         nonIdentifierList.add(attribute);
       }
@@ -164,7 +164,7 @@ class Concept extends Entity<Concept> {
 
   List<Attribute> get incrementAttributes {
     var incrementList = <Attribute>[];
-    for (Attribute attribute in attributes as Iterable) {
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
       if (attribute.increment != null) {
         incrementList.add(attribute);
       }
@@ -172,19 +172,14 @@ class Concept extends Entity<Concept> {
     return incrementList;
   }
 
-  List<Attribute> get nonIncrementAttributes {
-    var nonIncrementList = <Attribute>[];
-    for (Attribute attribute in attributes as Iterable) {
-      if (attribute.increment == null) {
-        nonIncrementList.add(attribute);
-      }
-    }
-    return nonIncrementList;
-  }
+  List<Attribute> get nonIncrementAttributes => attributes
+      .whereType<Attribute>()
+      .where((a) => a.increment == null)
+      .toList();
 
   List<Attribute> get essentialAttributes {
     var essentialList = <Attribute>[];
-    for (Attribute attribute in attributes as Iterable) {
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
       if (attribute.essential) {
         essentialList.add(attribute);
       }
@@ -194,7 +189,7 @@ class Concept extends Entity<Concept> {
 
   List<Parent> get externalParents {
     var externalList = <Parent>[];
-    for (Parent parent in parents as Iterable) {
+    for (Parent parent in parents.whereType<Parent>()) {
       if (parent.external) {
         externalList.add(parent);
       }
@@ -204,7 +199,7 @@ class Concept extends Entity<Concept> {
 
   List<Parent> get externalRequiredParents {
     var externalRequiredList = <Parent>[];
-    for (Parent parent in parents as Iterable) {
+    for (Parent parent in parents.whereType<Parent>()) {
       if (parent.external && parent.required) {
         externalRequiredList.add(parent);
       }
@@ -214,7 +209,7 @@ class Concept extends Entity<Concept> {
 
   List<Child> get internalChildren {
     var internalList = <Child>[];
-    for (Child child in children as Iterable) {
+    for (Child child in children.whereType<Child>()) {
       if (child.internal) {
         internalList.add(child);
       }
@@ -230,7 +225,7 @@ class Concept extends Entity<Concept> {
   }
 
   bool get hasTwinParent {
-    for (Parent parent in parents as Iterable) {
+    for (Parent parent in parents.whereType<Parent>()) {
       if (parent.twin) {
         return true;
       }
@@ -239,7 +234,7 @@ class Concept extends Entity<Concept> {
   }
 
   bool get hasReflexiveParent {
-    for (Parent parent in parents as Iterable) {
+    for (Parent parent in parents.whereType<Parent>()) {
       if (parent.reflexive) {
         return true;
       }
@@ -248,7 +243,7 @@ class Concept extends Entity<Concept> {
   }
 
   bool get hasTwinChild {
-    for (Child child in children as Iterable) {
+    for (Child child in children.whereType<Child>()) {
       if (child.twin) {
         return true;
       }
@@ -257,7 +252,7 @@ class Concept extends Entity<Concept> {
   }
 
   bool get hasReflexiveChild {
-    for (Child child in children as Iterable) {
+    for (Child child in children.whereType<Child>()) {
       if (child.reflexive) {
         return true;
       }
@@ -275,7 +270,7 @@ class Concept extends Entity<Concept> {
   }
 
   bool get hasAttributeId {
-    for (Attribute attribute in attributes as Iterable) {
+    for (Attribute attribute in attributes.whereType<Attribute>()) {
       if (attribute.identifier) {
         return true;
       }
@@ -284,7 +279,7 @@ class Concept extends Entity<Concept> {
   }
 
   bool get hasParentId {
-    for (Parent parent in parents as Iterable) {
+    for (Parent parent in parents.whereType<Parent>()) {
       if (parent.identifier) {
         return true;
       }
@@ -298,7 +293,7 @@ class Concept extends Entity<Concept> {
   }
 
   bool isAttributeSensitive(String attributeCode) {
-    Attribute? a = attributes.singleWhereCode(attributeCode) as Attribute?;
+    var a = attributes.singleWhereCode(attributeCode);
     return a != null && a.sensitive ? true : false;
   }
 
@@ -322,7 +317,7 @@ class Concept extends Entity<Concept> {
     if (entry) {
       return this;
     } else {
-      for (Parent parent in parents as Iterable) {
+      for (Parent parent in parents.whereType<Parent>()) {
         if (parent.internal) {
           return parent.destinationConcept.entryConcept;
         }
@@ -335,7 +330,7 @@ class Concept extends Entity<Concept> {
     if (entry) {
       return code;
     } else {
-      for (Parent parent in parents as Iterable) {
+      for (Parent parent in parents.whereType<Parent>()) {
         if (parent.internal) {
           return '${parent.destinationConcept.entryConceptThisConceptInternalPath}'
               '$code';
@@ -347,7 +342,7 @@ class Concept extends Entity<Concept> {
 
   List<String> get childCodeInternalPaths {
     var childList = <String>[];
-    for (Child child in children as Iterable) {
+    for (Child child in children.whereType<Child>()) {
       Concept sourceConcept = child.sourceConcept;
       String entryConceptSourceConceptInternalPath =
           sourceConcept.entryConceptThisConceptInternalPath;

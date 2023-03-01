@@ -47,7 +47,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     pre = true;
     post = true;
 
-    for (Attribute a in _concept.attributes as Iterable) {
+    for (Attribute a in _concept.attributes.whereType<Attribute>()) {
       if (a.init == null) {
         // _attributeMap[a.code] = null;
       } else if (a.type?.code == 'DateTime' && a.init == 'now') {
@@ -93,12 +93,12 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
     } // for
 
-    for (Parent parent in _concept.parents as Iterable) {
+    for (Parent parent in _concept.parents.whereType<Parent>()) {
       _referenceMap.remove(parent.code);
       _parentMap.remove(parent.code);
     }
 
-    for (Child child in _concept.children as Iterable) {
+    for (Child child in _concept.children.whereType<Child>()) {
       var childEntities = Entities<E>();
       childEntities.concept = child.destinationConcept;
       _childMap[child.code] = childEntities;
@@ -122,12 +122,12 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   @override
   Id? get id {
     Id id = Id(_concept);
-    for (Parent p in _concept.parents as Iterable) {
+    for (Parent p in _concept.parents.whereType<Parent>()) {
       if (p.identifier) {
         id.setReference(p.code, _referenceMap[p.code]);
       }
     }
-    for (Attribute a in _concept.attributes as Iterable) {
+    for (Attribute a in _concept.attributes.whereType<Attribute>()) {
       if (a.identifier) {
         id.setAttribute(a.code, _attributeMap[a.code]);
       }
@@ -218,8 +218,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   bool setAttribute(String name, Object? value) {
     bool updated = false;
     if (preSetAttribute(name, value)) {
-      Attribute? attribute =
-          _concept.attributes.singleWhereCode(name) as Attribute?;
+      var attribute = _concept.attributes.singleWhereCode(name);
       if (attribute == null) {
         String msg = '${_concept.code}.$name is not correct attribute name.';
         throw UpdateException(msg);
@@ -401,7 +400,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     entity.whenRemoved = _whenRemoved;
     concept.updateWhen = beforeUpdateWhen;
 
-    for (Attribute attribute in _concept.attributes as Iterable) {
+    for (Attribute attribute in _concept.attributes.whereType<Attribute>()) {
       if (attribute.identifier) {
         var beforeUpdate = attribute.update;
         attribute.update = true;
@@ -412,7 +411,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
     }
 
-    for (Parent parent in _concept.parents as Iterable) {
+    for (Parent parent in _concept.parents.whereType<Parent>()) {
       if (parent.identifier) {
         var beforeUpdate = parent.update;
         parent.update = true;
@@ -423,7 +422,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
     }
 
-    for (Child child in _concept.children as Iterable) {
+    for (Child child in _concept.children.whereType<Child>()) {
       entity.setChild(child.code, _childMap[child.code] as IEntities<E>);
     }
 
@@ -510,17 +509,17 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     if (_code != entity.code) {
       return false;
     }
-    for (Attribute a in _concept.attributes as Iterable) {
+    for (Attribute a in _concept.attributes.whereType<Attribute>()) {
       if (_attributeMap[a.code] != entity.getAttribute(a.code)) {
         return false;
       }
     }
-    for (Parent parent in _concept.parents as Iterable) {
+    for (Parent parent in _concept.parents.whereType<Parent>()) {
       if (_parentMap[parent.code] != entity.getParent(parent.code)) {
         return false;
       }
     }
-    for (Child child in _concept.children as Iterable) {
+    for (Child child in _concept.children.whereType<Child>()) {
       if (_childMap[child.code] != entity.getChild(child.code)) {
         return false;
       }
@@ -552,7 +551,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   /// if the result is greater than 0 then the first is greater than the second.
   int compareAttributes(E entity) {
     var compare = 0;
-    for (Attribute a in concept.attributes as Iterable) {
+    for (Attribute a in concept.attributes.whereType<Attribute>()) {
       var value1 = _attributeMap[a.code];
       var value2 = entity.getAttribute(a.code);
 
@@ -581,10 +580,10 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   /// Displays (prints) an entity with its attributes, parents and children.
   void display(
-      {String prefix: '',
-      bool withOid: true,
-      bool withChildren: true,
-      bool withInternalChildren: true}) {
+      {String prefix = '',
+      bool withOid = true,
+      bool withChildren = true,
+      bool withInternalChildren = true}) {
     var s = prefix;
     if (!(_concept.entry) ||
         ((_concept.entry) && _concept.parents.isNotEmpty)) {
@@ -659,7 +658,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   Map<String, Object> toJsonMap() {
     Map<String, Object> entityMap = <String, Object>{};
-    for (Parent parent in _concept.parents as Iterable) {
+    for (Parent parent in _concept.parents.whereType<Parent>()) {
       Entity? parentEntity = getParent(parent.code);
       if (parentEntity != null) {
         var reference = <String, String>{};
@@ -753,7 +752,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
     var beforePre = pre;
     pre = false;
-    for (Attribute attribute in concept.attributes as Iterable) {
+    for (Attribute attribute in concept.attributes.whereType<Attribute>()) {
       if (attribute.identifier) {
         var beforeUpdate = attribute.update;
         attribute.update = true;
@@ -772,7 +771,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   /// Loads neighbors from a json map.
   void _neighborsFromJsonMap(Map<String, Object> entityMap,
       [Entity? internalParent]) {
-    for (Child child in concept.children as Iterable) {
+    for (Child child in concept.children.whereType<Child>()) {
       if (child.internal) {
         List<Map<String, Object>> entitiesList =
             entityMap[child.code] as List<Map<String, Object>>;
@@ -782,7 +781,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
     }
 
-    for (Parent parent in concept.parents as Iterable) {
+    for (Parent parent in concept.parents.whereType<Parent>()) {
       var parentReference = entityMap[parent.code] as Map<String, String>?;
       if ((parentReference as String) == 'null') {
         if (parent.minc != '0') {
@@ -843,7 +842,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         }
         return true;
       } else {
-        String msg = '${_concept.code}.${child.code} is not updateable.';
+        String msg = '${_concept.code}.${child.code} is not updatable.';
         throw UpdateException(msg);
       }
     }
@@ -870,7 +869,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       _referenceMap[name] = reference;
       return true;
     } else {
-      String msg = '${_concept.code}.${parent.code} is not updateable.';
+      String msg = '${_concept.code}.${parent.code} is not updatable.';
       throw UpdateException(msg);
     }
   }
