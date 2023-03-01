@@ -191,7 +191,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
     if (_concept.children.isNotEmpty) {
       for (Entity entity in _entityList) {
-        for (Child child in _concept.children as Iterable) {
+        for (Child child in _concept.children.whereType<Child>()) {
           if (child.internal) {
             Entities? childEntities = entity.getChild(child.code);
             Entity? childEntity = childEntities?.internalSingle(oid);
@@ -216,7 +216,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
     if (_concept.children.isNotEmpty) {
       for (Entity entity in _entityList) {
-        for (Child child in _concept.children as Iterable) {
+        for (Child child in _concept.children.whereType<Child>()) {
           if (child.internal) {
             Entities? childEntities = entity.getChild(child.code);
             Entity? childEntity = childEntities?.internalSingle(oid);
@@ -314,7 +314,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     for (E entity in _entityList) {
-      for (Attribute a in _concept.attributes as Iterable) {
+      for (Attribute a in _concept.attributes.whereType<Attribute>()) {
         if (a.code == code) {
           if (entity.getAttribute(a.code) == attribute) {
             selectedEntities.add(entity);
@@ -336,7 +336,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     selectedEntities.post = false;
     selectedEntities.propagateToSource = false;
     for (E entity in _entityList) {
-      for (Parent p in _concept.parents as Iterable) {
+      for (Parent p in _concept.parents.whereType<Parent>()) {
         if (p.code == code) {
           if (entity.getParent(p.code) == parent) {
             selectedEntities.add(entity);
@@ -512,7 +512,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
 
     // increment and required validation
-    for (Attribute a in _concept.attributes as Iterable) {
+    for (Attribute a in _concept.attributes.whereType<Attribute>()) {
       if (a.increment != null) {
         if (length == 0) {
           entity.setAttribute(a.code, a.increment!);
@@ -536,7 +536,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         result = false;
       }
     }
-    for (Parent p in _concept.parents as Iterable) {
+    for (Parent p in _concept.parents.whereType<Parent>()) {
       if (p.required && entity.getParent(p.code) == null) {
         const category = 'required';
         final message = '${entity.concept.code}.${p.code} parent is null.';

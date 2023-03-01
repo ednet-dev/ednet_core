@@ -56,7 +56,7 @@ String createInitEntryEntityRandomly(Concept entryConcept,
 
   if (withChildren) {
     sc = '$sc \n';
-    for (Child child in entryConcept.children as Iterable)  {
+    for (Child child in entryConcept.children.whereType<Child>())  {
       if (child.internal) {
         String parentVar = entryEntity;
         String parentCode = child.opposite!.code;
@@ -108,7 +108,7 @@ String createTestEntryEntityRandomly(Concept entryConcept,
 
   if (withChildren) {
     sc = '$sc \n';
-    for (Child child in entryConcept.children as Iterable)  {
+    for (Child child in entryConcept.children.whereType<Child>())  {
       if (child.internal) {
         String parentVar = entryEntity;
         String parentCode = child.opposite!.code;
@@ -158,7 +158,7 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
     }
 
     sc = '$sc \n';
-    for (Child child in childConcept.children as Iterable)  {
+    for (Child child in childConcept.children.whereType<Child>())  {
       if (child.internal && !child.reflexive) {
         // the old child becomes a new parent
         String newParentVar = childEntity;
@@ -180,7 +180,7 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
 String setInitAttributesRandomly(Concept concept, String entity) {
   var sc = '';
   //for (Attribute attribute in concept.requiredAttributes) {
-  for (Attribute attribute in concept.attributes as Iterable) {
+  for (Attribute attribute in concept.attributes.whereType<Attribute>()) {
     var attributeSet = setInitAttributeRandomly(attribute, entity);
     sc = '$sc$attributeSet';
   }
@@ -190,7 +190,7 @@ String setInitAttributesRandomly(Concept concept, String entity) {
 String setTestAttributesRandomly(Concept concept, String entity) {
   var sc = '';
   //for (Attribute attribute in concept.requiredAttributes) {
-  for (Attribute attribute in concept.attributes as Iterable) {
+  for (Attribute attribute in concept.attributes.whereType<Attribute>()) {
     var attributeSet = setTestAttributeRandomly(attribute, entity);
     sc = '$sc$attributeSet';
   }

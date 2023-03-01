@@ -9,12 +9,12 @@ class Id implements IId<Id> {
   Id(this._concept)
       : _referenceMap = <String, Reference>{},
         _attributeMap = <String, Object>{} {
-    for (Parent p in _concept.parents as Iterable)  {
+    for (Parent p in _concept.parents.whereType<Parent>())  {
       if (p.identifier) {
         _referenceMap[p.code] = null;
       }
     }
-    for (Attribute a in concept.attributes as Iterable) {
+    for (Attribute a in concept.attributes.whereType<Attribute>()) {
       if (a.identifier) {
         _attributeMap[a.code] = null;
       }
@@ -62,7 +62,7 @@ class Id implements IId<Id> {
 
   /// Two ids are equal if their parents are equal.
   bool equalParents(Id id) {
-    for (Parent p in _concept.parents as Iterable)  {
+    for (Parent p in _concept.parents.whereType<Parent>())  {
       if (p.identifier) {
         if (_referenceMap[p.code] != id.getReference(p.code)) {
           return false;
@@ -74,7 +74,7 @@ class Id implements IId<Id> {
 
   /// Two ids are equal if their attributes are equal.
   bool equalAttributes(Id id) {
-    for (Attribute a in concept.attributes as Iterable) {
+    for (Attribute a in concept.attributes.whereType<Attribute>()) {
       if (a.identifier) {
         if (_attributeMap[a.code] != id.getAttribute(a.code)) {
           return false;
@@ -166,7 +166,7 @@ class Id implements IId<Id> {
   int compareParents(Id id) {
     if (id.referenceLength > 0) {
       var compare = 0;
-      for (Parent p in _concept.parents as Iterable)  {
+      for (Parent p in _concept.parents.whereType<Parent>())  {
         if (p.identifier) {
           final ref = _referenceMap[p.code];
           final ref2 = id.getReference(p.code);
@@ -191,7 +191,7 @@ class Id implements IId<Id> {
   int compareAttributes(Id id) {
     if (id.attributeLength > 0) {
       var compare = 0;
-      for (Attribute a in concept.attributes as Iterable) {
+      for (Attribute a in concept.attributes.whereType<Attribute>()) {
         var value1 = _attributeMap[a.code];
         var value2 = id.getAttribute(a.code);
         if (value1 != null && value2 != null) {
