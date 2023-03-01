@@ -5,11 +5,15 @@ import 'dart:convert';
 
 export 'domain/model.dart';
 
-part 'domain/models.dart';
+part 'domain/i_domain_models.dart';
+
+part 'domain/domain_models.dart';
 
 part 'domain/session.dart';
 
 part 'i_repository.dart';
+
+part 'core_repository.dart';
 
 part 'gen/ednet_repository.dart';
 

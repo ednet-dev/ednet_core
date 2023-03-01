@@ -40,7 +40,7 @@ String genEDNetGen(Model model) {
   return sc;
 }
 
-String genEDNetTest(Repository repo, Model model, Concept entryConcept) {
+String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   Domain domain = model.domain;
 
   var sc = ' \n';

@@ -3,7 +3,7 @@ part of ednet_core;
 String genModels(Domain domain, String library) {
   var sc = 'part of ${library}; \n';
   sc = '${sc} \n';
-  sc = '${sc}// lib/gen/${domain.codeLowerUnderscore}/models.dart \n';
+  sc = '${sc}// lib/gen/${domain.codeLowerUnderscore}/i_domain_models.dart \n';
   sc = '${sc} \n';
   sc = '${sc}class ${domain.code}Models extends DomainModels { \n';
   sc = '${sc} \n';

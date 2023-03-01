@@ -1,6 +1,6 @@
 part of repository;
 
-// class NonDestructiveRepository extends Repository {
+// class NonDestructiveRepository extends CoreRepository {
 //   @override
 //   List<AggregateRoot> findAll() {
 //     // TODO: implement findAll

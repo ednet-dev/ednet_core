@@ -1,11 +1,11 @@
 part of ednet_core;
 
-String genRepository(Repository repo, String library) {
+String genRepository(CoreRepository repo, String library) {
   var sc = 'part of ${library}; \n';
   sc = '${sc} \n';
   sc = '${sc}// lib/destructive_repository.dart \n';
   sc = '${sc} \n';
-  sc = '${sc}class Repository extends Repository { \n';
+  sc = '${sc}class Repository extends CoreRepository { \n';
   sc = '${sc} \n';
   sc = '${sc}  static const REPOSITORY = "Repository"; \n';
   sc = '${sc} \n';

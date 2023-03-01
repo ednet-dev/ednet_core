@@ -58,7 +58,7 @@ String genEDNetLibrary(Model model) {
   sc = '${sc}part "destructive_repository.dart"; \n';
   sc = '$sc \n';
   
-  sc = '${sc}part "gen/${domain.codeLowerUnderscore}/models.dart"; \n';
+  sc = '${sc}part "gen/${domain.codeLowerUnderscore}/i_domain_models.dart"; \n';
   sc = '${sc}part "gen/${domain.codeLowerUnderscore}/'
        '${model.codeLowerUnderscore}/model_entries.dart"; \n';
   for (Concept concept in model.concepts) {
