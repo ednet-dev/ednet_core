@@ -94,7 +94,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc      expect(${model.codeFirstLetterLower}Model.isEmpty, '
       'isTrue); \n';
   sc = '$sc      expect($entities.isEmpty, isTrue); \n';
-  sc = '$sc      expect($entities.exceptions..isEmpty, isTrue); \n';
+  sc = '$sc      expect($entities.exceptions.isEmpty, isTrue); \n';
   sc = '$sc    }); \n';
   sc = '$sc \n';
 
@@ -155,11 +155,11 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
     sc = '$sc      var added = $entities.add($entity); \n';
     sc = '$sc      expect(added, isFalse); \n';
     sc = '$sc      expect($entities.length, equals(${entity}Count)); \n';
-    sc = '$sc      expect($entities.exceptions..length, greaterThan(0)); \n';
-    sc = '$sc      expect($entities.exceptions..toList()[0].category, '
+    sc = '$sc      expect($entities.exceptions.length, greaterThan(0)); \n';
+    sc = '$sc      expect($entities.exceptions.toList()[0].category, '
         'equals("required")); \n';
     sc = '$sc \n';
-    sc = '$sc      $entities.exceptions..display(title: "Add $entity required '
+    sc = '$sc      $entities.exceptions.display(title: "Add $entity required '
         'error"); \n';
   } else {
     sc = '$sc      // no required attribute that is not id \n';
@@ -180,9 +180,9 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
       sc = '$sc      var added = $entities.add($entity); \n';
       sc = '$sc      expect(added, isFalse); \n';
       sc = '$sc      expect($entities.length, equals(${entity}Count)); \n';
-      sc = '$sc      expect($entities.exceptions..length, greaterThan(0)); \n';
+      sc = '$sc      expect($entities.exceptions.length, greaterThan(0)); \n';
       sc = '$sc \n';
-      sc = '$sc      $entities.exceptions..display(title: "Add $entity unique '
+      sc = '$sc      $entities.exceptions.display(title: "Add $entity unique '
           'error"); \n';
     } else {
       sc = '$sc      // id attribute defined as increment, cannot update it \n';
@@ -216,7 +216,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
     sc = '$sc          $entities.singleWhereAttributeId('
         '"${idAttribute.code}", random$entity2.${idAttribute.code}); \n';
     sc = '$sc      expect($entity, isNotNull); \n';
-    sc = '$sc      expect($entity.${idAttribute.code}, '
+    sc = '$sc      expect($entity!.${idAttribute.code}, '
         'equals(random$entity2.${idAttribute.code})); \n';
   } else {
     sc = '$sc      // no id attribute \n';
@@ -407,7 +407,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   if (entryConcept.hasId) {
     sc = '$sc      copied$entities2.forEach((e) => \n';
     sc =
-        '$sc        expect(e, isNot(same($entities.singleWhereId(e.id as IId<${entryConcept.code}>))))); \n';
+        '$sc        expect(e, isNot(same($entities.singleWhereId(e.id!))))); \n';
   }
   sc = '$sc \n';
   sc = '$sc      //copied$entities2.display(title: "Copy $entities"); \n';
@@ -498,7 +498,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
       sc = '$sc      var entity = $entities.singleWhereAttributeId('
           '"${idAttribute.code}", $value); \n';
       sc = '$sc      expect(entity, isNotNull); \n';
-      sc = '$sc      expect(entity.${idAttribute.code}, equals($value)); \n';
+      sc = '$sc      expect(entity!.${idAttribute.code}, equals($value)); \n';
       sc = '$sc \n';
       sc = '$sc      //$entities.display("After update $entity id"); \n';
     } else {
