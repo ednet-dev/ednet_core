@@ -1,7 +1,6 @@
 part of ednet_core;
 
-var license =
-'''
+final String license = '''
 /*
 http://opensource.org/licenses/
 
@@ -38,48 +37,54 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 String genEDNetLibrary(Model model) {
   Domain domain = model.domain;
 
-  var sc = ' \n';
-  sc = '$sc// lib/'
-       '${domain.codeLowerUnderscore}_${model.codeLowerUnderscore}.dart \n';
-  sc = '$sc \n';
+  final String domainCodeLowerUnderscore = domain.code.toLowerCase();
+  final String modelCodeLowerUnderscore = model.code.toLowerCase();
 
-  sc = '$sc$license \n';
-  sc = '$sc \n';
+  final String genEDNetLibraryTemplate = '''
+    // lib/{{domainCodeLowerUnderscore}}_{{modelCodeLowerUnderscore}}.dart
+    {{license}}
 
-  sc = '${sc}library ${domain.codeLowerUnderscore}_${model.codeLowerUnderscore}; \n';
-  sc = '$sc \n';
+    library {{domainCodeLowerUnderscore}}_{{modelCodeLowerUnderscore}};
 
-  sc = '$sc//import "dart:convert"; \n';
-  sc = '$sc//import "dart:math"; \n';
-  sc = '$sc \n';
+    import "package:ednet_core/ednet_core.dart";
 
-  sc = '${sc}import "package:ednet_core/ednet_core.dart"; \n';
-  sc = '$sc \n';
-  sc = '${sc}part "repository.dart"; \n';
-  sc = '$sc \n';
-  
-  sc = '${sc}part "gen/${domain.codeLowerUnderscore}/i_domain_models.dart"; \n';
-  sc = '${sc}part "gen/${domain.codeLowerUnderscore}/'
-       '${model.codeLowerUnderscore}/model_entries.dart"; \n';
-  for (Concept concept in model.concepts) {
-    sc = '${sc}part "gen/${domain.codeLowerUnderscore}/'
-         '${model.codeLowerUnderscore}/${concept.codesLowerUnderscore}.dart"; \n';
-  } 
-  sc = '$sc \n';
+    part "repository.dart";
+    part "gen/{{domainCodeLowerUnderscore}}/i_domain_models.dart";
+    part "gen/{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/model_entries.dart";
+    part "{{domainCodeLowerUnderscore}}/domain.dart";
+    part "{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/model.dart";
+    part "{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/json/data.dart";
+    part "{{domainCodeLowerUnderscore}}/{{modelCodeLowerUnderscore}}/json/model.dart";
+    {{conceptParts}}
+    {{genConceptParts}}
+    
+  ''';
 
-  sc = '${sc}part "${domain.codeLowerUnderscore}/domain.dart"; \n';
-  sc = '${sc}part "${domain.codeLowerUnderscore}/'
-       '${model.codeLowerUnderscore}/model.dart"; \n';
-  for (Concept concept in model.concepts) {
-    sc = '${sc}part "${domain.codeLowerUnderscore}/'
-         '${model.codeLowerUnderscore}/${concept.codesLowerUnderscore}.dart"; \n';
-  }
-  sc = '${sc}part "${domain.codeLowerUnderscore}/'
-       '${model.codeLowerUnderscore}/json/data.dart"; \n';
-  sc = '${sc}part "${domain.codeLowerUnderscore}/'
-       '${model.codeLowerUnderscore}/json/model.dart"; \n';
-  sc = '$sc \n';
+  final List<String> conceptParts = model.concepts
+      .map((c) =>
+          '\npart "${domainCodeLowerUnderscore}/${modelCodeLowerUnderscore}/${c.codesLowerUnderscore}.dart";\n')
+      .toList();
 
-  return sc;
+  final List<String> genConceptParts = model.concepts
+      .map((c) =>
+          '\npart "gen/${domainCodeLowerUnderscore}/${modelCodeLowerUnderscore}/${c.codesLowerUnderscore}.dart";\n')
+      .toList();
+
+  return genEDNetLibraryTemplate.replaceAllMapped(RegExp('{{([A-Za-z]+)}}'),
+      (match) {
+    switch (match.group(1)) {
+      case 'license':
+        return license;
+      case 'domainCodeLowerUnderscore':
+        return domainCodeLowerUnderscore;
+      case 'modelCodeLowerUnderscore':
+        return modelCodeLowerUnderscore;
+      case 'conceptParts':
+        return conceptParts.join('\n');
+      case 'genConceptParts':
+        return genConceptParts.join('\n');
+      default:
+        return match.group(0) ?? '';
+    }
+  });
 }
-
