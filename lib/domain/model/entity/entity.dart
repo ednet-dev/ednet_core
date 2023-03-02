@@ -847,7 +847,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           setReference(parent.code, reference);
           if (parent.internal) {
             if (parentOid == internalParent?.oid) {
-              setParent(parent.code, internalParent as Entity<E>);
+              setParent(parent.code, internalParent);
             } else {
               var msg = """
 
