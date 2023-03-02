@@ -36,7 +36,7 @@ abstract class IEntity<E extends IEntity<E>> implements Comparable {
 
   Object? getChild(String name);
 
-  bool setChild<T extends IEntity<T>>(String name, IEntities<T> entities);
+  bool setChild(String name, Object entities);
 
   E copy();
 

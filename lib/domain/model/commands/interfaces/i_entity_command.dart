@@ -19,7 +19,7 @@ abstract class IEntityCommand extends IBasicCommand {
       } else if (name == 'set' && category == 'parent') {
         done = entity.setParent(property, after as Entity);
       } else if (name == 'set' && category == 'child') {
-        done = entity.setChild<Concept>(property, after as IEntities<Concept>);
+        done = entity.setChild(property, after);
       } else {
         throw CommandException(
             'Allowed commands on entity for doIt are set attribute, parent or child.');
@@ -44,7 +44,7 @@ abstract class IEntityCommand extends IBasicCommand {
       } else if (name == 'set' && category == 'parent') {
         undone = entity.setParent(property, before as Entity);
       } else if (name == 'set' && category == 'child') {
-        undone = entity.setChild<Concept>(property, before as IEntities<Concept>);
+        undone = entity.setChild(property, before!);
       } else {
         throw CommandException(
             'Allowed commands on entity for undo are set attribute, parent or child.');
@@ -68,7 +68,7 @@ abstract class IEntityCommand extends IBasicCommand {
       } else if (name == 'set' && category == 'parent') {
         redone = entity.setParent(property, after as Entity<Entity>);
       } else if (name == 'set' && category == 'child') {
-        redone = entity.setChild<Concept>(property, after as IEntities<Concept>);
+        redone = entity.setChild(property, after);
       } else {
         throw CommandException(
             'Allowed commands on entity for redo are set attribute, parent or child.');

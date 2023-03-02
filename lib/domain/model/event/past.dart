@@ -3,14 +3,15 @@ part of ednet_core;
 class Past implements IPast {
   int cursor = 0;
   @override
-  final List<IBasicCommand> commands;
+  List<IBasicCommand> commands;
 
-  final List<IPastCommand> pastReactions;
+  List<IPastCommand> pastReactions;
 
   Past({
-    this.commands = const <IBasicCommand>[],
-    this.pastReactions = const <IPastCommand>[],
-  });
+    commands,
+    pastReactions,
+  })  : commands = commands ?? [],
+        pastReactions = pastReactions ?? [];
 
   @override
   bool get empty => commands.isEmpty;

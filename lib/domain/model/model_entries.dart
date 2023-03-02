@@ -116,11 +116,11 @@ class ModelEntries implements IModelEntries {
 
   @override
   void fromJsonToEntry(String entryJson) {
-    Map<String, Object> entryMap = jsonDecode(entryJson);
+    var entryMap = jsonDecode(entryJson);
     fromMapToEntry(entryMap);
   }
 
-  void fromMapToEntry(Map<String, Object> entryMap) {
+  void fromMapToEntry(entryMap) {
     var domainCode = entryMap['domain'];
     var modelCode = entryMap['model'];
     var entryConceptCode = entryMap['entry'];
@@ -139,8 +139,7 @@ class ModelEntries implements IModelEntries {
       throw JsonException(
           '$entryConceptCode entry receiving entities are not empty');
     }
-    List<Map<String, Object>> entitiesList =
-        entryMap['entities'] as List<Map<String, Object>>;
+    var entitiesList = entryMap['entities'];
     entryEntities.fromJsonList(entitiesList);
   }
 
@@ -176,7 +175,7 @@ class ModelEntries implements IModelEntries {
     }
   }
 
-  void populateEntryReferencesFromJsonMap(Map<String, Object> entryMap) {
+  void populateEntryReferencesFromJsonMap(entryMap) {
     //var domainCode = entryMap['domain'];
     //var modelCode = entryMap['model'];
     var entryConceptCode = entryMap['entry'];
@@ -203,23 +202,21 @@ class ModelEntries implements IModelEntries {
 
   @override
   void fromJson(String entriesJson) {
-    Map<String, Object> entriesMap = jsonDecode(entriesJson);
+    var entriesMap = jsonDecode(entriesJson);
     fromJsonMap(entriesMap);
   }
 
-  void fromJsonMap(Map<String, Object> entriesMap) {
+  void fromJsonMap(entriesMap) {
     for (var entryConcept in _model.entryConcepts) {
-      Map<String, Object> entryMap =
-          entriesMap[entryConcept.code] as Map<String, Object>;
+      var entryMap = entriesMap[entryConcept.code];
       fromMapToEntry(entryMap);
     }
     populateReferences(entriesMap);
   }
 
-  void populateReferences(Map<String, Object> entriesMap) {
+  void populateReferences(entriesMap) {
     for (var entryConcept in _model.entryConcepts) {
-      Map<String, Object> entryMap =
-          entriesMap[entryConcept.code] as Map<String, Object>;
+      var entryMap = entriesMap[entryConcept.code];
       populateEntryReferencesFromJsonMap(entryMap);
     }
   }

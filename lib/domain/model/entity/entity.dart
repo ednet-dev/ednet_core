@@ -464,7 +464,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     }
 
     for (Child child in _concept!.children.whereType<Child>()) {
-      entity.setChild<E>(child.code, _childMap[child.code] as IEntities<E>);
+      entity.setChild(child.code, _childMap[child.code]!);
     }
 
     return entity as E;
@@ -720,7 +720,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
     }
     entityMap['oid'] = _oid.toString();
-    entityMap['code'] = _code!;
+    entityMap['code'] = _code ?? '';
     entityMap['whenAdded'] = _whenAdded.toString();
     entityMap['whenSet'] = _whenSet.toString();
     entityMap['whenRemoved'] = _whenRemoved.toString();
@@ -742,7 +742,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   /// Loads data from a json map.
-  void fromJsonMap(Map<String, Object> entityMap, [Entity? internalParent]) {
+  void fromJsonMap(entityMap, [Entity? internalParent]) {
     int timeStamp = 0;
     try {
       var key = entityMap['oid'];
@@ -767,7 +767,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     DateTime? whenAddedTime;
     try {
       String? when = entityMap['whenAdded'] as String?;
-      if (when != null) {
+      if (when != null && when != 'null') {
         whenAddedTime = DateTime.parse(when);
       }
     } on FormatException catch (e) {
@@ -778,18 +778,18 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     DateTime? whenSetTime;
     try {
       String? when = entityMap['whenSet'] as String?;
-      if (when != null) {
+      if (when != null && when != 'null') {
         whenSetTime = DateTime.parse(when);
       }
     } on FormatException catch (e) {
       throw TypeException(
           '${entityMap['whenSet']} whenSet is not DateTime: $e');
     }
-    whenSet = whenSetTime!;
+    whenSet = whenSetTime;
     DateTime? whenRemovedTime;
     try {
       String? when = entityMap['whenRemoved'] as String?;
-      if (when != null) {
+      if (when != null && when != 'null') {
         whenRemovedTime = DateTime.parse(when);
       }
     } on FormatException catch (e) {
@@ -818,15 +818,13 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   /// Loads neighbors from a json map.
-  void _neighborsFromJsonMap(Map<String, Object> entityMap,
-      [Entity? internalParent]) {
+  void _neighborsFromJsonMap(entityMap, [Entity? internalParent]) {
     for (Child child in concept.children.whereType<Child>()) {
       if (child.internal) {
-        List<Map<String, Object>> entitiesList =
-            entityMap[child.code] as List<Map<String, Object>>;
+        var entitiesList = entityMap[child.code];
         var childEntities = getChild(child.code) as Entities?;
         childEntities?.fromJsonList(entitiesList, this);
-        setChild(child.code, childEntities as IEntities<E>);
+        setChild(child.code, childEntities as Object);
       }
     }
 
@@ -876,7 +874,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   @override
-  bool setChild<P extends IEntity<P>>(String name, IEntities<P> entities) {
+  bool setChild(String name, Object entities) {
     if (_concept == null) {
       throw new ConceptException('Entity concept is not defined.');
     }

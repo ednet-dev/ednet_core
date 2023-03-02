@@ -483,7 +483,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   /// Loads entities without validations to this, which must be empty.
-  void fromJsonList(List<Map<String, Object>> entitiesList,
+  void fromJsonList(entitiesList,
       [Entity? internalParent]) {
     if (_concept == null) {
       throw new ConceptException('entities concept does not exist.');
@@ -496,9 +496,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     var beforePost = post;
     pre = false;
     post = false;
-    for (Map<String, Object> entityMap in entitiesList) {
+    for (var entityMap in entitiesList) {
       var entity = newEntity();
-      entity.fromJsonMap(entityMap, internalParent!);
+      entity.fromJsonMap(entityMap, internalParent);
       add(entity as E);
     }
     pre = beforePre;
@@ -611,11 +611,6 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     const category = 'unique';
     final message = '${entity.concept.code}.code is not unique.';
     // uniqueness validation
-    if (entity.code.isEmpty && singleWhereCode(entity.code) != null) {
-      var exception = ValidationException(category, message);
-      exceptions.add(exception);
-      result = false;
-    }
     if (entity.id != null && singleWhereId(entity.id!) != null) {
       ValidationException exception = ValidationException(category, message);
       exceptions.add(exception);

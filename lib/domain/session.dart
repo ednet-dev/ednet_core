@@ -7,8 +7,8 @@ abstract class IDomainSession {
 }
 
 class DomainSession implements IDomainSession {
-  final DomainModels _domainModels;
-  final Past _past;
+  DomainModels _domainModels;
+  Past _past;
 
   DomainSession(this._domainModels) : _past = Past();
 
