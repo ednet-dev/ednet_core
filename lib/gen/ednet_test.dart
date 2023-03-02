@@ -13,13 +13,13 @@ String genEDNetGen(Model model) {
       '${model.codeLowerUnderscore}.dart"; \n';
   sc = '$sc \n';
 
-  sc = '${sc}void genCode(Repository repository) { \n';
+  sc = '${sc}void genCode(CoreRepository repository) { \n';
   sc = '$sc  repository.gen("${domain.codeLowerUnderscore}_'
       '${model.codeLowerUnderscore}"); \n';
   sc = '$sc} \n';
   sc = '$sc \n';
 
-  sc = '${sc}void initData(Repository repository) { \n';
+  sc = '${sc}void initData(CoreRepository repository) { \n';
   sc = '$sc   var ${domain.codeFirstLetterLower}Domain = '
       'repository.getDomainModels("${domain.code}"); \n';
   sc = '$sc   var ${model.codeFirstLetterLower}Model = '

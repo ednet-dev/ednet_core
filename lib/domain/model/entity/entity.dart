@@ -14,9 +14,9 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   // cannot use T since a parent is of a different type
   Map<String, Reference> _referenceMap = <String, Reference>{};
-  Map<String, Entity<E>?> _parentMap = <String, Entity<E>?>{};
-  Map<String, Entities<E>> _childMap = <String, Entities<E>>{};
-  Map<String, Entities<E>> _internalChildMap = <String, Entities<E>>{};
+  Map<String, Entity?> _parentMap = <String, Entity?>{};
+  Map<String, Entities?> _childMap = <String, Entities>{};
+  Map<String, Entities?> _internalChildMap = <String, Entities>{};
 
   bool pre = false;
   bool post = false;
@@ -381,7 +381,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   @override
-  Entity<E>? getParent(String name) => _parentMap[name];
+  Entity? getParent(String name) => _parentMap[name];
 
   Entities getInternalChild(String name) => _internalChildMap[name]!;
 
@@ -667,7 +667,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           if (_concept!.isChildSensitive(k)) {
             print('**********');
           } else {
-            v.display(
+            v?.display(
                 title: '$s$k',
                 prefix: '$s  ',
                 withOid: withOid,
@@ -681,7 +681,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           if (_concept!.isChildSensitive(k)) {
             print('**********');
           } else {
-            v.display(
+            v?.display(
                 title: '$s$k',
                 prefix: '$s  ',
                 withOid: withOid,
@@ -869,7 +869,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   @override
-  bool setChild(String name, IEntities<E> entities) {
+  bool setChild(String name, IEntities entities) {
     if (_concept == null) {
       throw new ConceptException('Entity concept is not defined.');
     }
@@ -881,7 +881,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       throw UpdateException(msg);
     }
     if (child.update) {
-      _childMap[name] = entities as Entities<E>;
+      _childMap[name] = entities as Entities;
       if (child.internal) {
         _internalChildMap[name] = entities;
       }
