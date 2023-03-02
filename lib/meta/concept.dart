@@ -330,7 +330,7 @@ class Concept extends Entity<Concept> {
     }
   }
 
-  String get entryConceptThisConceptInternalPath {
+  String? get entryConceptThisConceptInternalPath {
     if (entry) {
       return code;
     } else {
@@ -348,7 +348,7 @@ class Concept extends Entity<Concept> {
     var childList = <String>[];
     for (Child child in children.whereType<Child>()) {
       Concept sourceConcept = child.sourceConcept;
-      String entryConceptSourceConceptInternalPath =
+      String? entryConceptSourceConceptInternalPath =
           sourceConcept.entryConceptThisConceptInternalPath;
       Concept destinationConcept = child.destinationConcept;
       String childCodeInternalPath = '$entryConceptSourceConceptInternalPath'

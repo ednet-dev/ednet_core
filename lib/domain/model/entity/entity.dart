@@ -55,61 +55,61 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
     for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
       if (a.init == null) {
-        // _attributeMap[a.code] = null;
-      } else if (a.type?.code == 'DateTime' && a.init == 'now') {
-        _attributeMap[a.code] = DateTime.now();
-      } else if (a.type?.code == 'bool' && a.init == 'true') {
-        _attributeMap[a.code] = true;
-      } else if (a.type?.code == 'bool' && a.init == 'false') {
-        _attributeMap[a.code] = false;
-      } else if (a.type?.code == 'int') {
+        // _attributeMap[a.code!] = null;
+      } else if (a.type?.code! == 'DateTime' && a.init == 'now') {
+        _attributeMap[a.code!] = DateTime.now();
+      } else if (a.type?.code! == 'bool' && a.init == 'true') {
+        _attributeMap[a.code!] = true;
+      } else if (a.type?.code! == 'bool' && a.init == 'false') {
+        _attributeMap[a.code!] = false;
+      } else if (a.type?.code! == 'int') {
         try {
-          _attributeMap[a.code] = int.parse(a.init);
+          _attributeMap[a.code!] = int.parse(a.init);
         } on FormatException catch (e) {
           throw TypeException(
-              '${a.code} attribute init (default) value is not int: $e');
+              '${a.code!} attribute init (default) value is not int: $e');
         }
-      } else if (a.type?.code == 'double') {
+      } else if (a.type?.code! == 'double') {
         try {
-          _attributeMap[a.code] = double.parse(a.init);
+          _attributeMap[a.code!] = double.parse(a.init);
         } on FormatException catch (e) {
           throw TypeException(
-              '${a.code} attribute init (default) value is not double: $e');
+              '${a.code!} attribute init (default) value is not double: $e');
         }
-      } else if (a.type?.code == 'num') {
+      } else if (a.type?.code! == 'num') {
         try {
-          _attributeMap[a.code] = int.parse(a.init);
+          _attributeMap[a.code!] = int.parse(a.init);
         } on FormatException catch (e1) {
           try {
-            _attributeMap[a.code] = double.parse(a.init);
+            _attributeMap[a.code!] = double.parse(a.init);
           } on FormatException catch (e2) {
             throw TypeException(
-                '${a.code} attribute init (default) value is not num: $e1; $e2');
+                '${a.code!} attribute init (default) value is not num: $e1; $e2');
           }
         }
-      } else if (a.type?.code == 'Uri') {
+      } else if (a.type?.code! == 'Uri') {
         try {
-          _attributeMap[a.code] = Uri.parse(a.init);
+          _attributeMap[a.code!] = Uri.parse(a.init);
         } on ArgumentError catch (e) {
           throw TypeException(
-              '${a.code} attribute init (default) value is not Uri: $e');
+              '${a.code!} attribute init (default) value is not Uri: $e');
         }
       } else {
-        _attributeMap[a.code] = a.init;
+        _attributeMap[a.code!] = a.init;
       }
     } // for
 
     for (Parent parent in _concept!.parents.whereType<Parent>()) {
-      _referenceMap.remove(parent.code);
-      _parentMap.remove(parent.code);
+      _referenceMap.remove(parent.code!);
+      _parentMap.remove(parent.code!);
     }
 
     for (Child child in _concept!.children.whereType<Child>()) {
       var childEntities = Entities<E>();
       childEntities.concept = child.destinationConcept;
-      _childMap[child.code] = childEntities;
+      _childMap[child.code!] = childEntities;
       if (child.internal) {
-        _internalChildMap[child.code] = childEntities;
+        _internalChildMap[child.code!] = childEntities;
       }
     }
   }
@@ -134,28 +134,28 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     Id id = Id(_concept!);
     for (Parent p in _concept!.parents.whereType<Parent>()) {
       if (p.identifier) {
-        id.setReference(p.code, _referenceMap[p.code]);
+        id.setReference(p.code!, _referenceMap[p.code!]);
       }
     }
     for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
       if (a.identifier) {
-        id.setAttribute(a.code, _attributeMap[a.code]);
+        id.setAttribute(a.code!, _attributeMap[a.code!]);
       }
     }
     if (id.length == 0) {
-      throw ConceptException('Entity has no identifier.');
+      return null;
     }
     return id;
   }
 
   @override
-  String get code => _code ?? '';
+  String? get code => _code;
 
   set code(String? code) {
     if (_code == null || _concept!.updateCode) {
       _code = code;
     } else {
-      throw CodeException('Entity.code cannot be updated.');
+      throw CodeException('Entity.code! cannot be updated.');
     }
   }
 
@@ -195,15 +195,15 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     }
   }
 
-  String get codeFirstLetterLower => firstLetterLower(code);
+  String get codeFirstLetterLower => firstLetterLower(code!);
 
-  String get codeFirstLetterUpper => firstLetterUpper(code);
+  String get codeFirstLetterUpper => firstLetterUpper(code!);
 
-  String get codeLowerUnderscore => camelCaseLowerSeparator(code, '_');
+  String get codeLowerUnderscore => camelCaseLowerSeparator(code!, '_');
 
-  String get codeLowerSpace => camelCaseLowerSeparator(code, ' ');
+  String get codeLowerSpace => camelCaseLowerSeparator(code!, ' ');
 
-  String get codePlural => plural(code);
+  String get codePlural => plural(code!);
 
   String get codePluralFirstLetterLower => firstLetterLower(codePlural);
 
@@ -241,13 +241,13 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
       var attribute = _concept!.attributes.singleWhereCode(name);
       if (attribute == null) {
-        String msg = '${_concept!.code}.$name is not correct attribute name.';
+        String msg = '${_concept!.code!}.$name is not correct attribute name.';
         throw UpdateException(msg);
       }
       /*
        * validation done in Entities.preAdd
       if (value == null && attribute.minc != '0') {
-        String msg = '${_concept!.code}.$name cannot be null.';
+        String msg = '${_concept!.code!}.$name cannot be null.';
         throw new UpdateException(msg);
       }
       */
@@ -261,7 +261,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         updated = true;
         _whenSet = DateTime.now();
       } else {
-        String msg = '${_concept!.code}.${attribute.code} is not updatable.';
+        String msg = '${_concept!.code!}.${attribute.code!} is not updatable.';
         throw UpdateException(msg);
       }
       if (postSetAttribute(name, value)) {
@@ -272,7 +272,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         pre = false;
         post = false;
         if (beforeValue == null || !setAttribute(name, beforeValue)) {
-          var msg = '${_concept!.code}.${attribute.code} '
+          var msg = '${_concept!.code!}.${attribute.code!} '
               'was set to a new value, post was not successful, '
               'set to the before value was not successful';
           throw RemoveException(msg);
@@ -313,44 +313,44 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     Attribute? attribute =
         _concept!.attributes.singleWhereCode(name) as Attribute?;
     if (attribute == null) {
-      String msg = '${_concept!.code}.$name is not correct attribute name.';
+      String msg = '${_concept!.code!}.$name is not correct attribute name.';
       throw UpdateException(msg);
     }
 
     if (string == 'null') {
       return setAttribute(name, null);
     }
-    if (attribute.type?.code == 'DateTime') {
+    if (attribute.type?.code! == 'DateTime') {
       try {
         return setAttribute(name, DateTime.parse(string));
       } on ArgumentError catch (e) {
-        throw TypeException('${_concept!.code}.${attribute.code} '
+        throw TypeException('${_concept!.code!}.${attribute.code!} '
             'attribute value is not DateTime: $e');
       }
-    } else if (attribute.type?.code == 'bool') {
+    } else if (attribute.type?.code! == 'bool') {
       if (string == 'true') {
         return setAttribute(name, true);
       } else if (string == 'false') {
         return setAttribute(name, false);
       } else {
-        throw TypeException('${attribute.code} '
+        throw TypeException('${attribute.code!} '
             'attribute value is not bool.');
       }
-    } else if (attribute.type?.code == 'int') {
+    } else if (attribute.type?.code! == 'int') {
       try {
         return setAttribute(name, int.parse(string));
       } on FormatException catch (e) {
-        throw TypeException('${attribute.code} '
+        throw TypeException('${attribute.code!} '
             'attribute value is not int: $e');
       }
-    } else if (attribute.type?.code == 'double') {
+    } else if (attribute.type?.code! == 'double') {
       try {
         return setAttribute(name, double.parse(string));
       } on FormatException catch (e) {
-        throw TypeException('${attribute.code} '
+        throw TypeException('${attribute.code!} '
             'attribute value is not double: $e');
       }
-    } else if (attribute.type?.code == 'num') {
+    } else if (attribute.type?.code! == 'num') {
       try {
         return setAttribute(name, int.parse(string));
       } on FormatException catch (e1) {
@@ -358,14 +358,14 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           return setAttribute(name, double.parse(string));
         } on FormatException catch (e2) {
           throw TypeException(
-              '${attribute.code} attribute value is not num: $e1; $e2');
+              '${attribute.code!} attribute value is not num: $e1; $e2');
         }
       }
-    } else if (attribute.type?.code == 'Uri') {
+    } else if (attribute.type?.code! == 'Uri') {
       try {
         return setAttribute(name, Uri.parse(string));
       } on ArgumentError catch (e) {
-        throw TypeException('${attribute.code} attribute value is not Uri: $e');
+        throw TypeException('${attribute.code!} attribute value is not Uri: $e');
       }
     } else {
       // other
@@ -402,8 +402,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         (whenSet!.millisecondsSinceEpoch <
             entity.whenSet!.millisecondsSinceEpoch)) {
       for (Attribute attribute in _concept!.nonIdentifierAttributes) {
-        var newValue = entity.getAttribute(attribute.code);
-        var attributeSet = setAttribute(attribute.code, newValue);
+        var newValue = entity.getAttribute(attribute.code!);
+        var attributeSet = setAttribute(attribute.code!, newValue);
         if (!attributeSet) {
           allSet = false;
         }
@@ -445,10 +445,10 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       if (attribute.identifier) {
         var beforeUpdate = attribute.update;
         attribute.update = true;
-        entity.setAttribute(attribute.code, _attributeMap[attribute.code]);
+        entity.setAttribute(attribute.code!, _attributeMap[attribute.code!]);
         attribute.update = beforeUpdate;
       } else {
-        entity.setAttribute(attribute.code, _attributeMap[attribute.code]);
+        entity.setAttribute(attribute.code!, _attributeMap[attribute.code!]);
       }
     }
 
@@ -456,15 +456,15 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       if (parent.identifier) {
         var beforeUpdate = parent.update;
         parent.update = true;
-        entity.setParent(parent.code, _parentMap[parent.code]);
+        entity.setParent(parent.code!, _parentMap[parent.code!]);
         parent.update = beforeUpdate;
-      } else {
-        entity.setParent(parent.code, _parentMap[parent.code]);
+      } else if (_parentMap[parent.code!] != null) {
+        entity.setParent(parent.code!, _parentMap[parent.code!]);
       }
     }
 
     for (Child child in _concept!.children.whereType<Child>()) {
-      entity.setChild(child.code, _childMap[child.code]!);
+      entity.setChild(child.code!, _childMap[child.code!]!);
     }
 
     return entity as E;
@@ -551,21 +551,21 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       throw new ConceptException('Entity concept is not defined.');
     }
 
-    if (_code != entity.code) {
+    if (_code != entity.code!) {
       return false;
     }
     for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
-      if (_attributeMap[a.code] != entity.getAttribute(a.code)) {
+      if (_attributeMap[a.code!] != entity.getAttribute(a.code!)) {
         return false;
       }
     }
     for (Parent parent in _concept!.parents.whereType<Parent>()) {
-      if (_parentMap[parent.code] != entity.getParent(parent.code)) {
+      if (_parentMap[parent.code!] != entity.getParent(parent.code!)) {
         return false;
       }
     }
     for (Child child in _concept!.children.whereType<Child>()) {
-      if (_childMap[child.code] != entity.getChild(child.code)) {
+      if (_childMap[child.code!] != entity.getChild(child.code!)) {
         return false;
       }
     }
@@ -578,14 +578,14 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   /// if the result is greater than 0 then the first is greater than the second.
   @override
   int compareTo(entity) {
-    if (code.isNotEmpty) {
-      return _code!.compareTo(entity.code);
+    if (code?.isNotEmpty ?? false) {
+      return _code!.compareTo(entity.code!);
     } else if (entity.id != null && id != null) {
       return id!.compareTo(entity.id);
     } else if (concept.attributes.isNotEmpty) {
       return compareAttributes(entity);
     } else {
-      String msg = '${_concept!.code} concept does not have attributes.';
+      String msg = '${_concept!.code!} concept does not have attributes.';
       throw IdException(msg);
     }
   }
@@ -597,8 +597,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   int compareAttributes(E entity) {
     var compare = 0;
     for (Attribute a in concept.attributes.whereType<Attribute>()) {
-      var value1 = _attributeMap[a.code];
-      var value2 = entity.getAttribute(a.code);
+      var value1 = _attributeMap[a.code!];
+      var value2 = entity.getAttribute(a.code!);
 
       // todo: check if this works
       compare = a.type?.compare(value1, value2) ?? 0;
@@ -613,9 +613,9 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   @override
   String toString() {
     if (_code == null) {
-      return '{${_concept!.code}: {oid:${_oid.toString()}}}';
+      return '{${_concept!.code!}: {oid:${_oid.toString()}}}';
     } else {
-      return '{${_concept!.code}: {oid:${_oid.toString()}, code:$_code}}';
+      return '{${_concept!.code!}: {oid:${_oid.toString()}, code:$_code}}';
     }
   }
 
@@ -708,15 +708,15 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   Map<String, Object> toJsonMap() {
     Map<String, Object> entityMap = <String, Object>{};
     for (Parent parent in _concept!.parents.whereType<Parent>()) {
-      Entity? parentEntity = getParent(parent.code) as Entity?;
+      Entity? parentEntity = getParent(parent.code!) as Entity?;
       if (parentEntity != null) {
         var reference = <String, String>{};
         reference['oid'] = parentEntity.oid.toString();
-        reference['parent'] = parentEntity.concept.code;
-        reference['entry'] = parentEntity.concept.entryConcept.code;
-        entityMap[parent.code] = reference;
+        reference['parent'] = parentEntity.concept.code!;
+        reference['entry'] = parentEntity.concept.entryConcept.code!;
+        entityMap[parent.code!] = reference;
       } else {
-        entityMap[parent.code] = 'null';
+        entityMap[parent.code!] = 'null';
       }
     }
     entityMap['oid'] = _oid.toString();
@@ -806,11 +806,11 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
         var beforeUpdate = attribute.update;
         attribute.update = true;
         setStringToAttribute(
-            attribute.code, entityMap[attribute.code] as String);
+            attribute.code!, entityMap[attribute.code!] as String);
         attribute.update = beforeUpdate;
       } else {
         setStringToAttribute(
-            attribute.code, entityMap[attribute.code] as String);
+            attribute.code!, entityMap[attribute.code!] as String);
       }
     }
     _neighborsFromJsonMap(entityMap, internalParent);
@@ -821,18 +821,18 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   void _neighborsFromJsonMap(entityMap, [Entity? internalParent]) {
     for (Child child in concept.children.whereType<Child>()) {
       if (child.internal) {
-        var entitiesList = entityMap[child.code];
-        var childEntities = getChild(child.code) as Entities?;
+        var entitiesList = entityMap[child.code!];
+        var childEntities = getChild(child.code!) as Entities?;
         childEntities?.fromJsonList(entitiesList, this);
-        setChild(child.code, childEntities as Object);
+        setChild(child.code!, childEntities as Object);
       }
     }
 
     for (Parent parent in concept.parents.whereType<Parent>()) {
-      var parentReference = entityMap[parent.code];
+      var parentReference = entityMap[parent.code!];
       if (parentReference == null || parentReference == 'null') {
         if (parent.minc != '0') {
-          throw ParentException('${parent.code} parent cannot be null.');
+          throw ParentException('${parent.code!} parent cannot be null.');
         }
       } else if (parentReference != null) {
         String? parentOidString = parentReference['oid'];
@@ -844,23 +844,23 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           Reference reference =
               Reference(parentOidString, parentConceptCode, entryConceptCode);
           Oid parentOid = reference.oid;
-          setReference(parent.code, reference);
+          setReference(parent.code!, reference);
           if (parent.internal) {
             if (parentOid == internalParent?.oid) {
-              setParent(parent.code, internalParent);
+              setParent(parent.code!, internalParent);
             } else {
               var msg = """
 
               =============================================
-              Internal parent oid is wrong, create issue for ${parent.code}
+              Internal parent oid is wrong, create issue for ${parent.code!}
               on https://github.com/ednet-dev/cms/issues/new?title=_neighborsFromJsonMap%20bug                           
               ---------------------------------------------                            
-              model_entries.dart: entity.setParent(parent.code, internalParent); 
+              model_entries.dart: entity.setParent(parent.code!, internalParent); 
               internal parent oid: ${internalParent?.oid}                  
-              entity concept: ${concept.code}                   
+              entity concept: ${concept.code!}                   
               entity oid: $oid                                
               parent oid: $parentOidString                           
-              parent code: ${parent.code}                              
+              parent code: ${parent.code!}                              
               parent concept: $parentConceptCode                     
               entry concept for parent: $entryConceptCode            
               ---------------------------------------------
@@ -882,20 +882,9 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     Child? child = _concept!.children.singleWhereCode(name) as Child?;
     if (child == null) {
       String msg =
-          '${_concept!.code}.$name is not correct child entities name.';
+          '${_concept!.code!}.$name is not correct child entities name.';
       throw UpdateException(msg);
     }
-    // bool areSame = (_childMap[name] as Entities).concept == entities.concept;
-    //
-    // if (areSame) {
-    //   return false;
-    // }
-    //       Map.castFrom<String, dynamic, String, T>(_childMap)[name] = entities;
-    //
-    //       if (child.internal) {
-    //         Map.castFrom<String, dynamic, String, T>(_internalChildMap)[name] =
-    //             entities;
-    //       }
 
     if (child.update) {
       _childMap.update(name, (value) => entities);
@@ -904,7 +893,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
       return true;
     } else {
-      String msg = '${_concept!.code}.${child.code} is not updatable.';
+      String msg = '${_concept!.code!}.${child.code!} is not updatable.';
       throw UpdateException(msg);
     }
   }
@@ -917,30 +906,24 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
     Parent? parent = _concept!.parents.singleWhereCode(name) as Parent?;
     if (parent == null) {
-      String msg = '${_concept!.code}.$name is not correct parent entity name.';
+      String msg = '${_concept!.code!}.$name is not correct parent entity name.';
       throw UpdateException(msg);
     }
 
-    bool areSame = (_parentMap[name] as Entities?)?.concept == entity.concept;
-
-    if (areSame) {
-      return false;
-    }
-
-    if (getParent(name) == null) {
-      var reference = Reference(entity.oid.toString(), entity.concept.code,
-          entity.concept.entryConcept.code);
+    if (entity != null && getParent(name) == null) {
+      var reference = Reference(entity.oid.toString(), entity.concept.code!,
+          entity.concept.entryConcept.code!);
       _parentMap[name] = entity;
       _referenceMap[name] = reference;
       return true;
-    } else if (parent.update) {
-      var reference = Reference(entity.oid.toString(), entity.concept.code,
-          entity.concept.entryConcept.code);
+    } else if (entity != null && parent.update) {
+      var reference = Reference(entity.oid.toString(), entity.concept.code!,
+          entity.concept.entryConcept.code!);
       _parentMap[name] = entity;
       _referenceMap[name] = reference;
       return true;
     } else {
-      String msg = '${_concept!.code}.${parent.code} is not updatable.';
+      String msg = '${_concept!.code!}.${parent.code!} is not updatable.';
       throw UpdateException(msg);
     }
   }

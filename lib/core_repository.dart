@@ -15,7 +15,7 @@ class CoreRepository {
       : _domainModelsMap = const <String, DomainModels>{};
 
   void add(DomainModels domainModels) {
-    var domainCode = domainModels.domain.code;
+    var domainCode = domainModels.domain.code!;
     var models = getDomainModels(domainCode);
     if (models == null) {
       _domainModelsMap[domainCode] = domainModels;

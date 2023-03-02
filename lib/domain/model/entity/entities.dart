@@ -199,7 +199,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       for (Entity entity in _entityList) {
         for (Child child in _concept!.children.whereType<Child>()) {
           if (child.internal) {
-            Entities? childEntities = entity.getChild(child.code) as Entities?;
+            Entities? childEntities = entity.getChild(child.code!) as Entities?;
             Entity? childEntity = childEntities?.internalSingle(oid);
             if (childEntity != null) {
               return childEntity;
@@ -224,7 +224,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       for (Entity entity in _entityList) {
         for (Child child in _concept!.children.whereType<Child>()) {
           if (child.internal) {
-            Entities? childEntities = entity.getChild(child.code) as Entities?;
+            Entities? childEntities = entity.getChild(child.code!) as Entities?;
             Entity? childEntity = childEntities?.internalSingle(oid);
             if (childEntity != null) {
               return childEntities;
@@ -338,8 +338,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     selectedEntities.propagateToSource = false;
     for (E entity in _entityList) {
       for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
-        if (a.code == code) {
-          if (entity.getAttribute(a.code) == attribute) {
+        if (a.code! == code) {
+          if (entity.getAttribute(a.code!) == attribute) {
             selectedEntities.add(entity);
           }
         }
@@ -365,8 +365,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     selectedEntities.propagateToSource = false;
     for (E entity in _entityList) {
       for (Parent p in _concept!.parents.whereType<Parent>()) {
-        if (p.code == code) {
-          if (entity.getParent(p.code) == parent) {
+        if (p.code! == code) {
+          if (entity.getParent(p.code!) == parent) {
             selectedEntities.add(entity);
           }
         }
@@ -483,8 +483,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   /// Loads entities without validations to this, which must be empty.
-  void fromJsonList(entitiesList,
-      [Entity? internalParent]) {
+  void fromJsonList(entitiesList, [Entity? internalParent]) {
     if (_concept == null) {
       throw new ConceptException('entities concept does not exist.');
     }
@@ -513,7 +512,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       throw new ConceptException('Entities.toString: concept is not defined.');
     }
 
-    return '${_concept!.code}: entities:$length';
+    return '${_concept!.code!}: entities:$length';
   }
 
   @override
@@ -548,8 +547,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       throw new ConceptException('Entities.add: concept is not defined.');
     }
     if (!_concept!.add) {
-      throw new AddException(
-          'An entity cannot be added to ${_concept!.codes}.');
+      throw new AddException('An entity cannot be added to ${_concept!.code}.');
     }
 
     bool result = true;
@@ -561,7 +559,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         maxInt = int.parse(maxc);
         if (length == maxInt) {
           const category = 'max cardinality';
-          final message = '${_concept!.codes}.max is $maxc.';
+          final message = '${_concept!.code}.max is $maxc.';
           var exception = ValidationException(category, message);
 
           exceptions.add(exception);
@@ -577,21 +575,21 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
       if (a.increment != null) {
         if (length == 0) {
-          entity.setAttribute(a.code, a.increment!);
-        } else if (a.type?.code == 'int') {
+          entity.setAttribute(a.code!, a.increment!);
+        } else if (a.type?.code! == 'int') {
           var lastEntity = last;
-          int incrementAttribute = lastEntity.getAttribute(a.code) as int;
+          int incrementAttribute = lastEntity.getAttribute(a.code!) as int;
           var attributeUpdate = a.update;
           a.update = true;
-          entity.setAttribute(a.code, incrementAttribute + a.increment!);
+          entity.setAttribute(a.code!, incrementAttribute + a.increment!);
           a.update = attributeUpdate;
         } else {
           throw TypeException(
-              '${a.code} attribute value cannot be incremented.');
+              '${a.code!} attribute value cannot be incremented.');
         }
-      } else if (a.required && entity.getAttribute(a.code) == null) {
+      } else if (a.required && entity.getAttribute(a.code!) == null) {
         const category = 'required';
-        final message = '${entity.concept.code}.${a.code} attribute is null.';
+        final message = '${entity.concept.code!}.${a.code!} attribute is null.';
         final exception = ValidationException(category, message);
 
         exceptions.add(exception);
@@ -599,9 +597,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       }
     }
     for (Parent p in _concept!.parents.whereType<Parent>()) {
-      if (p.required && entity.getParent(p.code) == null) {
+      if (p.required && entity.getParent(p.code!) == null) {
         const category = 'required';
-        final message = '${entity.concept.code}.${p.code} parent is null.';
+        final message = '${entity.concept.code!}.${p.code!} parent is null.';
         final exception = ValidationException(category, message);
 
         exceptions.add(exception);
@@ -609,7 +607,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       }
     }
     const category = 'unique';
-    final message = '${entity.concept.code}.code is not unique.';
+    final message = '${entity.concept.code!}.code! is not unique.';
     // uniqueness validation
     if (entity.id != null && singleWhereId(entity.id!) != null) {
       ValidationException exception = ValidationException(category, message);
@@ -631,7 +629,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       if (propagated) {
         _entityList.add(entity);
         _oidEntityMap[entity.oid.timeStamp] = entity;
-        _codeEntityMap[entity.code] = entity;
+        if (entity.code != null) {
+          _codeEntityMap[entity.code!] = entity;
+        }
         if (entity.id != null) {
           _idEntityMap[entity.id.toString()] = entity;
         }
@@ -644,7 +644,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           pre = false;
           post = false;
           if (!remove(entity)) {
-            var msg = '${entity.concept.code} entity (${entity.oid}) '
+            var msg = '${entity.concept.code!} entity (${entity.oid}) '
                 'was added, post was not successful, remove was not successful';
             throw RemoveException(msg);
           } else {
@@ -655,8 +655,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         }
       } else {
         // not propagated
-        var msg = '${entity.concept.code} entity (${entity.oid}) '
-            'was not added - propagation to the source ${source?.concept.code} '
+        var msg = '${entity.concept.code!} entity (${entity.oid}) '
+            'was not added - propagation to the source ${source?.concept.code!} '
             'entities was not successful';
         throw AddException(msg);
       }
@@ -700,7 +700,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     }
     if (!_concept!.remove) {
       throw new RemoveException(
-          'An entity cannot be removed from ${_concept!.codes}.');
+          'An entity cannot be removed from ${_concept!.code}.');
     }
 
     bool result = true;
@@ -712,7 +712,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         minInt = int.parse(minc);
         if (length == minInt) {
           const category = 'min';
-          final message = '${_concept!.codes}.min is $minc.';
+          final message = '${_concept!.code}.min is $minc.';
           ValidationException exception =
               ValidationException(category, message);
 
@@ -739,7 +739,9 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       if (propagated) {
         if (_entityList.remove(entity)) {
           _oidEntityMap.remove(entity.oid.timeStamp);
-          _codeEntityMap.remove(entity.code);
+          if (entity.code != null) {
+            _codeEntityMap.remove(entity.code!);
+          }
           if (entity.id != null) {
             _idEntityMap.remove(entity.id.toString());
           }
@@ -752,7 +754,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
             pre = false;
             post = false;
             if (!add(entity)) {
-              var msg = '${entity.concept.code} entity (${entity.oid}) '
+              var msg = '${entity.concept.code!} entity (${entity.oid}) '
                   'was removed, post was not successful, add was not successful';
               throw AddException(msg);
             } else {
@@ -764,8 +766,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         }
       } else {
         // not propagated
-        var msg = '${entity.concept.code} entity (${entity.oid}) '
-            'was not removed - propagation to the source ${source!.concept.code} '
+        var msg = '${entity.concept.code!} entity (${entity.oid}) '
+            'was not removed - propagation to the source ${source!.concept.code!} '
             'entities was not successful';
         throw RemoveException(msg);
       }
@@ -807,7 +809,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         beforeEntity.code == afterEntity.code &&
         beforeEntity.id == afterEntity.id) {
       throw UpdateException(
-          '${_concept!.codes}.update can only be used if oid, code or id set.');
+          '${_concept!.code}.update can only be used if oid, code or id set.');
     }
     if (remove(beforeEntity)) {
       if (add(afterEntity)) {
@@ -817,18 +819,18 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         if (add(beforeEntity)) {
           const category = 'update';
           final message =
-              '${_concept!.codes}.update fails to add after update entity.';
+              '${_concept!.code}.update fails to add after update entity.';
           var exception = ValidationException(category, message);
           exceptions.add(exception);
         } else {
           throw UpdateException(
-              '${_concept!.codes}.update fails to add back before update entity.');
+              '${_concept!.code}.update fails to add back before update entity.');
         }
       }
     } else {
       const category = 'update';
       final message =
-          '${_concept!.codes}.update fails to remove before update entity.';
+          '${_concept!.code}.update fails to remove before update entity.';
       var exception = ValidationException(category, message);
 
       exceptions.add(exception);
