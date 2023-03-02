@@ -7,8 +7,8 @@ class Id implements IId<Id> {
   final Map<String, Object?> _attributeMap;
 
   Id(this._concept)
-      : _referenceMap = <String, Reference>{},
-        _attributeMap = <String, Object>{} {
+      : _referenceMap = <String, Reference?>{},
+        _attributeMap = <String, Object?>{} {
     for (Parent p in _concept.parents.whereType<Parent>()) {
       if (p.identifier) {
         _referenceMap.remove(p.code);

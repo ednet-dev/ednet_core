@@ -162,7 +162,7 @@ class ModelEntries implements IModelEntries {
             entity.setParent(parent.code, parentEntity);
             //print('parent.opposite.code: ${parent.opposite.code}');
             var parentChildEntities =
-                parentEntity.getChild(parent.opposite?.code);
+                parentEntity.getChild(parent.opposite?.code) as Entities?;
             //print('parentChildEntities.length before add: ${parentChildEntities.length}');
             parentChildEntities?.add(entity);
             //print('parentChildEntities.length after add: ${parentChildEntities.length}');
@@ -170,7 +170,7 @@ class ModelEntries implements IModelEntries {
         }
       }
       for (Child internalChild in entity.concept.internalChildren) {
-        var childEntities = entity.getChild(internalChild.code);
+        var childEntities = entity.getChild(internalChild.code) as Entities?;
         populateEntityReferences(childEntities!);
       }
     }

@@ -3,7 +3,7 @@ part of ednet_core;
 class ValidationExceptions implements IValidationExceptions {
   final List<ValidationException> _exceptionList;
 
-  const ValidationExceptions() : _exceptionList = const <ValidationException>[];
+  ValidationExceptions() : _exceptionList = <ValidationException>[];
 
   @override
   int get length => _exceptionList.length;

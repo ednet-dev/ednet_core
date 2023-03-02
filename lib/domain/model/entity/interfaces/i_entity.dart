@@ -30,17 +30,17 @@ abstract class IEntity<E extends IEntity<E>> implements Comparable {
 
   bool setStringToAttribute(String name, String string);
 
-  IEntity? getParent(String name);
+  Object? getParent(String name);
 
   bool setParent(String name, entity);
 
-  IEntities? getChild(String name);
+  Object? getChild(String name);
 
-  bool setChild(String name, IEntities entities);
+  bool setChild<T extends IEntity<T>>(String name, IEntities<T> entities);
 
   E copy();
 
   String toJson();
 
-  void fromJson(String entityJson);
+  void fromJson<K extends Entity<K>>(String entityJson);
 }

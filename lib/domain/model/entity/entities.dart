@@ -10,7 +10,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   Entities();
 
   @override
-  ValidationExceptions exceptions = const ValidationExceptions();
+  ValidationExceptions exceptions = ValidationExceptions();
   @override
   Entities<E>? source;
 
@@ -199,7 +199,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       for (Entity entity in _entityList) {
         for (Child child in _concept!.children.whereType<Child>()) {
           if (child.internal) {
-            Entities? childEntities = entity.getChild(child.code);
+            Entities? childEntities = entity.getChild(child.code) as Entities?;
             Entity? childEntity = childEntities?.internalSingle(oid);
             if (childEntity != null) {
               return childEntity;
@@ -224,7 +224,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       for (Entity entity in _entityList) {
         for (Child child in _concept!.children.whereType<Child>()) {
           if (child.internal) {
-            Entities? childEntities = entity.getChild(child.code);
+            Entities? childEntities = entity.getChild(child.code) as Entities?;
             Entity? childEntity = childEntities?.internalSingle(oid);
             if (childEntity != null) {
               return childEntities;
@@ -238,23 +238,22 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   @override
   E? singleWhereCode(String? code) {
-    return _codeEntityMap[code]!;
+    return _codeEntityMap[code];
   }
 
   @override
-  E singleWhereId(IId<E> id) {
+  E? singleWhereId(Id id) {
     var entity = _idEntityMap[id.toString()];
     if (entity != null) {
       return entity;
     }
 
-    throw EDNetException('Entity not found: $id');
+    return null;
   }
 
   @override
-  E singleWhereAttributeId(String code, Object attribute) {
-    return singleWhereId(
-        (Id(_concept!) as IId<E>)..setAttribute(code, attribute));
+  E? singleWhereAttributeId(String code, Object attribute) {
+    return singleWhereId((Id(_concept!))..setAttribute(code, attribute));
   }
 
   /// Copies the entities.
@@ -609,14 +608,19 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         result = false;
       }
     }
-
-    // uniqueness validation
     const category = 'unique';
     final message = '${entity.concept.code}.code is not unique.';
-    final exception = ValidationException(category, message);
-
-    exceptions.add(exception);
-    result = false;
+    // uniqueness validation
+    if (entity.code.isEmpty && singleWhereCode(entity.code) != null) {
+      var exception = ValidationException(category, message);
+      exceptions.add(exception);
+      result = false;
+    }
+    if (entity.id != null && singleWhereId(entity.id!) != null) {
+      ValidationException exception = ValidationException(category, message);
+      exceptions.add(exception);
+      result = false;
+    }
 
     return result;
   }

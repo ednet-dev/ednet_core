@@ -8,15 +8,15 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   DateTime? _whenSet;
   DateTime? _whenRemoved;
   @override
-  var exceptions = const ValidationExceptions();
+  var exceptions = ValidationExceptions();
 
   Map<String, Object?> _attributeMap = <String, Object?>{};
 
   // cannot use T since a parent is of a different type
   Map<String, Reference> _referenceMap = <String, Reference>{};
-  Map<String, Entity?> _parentMap = <String, Entity?>{};
-  Map<String, Entities?> _childMap = <String, Entities>{};
-  Map<String, Entities?> _internalChildMap = <String, Entities>{};
+  Map<String, Object?> _parentMap = <String, Object?>{};
+  Map<String, Object?> _childMap = <String, Object?>{};
+  Map<String, Object?> _internalChildMap = <String, Object?>{};
 
   bool pre = false;
   bool post = false;
@@ -44,11 +44,11 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   set concept(Concept concept) {
     _concept = concept;
-    _attributeMap = <String, Object>{};
+    _attributeMap = <String, Object?>{};
     _referenceMap = <String, Reference>{};
-    _parentMap = <String, Entity<E>>{};
-    _childMap = <String, Entities<E>>{};
-    _internalChildMap = <String, Entities<E>>{};
+    _parentMap = <String, Object?>{};
+    _childMap = <String, Object?>{};
+    _internalChildMap = <String, Object?>{};
 
     pre = true;
     post = true;
@@ -382,12 +382,18 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   @override
-  Entity? getParent(String name) => _parentMap[name];
+  Object? getParent(String name) => _parentMap[name];
 
-  Entities getInternalChild(String name) => _internalChildMap[name]!;
+  Object? getInternalChild(String name) => _internalChildMap[name];
 
   @override
-  Entities? getChild(String? name) => _childMap[name];
+  Object? getChild(String? name) {
+    return _childMap[name];
+    // Map<String, Entities<C>> r = _childMap.cast<String, Entities<C>>();
+    // var h = r.containsKey(name);
+    // Entities<C> val = r[name] as Entities<C>;
+    // return val;
+  }
 
   bool setAttributesFrom(Entity entity) {
     bool allSet = true;
@@ -458,7 +464,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     }
 
     for (Child child in _concept!.children.whereType<Child>()) {
-      entity.setChild(child.code, _childMap[child.code] as IEntities<E>);
+      entity.setChild<E>(child.code, _childMap[child.code] as IEntities<E>);
     }
 
     return entity as E;
@@ -668,7 +674,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           if (_concept!.isChildSensitive(k)) {
             print('**********');
           } else {
-            v?.display(
+            (v as Entities).display(
                 title: '$s$k',
                 prefix: '$s  ',
                 withOid: withOid,
@@ -682,7 +688,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           if (_concept!.isChildSensitive(k)) {
             print('**********');
           } else {
-            v?.display(
+            (v as Entities).display(
                 title: '$s$k',
                 prefix: '$s  ',
                 withOid: withOid,
@@ -702,7 +708,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   Map<String, Object> toJsonMap() {
     Map<String, Object> entityMap = <String, Object>{};
     for (Parent parent in _concept!.parents.whereType<Parent>()) {
-      Entity? parentEntity = getParent(parent.code);
+      Entity? parentEntity = getParent(parent.code) as Entity?;
       if (parentEntity != null) {
         var reference = <String, String>{};
         reference['oid'] = parentEntity.oid.toString();
@@ -724,13 +730,13 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     }
 
     for (var k in _internalChildMap.keys) {
-      entityMap[k] = getInternalChild(k).toJsonList();
+      entityMap[k] = (getInternalChild(k) as Entities).toJsonList();
     }
     return entityMap;
   }
 
   @override
-  void fromJson(String entityJson) {
+  void fromJson<K extends Entity<K>>(String entityJson) {
     Map<String, Object> entityMap = jsonDecode(entityJson);
     fromJsonMap(entityMap);
   }
@@ -818,7 +824,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       if (child.internal) {
         List<Map<String, Object>> entitiesList =
             entityMap[child.code] as List<Map<String, Object>>;
-        var childEntities = getChild(child.code);
+        var childEntities = getChild(child.code) as Entities?;
         childEntities?.fromJsonList(entitiesList, this);
         setChild(child.code, childEntities as IEntities<E>);
       }
@@ -870,7 +876,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   }
 
   @override
-  bool setChild(String name, IEntities entities) {
+  bool setChild<P extends IEntity<P>>(String name, IEntities<P> entities) {
     if (_concept == null) {
       throw new ConceptException('Entity concept is not defined.');
     }
@@ -881,8 +887,20 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
           '${_concept!.code}.$name is not correct child entities name.';
       throw UpdateException(msg);
     }
+    // bool areSame = (_childMap[name] as Entities).concept == entities.concept;
+    //
+    // if (areSame) {
+    //   return false;
+    // }
+    //       Map.castFrom<String, dynamic, String, T>(_childMap)[name] = entities;
+    //
+    //       if (child.internal) {
+    //         Map.castFrom<String, dynamic, String, T>(_internalChildMap)[name] =
+    //             entities;
+    //       }
+
     if (child.update) {
-      _childMap[name] = entities as Entities;
+      _childMap.update(name, (value) => entities);
       if (child.internal) {
         _internalChildMap[name] = entities;
       }
@@ -905,16 +923,22 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       throw UpdateException(msg);
     }
 
+    bool areSame = (_parentMap[name] as Entities?)?.concept == entity.concept;
+
+    if (areSame) {
+      return false;
+    }
+
     if (getParent(name) == null) {
-      _parentMap[name] = entity;
       var reference = Reference(entity.oid.toString(), entity.concept.code,
           entity.concept.entryConcept.code);
+      _parentMap[name] = entity;
       _referenceMap[name] = reference;
       return true;
     } else if (parent.update) {
-      _parentMap[name] = entity;
       var reference = Reference(entity.oid.toString(), entity.concept.code,
           entity.concept.entryConcept.code);
+      _parentMap[name] = entity;
       _referenceMap[name] = reference;
       return true;
     } else {
