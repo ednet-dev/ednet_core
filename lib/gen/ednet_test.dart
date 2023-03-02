@@ -31,7 +31,7 @@ String genEDNetGen(Model model) {
   sc = '$sc \n';
 
   sc = '${sc}void main() { \n';
-  sc = '$sc  var repository = new Repository(); \n';
+  sc = '$sc  var repository = CoreRepository(); \n';
   sc = '$sc  genCode(repository); \n';
   sc = '$sc  //initData(repository); \n';
   sc = '$sc} \n';
@@ -780,7 +780,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc \n';
 
   sc = '${sc}void main() { \n';
-  sc = '$sc  var repository = new Repository(); \n';
+  sc = '$sc  var repository = CoreRepository(); \n';
   sc = '$sc  var ${domain.codeFirstLetterLower}Domain = '
       'repository.getDomainModels("${domain.code}");   \n';
   sc = '$sc  assert(${domain.codeFirstLetterLower}Domain != null); \n';

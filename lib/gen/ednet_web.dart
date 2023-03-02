@@ -35,7 +35,7 @@ String genEDNetWeb(Model model) {
   sc = '${sc} \n';
 
   sc = '${sc}void main() { \n';
-  sc = '${sc}  var repository = new Repository(); \n';
+  sc = '${sc}  var repository = CoreRepository(); \n';
   sc = '${sc}  initData(repository); \n';
   sc = '${sc}  showData(repository); \n';
   sc = '${sc}} \n';
