@@ -5,8 +5,9 @@ String genEDNetGen(Model model) {
 
   var sc = ' \n';
   sc = '$sc// test/${domain.codeLowerUnderscore}/${model.codeLowerUnderscore}/'
-      '${domain.codeLowerUnderscore}_${model.codeLowerUnderscore}_gen.dart \n';
-  sc = '$sc \n';
+      '${domain.codeLowerUnderscore}_${model.codeLowerUnderscore}_gen.dart ';
+
+  sc = '$sc\nimport "package:ednet_core/ednet_core.dart"; \n';
 
   sc = '${sc}import "package:${domain.codeLowerUnderscore}_'
       '${model.codeLowerUnderscore}/${domain.codeLowerUnderscore}_'
@@ -22,10 +23,10 @@ String genEDNetGen(Model model) {
   sc = '${sc}void initData(CoreRepository repository) { \n';
   sc = '$sc   var ${domain.codeFirstLetterLower}Domain = '
       'repository.getDomainModels("${domain.code}"); \n';
-  sc = '$sc   var ${model.codeFirstLetterLower}Model = '
-      '${domain.codeFirstLetterLower}Domain.'
-      'getModelEntries("${model.code}"); \n';
-  sc = '$sc   ${model.codeFirstLetterLower}Model.init(); \n';
+  sc = '$sc   ${model.code}Model? ${model.codeFirstLetterLower}Model = '
+      '${domain.codeFirstLetterLower}Domain?.'
+      'getModelEntries("${model.code}") as ${model.code}Model?; \n';
+  sc = '$sc   ${model.codeFirstLetterLower}Model?.init(); \n';
   sc = '$sc   //${model.codeFirstLetterLower}Model.display(); \n';
   sc = '$sc} \n';
   sc = '$sc \n';
@@ -93,7 +94,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc      expect(${model.codeFirstLetterLower}Model.isEmpty, '
       'isTrue); \n';
   sc = '$sc      expect($entities.isEmpty, isTrue); \n';
-  sc = '$sc      expect($entities.errors.isEmpty, isTrue); \n';
+  sc = '$sc      expect($entities.exceptions..isEmpty, isTrue); \n';
   sc = '$sc    }); \n';
   sc = '$sc \n';
 
@@ -150,15 +151,15 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   if (requiredNonIdAttribute != null) {
     sc = '$sc      var ${entity}Concept = $entities.concept; \n';
     sc = '$sc      var ${entity}Count = $entities.length; \n';
-    sc = '$sc      var $entity = new $entity2(${entity}Concept); \n';
+    sc = '$sc      var $entity = $entity2(${entity}Concept); \n';
     sc = '$sc      var added = $entities.add($entity); \n';
     sc = '$sc      expect(added, isFalse); \n';
     sc = '$sc      expect($entities.length, equals(${entity}Count)); \n';
-    sc = '$sc      expect($entities.errors.length, greaterThan(0)); \n';
-    sc = '$sc      expect($entities.errors.toList()[0].category, '
+    sc = '$sc      expect($entities.exceptions..length, greaterThan(0)); \n';
+    sc = '$sc      expect($entities.exceptions..toList()[0].category, '
         'equals("required")); \n';
     sc = '$sc \n';
-    sc = '$sc      $entities.errors.display(title: "Add $entity required '
+    sc = '$sc      $entities.exceptions..display(title: "Add $entity required '
         'error"); \n';
   } else {
     sc = '$sc      // no required attribute that is not id \n';
@@ -172,16 +173,16 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
     if (idAttribute.increment == null) {
       sc = '$sc      var ${entity}Concept = $entities.concept; \n';
       sc = '$sc      var ${entity}Count = $entities.length; \n';
-      sc = '$sc      var $entity = new $entity2(${entity}Concept); \n';
+      sc = '$sc      var $entity = $entity2(${entity}Concept); \n';
       sc = '$sc      var random$entity2 = $entities.random(); \n';
       sc = '$sc      $entity.${idAttribute.code} = '
           'random$entity2.${idAttribute.code}; \n';
       sc = '$sc      var added = $entities.add($entity); \n';
       sc = '$sc      expect(added, isFalse); \n';
       sc = '$sc      expect($entities.length, equals(${entity}Count)); \n';
-      sc = '$sc      expect($entities.errors.length, greaterThan(0)); \n';
+      sc = '$sc      expect($entities.exceptions..length, greaterThan(0)); \n';
       sc = '$sc \n';
-      sc = '$sc      $entities.errors.display(title: "Add $entity unique '
+      sc = '$sc      $entities.exceptions..display(title: "Add $entity unique '
           'error"); \n';
     } else {
       sc = '$sc      // id attribute defined as increment, cannot update it \n';
@@ -192,8 +193,8 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc    }); \n';
   sc = '$sc \n';
 
-  sc = '$sc    test("Not found $entity by new oid", () { \n';
-  sc = '$sc      var ednetOid = new Oid.ts(1345648254063); \n';
+  sc = '$sc    test("Not found $entity by oid", () { \n';
+  sc = '$sc      var ednetOid = Oid.ts(1345648254063); \n';
   sc = '$sc      var $entity = $entities.singleWhereOid(ednetOid); \n';
   sc = '$sc      expect($entity, isNull); \n';
   sc = '$sc    }); \n';
@@ -304,10 +305,10 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
     sc = '$sc          $entities.selectWhereAttribute('
         '"${nonIdAttribute.code}", random$entity2.${nonIdAttribute.code}); \n';
     sc = '$sc      expect(selected$entities2.isEmpty, isFalse); \n';
-    sc = '$sc      expect(selected$entities2.source.isEmpty, isFalse); \n';
+    sc = '$sc      expect(selected$entities2.source?.isEmpty, isFalse); \n';
     sc = '$sc      var ${entities}Count = $entities.length; \n';
     sc = '$sc \n';
-    sc = '$sc      var $entity = new $entity2($entities.concept); \n';
+    sc = '$sc      var $entity = $entity2($entities.concept); \n';
     var attributesSet = setTestAttributesRandomly(entryConcept, entity);
     sc = '$sc$attributesSet';
     sc = '$sc      var added = selected$entities2.add($entity); \n';
@@ -330,7 +331,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
     sc = '$sc          $entities.selectWhereAttribute('
         '"${nonIdAttribute.code}", random$entity2.${nonIdAttribute.code}); \n';
     sc = '$sc      expect(selected$entities2.isEmpty, isFalse); \n';
-    sc = '$sc      expect(selected$entities2.source.isEmpty, isFalse); \n';
+    sc = '$sc      expect(selected$entities2.source?.isEmpty, isFalse); \n';
     sc = '$sc      var ${entities}Count = $entities.length; \n';
     sc = '$sc \n';
     sc = '$sc      var removed = selected$entities2.remove(random$entity2); \n';
@@ -370,8 +371,8 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
     sc = '$sc      expect(ordered$entities2.isEmpty, isFalse); \n';
     sc = '$sc      expect(ordered$entities2.length, '
         'equals($entities.length)); \n';
-    sc = '$sc      expect(ordered$entities2.source.isEmpty, isFalse); \n';
-    sc = '$sc      expect(ordered$entities2.source.length, '
+    sc = '$sc      expect(ordered$entities2.source?.isEmpty, isFalse); \n';
+    sc = '$sc      expect(ordered$entities2.source?.length, '
         'equals($entities.length)); \n';
     sc = '$sc      expect(ordered$entities2, isNot(same($entities))); \n';
     sc = '$sc \n';
@@ -384,8 +385,8 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
     sc = '$sc      expect(ordered$entities2.isEmpty, isFalse); \n';
     sc = '$sc      expect(ordered$entities2.length, '
         'equals($entities.length)); \n';
-    sc = '$sc      expect(ordered$entities2.source.isEmpty, isFalse); \n';
-    sc = '$sc      expect(ordered$entities2.source.length, '
+    sc = '$sc      expect(ordered$entities2.source?.isEmpty, isFalse); \n';
+    sc = '$sc      expect(ordered$entities2.source?.length, '
         'equals($entities.length)); \n';
     sc = '$sc      expect(ordered$entities2, isNot(same($entities))); \n';
     sc = '$sc \n';
@@ -406,7 +407,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   if (entryConcept.hasId) {
     sc = '$sc      copied$entities2.forEach((e) => \n';
     sc =
-        '$sc        expect(e, isNot(same($entities.singleWhereId(e.id))))); \n';
+        '$sc        expect(e, isNot(same($entities.singleWhereId(e.id as IId<${entryConcept.code}>))))); \n';
   }
   sc = '$sc \n';
   sc = '$sc      //copied$entities2.display(title: "Copy $entities"); \n';
@@ -440,9 +441,10 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
       sc = '$sc      var random$entity2 = $entities.random(); \n';
       sc = '$sc      var beforeUpdate = random$entity2.${idAttribute.code}; \n';
       sc = '$sc      try { \n';
-      var attributeSet = setTestAttributeRandomly(idAttribute, 'random$entity2');
+      var attributeSet =
+          setTestAttributeRandomly(idAttribute, 'random$entity2');
       sc = '$sc  $attributeSet';
-      sc = '$sc      } on UpdateError catch (e) { \n';
+      sc = '$sc      } on UpdateException catch (e) { \n';
       sc = '$sc        expect(random$entity2.${idAttribute.code}, '
           'equals(beforeUpdate)); \n';
       sc = '$sc      } \n';
@@ -482,13 +484,13 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
       sc = '$sc      var afterUpdateEntity = random$entity2.copy(); \n';
       sc = '$sc      var attribute = random$entity2.concept.attributes.'
           'singleWhereCode("${idAttribute.code}"); \n';
-      sc = '$sc      expect(attribute.update, isFalse); \n';
-      sc = '$sc      attribute.update = true; \n';
+      sc = '$sc      expect(attribute?.update, isFalse); \n';
+      sc = '$sc      attribute?.update = true; \n';
       var value = genAttributeTextRandomly(idAttribute);
       sc = '$sc      afterUpdateEntity.${idAttribute.code} = $value; \n';
       sc = '$sc      expect(afterUpdateEntity.${idAttribute.code}, '
           'equals($value)); \n';
-      sc = '$sc      attribute.update = false; \n';
+      sc = '$sc      attribute?.update = false; \n';
       sc = '$sc      var updated = $entities.update(random$entity2, '
           'afterUpdateEntity); \n';
       sc = '$sc      expect(updated, isTrue); \n';
@@ -557,7 +559,8 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
     sc = '$sc      expect(idsEqual, isTrue); \n';
     sc = '$sc \n';
     sc = '$sc      idsEqual = false; \n';
-    sc = '$sc      if (random$entity2.id.equals(random${entity2}Copy.id)) { \n';
+    sc =
+        '$sc      if (random$entity2.id!.equals(random${entity2}Copy.id!)) { \n';
     sc = '$sc        idsEqual = true; \n';
     sc = '$sc      } \n';
     sc = '$sc      expect(idsEqual, isTrue); \n';
@@ -565,7 +568,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc    }); \n';
   sc = '$sc \n';
 
-  sc = '$sc    test("New $entity action undo and redo", () { \n';
+  sc = '$sc    test("$entity action undo and redo", () { \n';
   //sc = '${sc}      var ${entity}Concept = ${entities}.concept; \n';
   sc = '$sc      var ${entity}Count = $entities.length; \n';
   sc =
@@ -574,7 +577,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc      $entities.remove($entity); \n';
   sc = '$sc      expect($entities.length, equals(--${entity}Count)); \n';
   sc = '$sc \n';
-  sc = '$sc      var action = new AddAction(session, $entities, $entity); \n';
+  sc = '$sc      var action = AddCommand(session, $entities, $entity); \n';
   sc = '$sc      action.doIt(); \n';
   sc = '$sc      expect($entities.length, equals(++${entity}Count)); \n';
   sc = '$sc \n';
@@ -586,7 +589,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc    }); \n';
   sc = '$sc \n';
 
-  sc = '$sc    test("New $entity session undo and redo", () { \n';
+  sc = '$sc    test("$entity session undo and redo", () { \n';
   //sc = '${sc}      var ${entity}Concept = ${entities}.concept; \n';
   sc = '$sc      var ${entity}Count = $entities.length; \n';
   sc =
@@ -595,7 +598,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc      $entities.remove($entity); \n';
   sc = '$sc      expect($entities.length, equals(--${entity}Count)); \n';
   sc = '$sc \n';
-  sc = '$sc      var action = new AddAction(session, $entities, $entity); \n';
+  sc = '$sc      var action = AddCommand(session, $entities, $entity); \n';
   sc = '$sc      action.doIt(); \n';
   sc = '$sc      expect($entities.length, equals(++${entity}Count)); \n';
   sc = '$sc \n';
@@ -611,7 +614,7 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   if (nonIdAttribute != null) {
     sc = '$sc      var $entity = $entities.random(); \n';
     var value = genAttributeTextRandomly(nonIdAttribute);
-    sc = '$sc      var action = new SetAttributeAction(session, '
+    sc = '$sc      var action = SetAttributeCommand(session, '
         '$entity, "${nonIdAttribute.code}", $value); \n';
     sc = '$sc      action.doIt(); \n';
     sc = '$sc \n';
@@ -632,16 +635,16 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc      var ${entity}Count = $entities.length; \n';
   sc = '$sc      var ${entity}1 = $entities.random(); \n';
   sc = '$sc \n';
-  sc = '$sc      var action1 = new RemoveAction(session, $entities, '
+  sc = '$sc      var action1 = RemoveCommand(session, $entities, '
       '${entity}1); \n';
-  sc = '$sc      action1.doit(); \n';
+  sc = '$sc      action1.doIt(); \n';
   sc = '$sc      expect($entities.length, equals(--${entity}Count)); \n';
   sc = '$sc \n';
   sc = '$sc      var ${entity}2 = $entities.random(); \n';
   sc = '$sc \n';
-  sc = '$sc      var action2 = new RemoveAction(session, $entities, '
+  sc = '$sc      var action2 = RemoveCommand(session, $entities, '
       '${entity}2); \n';
-  sc = '$sc      action2.doit(); \n';
+  sc = '$sc      action2.doIt(); \n';
   sc = '$sc      expect($entities.length, equals(--${entity}Count)); \n';
   sc = '$sc \n';
   sc = '$sc      //session.past.display(); \n';
@@ -671,16 +674,16 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc      while (${entity}1 == ${entity}2) { \n';
   sc = '$sc        ${entity}2 = $entities.random();  \n';
   sc = '$sc      } \n';
-  sc = '$sc      var action1 = new RemoveAction(session, $entities, '
+  sc = '$sc      var action1 = RemoveCommand(session, $entities, '
       '${entity}1); \n';
-  sc = '$sc      var action2 = new RemoveAction(session, $entities, '
+  sc = '$sc      var action2 = RemoveCommand(session, $entities, '
       '${entity}2); \n';
   sc = '$sc \n';
   sc = '$sc      var transaction = '
       'new Transaction("two removes on $entities", session); \n';
   sc = '$sc      transaction.add(action1); \n';
   sc = '$sc      transaction.add(action2); \n';
-  sc = '$sc      transaction.doit(); \n';
+  sc = '$sc      transaction.doIt(); \n';
   sc = '$sc      ${entity}Count = ${entity}Count - 2; \n';
   sc = '$sc      expect($entities.length, equals(${entity}Count)); \n';
   sc = '$sc \n';
@@ -704,17 +707,17 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc      var ${entity}Count = $entities.length; \n';
   sc = '$sc      var ${entity}1 = $entities.random(); \n';
   sc = '$sc      var ${entity}2 = ${entity}1; \n';
-  sc = '$sc      var action1 = new RemoveAction(session, $entities, '
+  sc = '$sc      var action1 = RemoveCommand(session, $entities, '
       '${entity}1); \n';
-  sc = '$sc      var action2 = new RemoveAction(session, $entities, '
+  sc = '$sc      var action2 = RemoveCommand(session, $entities, '
       '${entity}2); \n';
   sc = '$sc \n';
-  sc = '$sc      var transaction = new Transaction( \n';
+  sc = '$sc      var transaction = Transaction( \n';
   sc = '$sc        "two removes on $entities, with an error on the second", '
       'session); \n';
   sc = '$sc      transaction.add(action1); \n';
   sc = '$sc      transaction.add(action2); \n';
-  sc = '$sc      var done = transaction.doit(); \n';
+  sc = '$sc      var done = transaction.doIt(); \n';
   sc = '$sc      expect(done, isFalse); \n';
   sc = '$sc      expect($entities.length, equals(${entity}Count)); \n';
   sc = '$sc \n';
@@ -726,11 +729,11 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   //sc = '${sc}      var ${entity}Concept = ${entities}.concept; \n';
   sc = '$sc      var ${entity}Count = $entities.length; \n';
   sc = '$sc \n';
-  sc = '$sc      var reaction = new ${entity2}Reaction(); \n';
+  sc = '$sc      var reaction = ${entity2}Reaction(); \n';
   sc = '$sc      expect(reaction, isNotNull); \n';
   sc = '$sc \n';
   sc =
-      '$sc      ${domain.codeFirstLetterLower}Domain.startActionReaction(reaction); \n';
+      '$sc      ${domain.codeFirstLetterLower}Domain.startCommandReaction(reaction); \n';
   sc =
       '$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false)}';
   sc = '$sc      expect($entities.length, equals(++${entity}Count)); \n';
@@ -739,20 +742,20 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc \n';
   sc =
       '$sc      var session = ${domain.codeFirstLetterLower}Domain.newSession(); \n';
-  sc = '$sc      var addAction = new AddAction(session, $entities, '
+  sc = '$sc      var addCommand = AddCommand(session, $entities, '
       '$entity); \n';
-  sc = '$sc      addAction.doit(); \n';
+  sc = '$sc      addCommand.doIt(); \n';
   sc = '$sc      expect($entities.length, equals(++${entity}Count)); \n';
   sc = '$sc      expect(reaction.reactedOnAdd, isTrue); \n';
   sc = '$sc \n';
   if (nonIdAttribute != null) {
     var value = genAttributeTextRandomly(nonIdAttribute);
-    sc = '$sc      var setAttributeAction = new SetAttributeAction( \n';
+    sc = '$sc      var setAttributeCommand = SetAttributeCommand( \n';
     sc = '$sc        session, $entity, "${nonIdAttribute.code}", $value); \n';
-    sc = '$sc      setAttributeAction.doit(); \n';
+    sc = '$sc      setAttributeCommand.doIt(); \n';
     sc = '$sc      expect(reaction.reactedOnUpdate, isTrue); \n';
     sc =
-        '$sc      ${domain.codeFirstLetterLower}Domain.cancelActionReaction(reaction); \n';
+        '$sc      ${domain.codeFirstLetterLower}Domain.cancelCommandReaction(reaction); \n';
   } else {
     sc = '$sc      // no attribute that is not id \n';
   }
@@ -765,14 +768,14 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc} \n';
   sc = '$sc \n';
 
-  sc = '${sc}class ${entity2}Reaction implements ActionReactionApi { \n';
+  sc = '${sc}class ${entity2}Reaction implements ICommandReaction { \n';
   sc = '$sc  bool reactedOnAdd    = false; \n';
   sc = '$sc  bool reactedOnUpdate = false; \n';
   sc = '$sc \n';
-  sc = '$sc  void react(BasicAction action) { \n';
-  sc = '$sc    if (action is EntitiesAction) { \n';
+  sc = '$sc  void react(ICommand action) { \n';
+  sc = '$sc    if (action is IEntitiesCommand) { \n';
   sc = '$sc      reactedOnAdd = true; \n';
-  sc = '$sc    } else if (action is EntityAction) { \n';
+  sc = '$sc    } else if (action is IEntityCommand) { \n';
   sc = '$sc      reactedOnUpdate = true; \n';
   sc = '$sc    } \n';
   sc = '$sc  } \n';
@@ -780,12 +783,12 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
   sc = '$sc \n';
 
   sc = '${sc}void main() { \n';
-  sc = '$sc  var repository = CoreRepository(); \n';
-  sc = '$sc  var ${domain.codeFirstLetterLower}Domain = '
-      'repository.getDomainModels("${domain.code}");   \n';
+  sc = '$sc  var repository = Repository(); \n';
+  sc = '$sc  ${domain.code}Domain ${domain.codeFirstLetterLower}Domain = '
+      'repository.getDomainModels("${domain.code}") as ${domain.code}Domain;   \n';
   sc = '$sc  assert(${domain.codeFirstLetterLower}Domain != null); \n';
-  sc = '$sc  var ${model.codeFirstLetterLower}Model = '
-      '${domain.codeFirstLetterLower}Domain.getModelEntries("${model.code}");  \n';
+  sc = '$sc  ${model.code}Model ${model.codeFirstLetterLower}Model = '
+      '${domain.codeFirstLetterLower}Domain.getModelEntries("${model.code}") as ${model.code}Model;  \n';
   sc = '$sc  assert(${model.codeFirstLetterLower}Model != null); \n';
   sc = '$sc  var $entities = '
       '${model.codeFirstLetterLower}Model.$entities; \n';

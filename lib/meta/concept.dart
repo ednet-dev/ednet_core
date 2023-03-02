@@ -33,7 +33,6 @@ class Concept extends Entity<Concept> {
 
   Concept(this.model, String conceptCode) {
     code = conceptCode;
-    model.concepts.add(this);
 
     attributes = Attributes();
 
@@ -42,6 +41,7 @@ class Concept extends Entity<Concept> {
 
     sourceParents = Parents();
     sourceChildren = Children();
+    model.concepts.add(this);
   }
 
   @override

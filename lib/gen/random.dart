@@ -30,7 +30,7 @@ String createInitEntryEntityRandomly(Concept entryConcept,
     entryEntity = entryConcept.codeFirstLetterLower;
   }
   var entryEntities = entryConcept.codesFirstLetterLower;
-  sc = '$sc    var $entryEntity = new ${entryConcept.code}('
+  sc = '$sc    var $entryEntity = ${entryConcept.code}('
       '${entryConcept.codesFirstLetterLower}.concept); \n';
   var attributesSet = setInitAttributesRandomly(entryConcept, entryEntity);
   sc = '$sc$attributesSet';
@@ -82,7 +82,7 @@ String createTestEntryEntityRandomly(Concept entryConcept,
     entryEntity = entryConcept.codeFirstLetterLower;
   }
   var entryEntities = entryConcept.codesFirstLetterLower;
-  sc = '${sc}var $entryEntity = new ${entryConcept.code}('
+  sc = '${sc}var $entryEntity = ${entryConcept.code}('
       '${entryConcept.codesFirstLetterLower}.concept); \n';
   var attributesSet = setTestAttributesRandomly(entryConcept, entryEntity);
   sc = '$sc  $attributesSet';
@@ -130,7 +130,7 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
   for (var i = 1; i < CHILD_ENTITIES_COUNT + 1; i++) {
     var childEntity = '$parentVar$childCode$i';
     var childEntities = childCode;
-    sc = '$sc    var $childEntity = new ${childConcept.code}('
+    sc = '$sc    var $childEntity = ${childConcept.code}('
         '$parentVar.$childCode.concept); \n';
     var attributesSet = setInitAttributesRandomly(childConcept, childEntity);
     sc = '$sc$attributesSet';

@@ -14,7 +14,7 @@ String genModels(Domain domain, String library) {
     sc = '${sc}    Model model = fromJsonToModel(${domain.codeFirstLetterLower}'
          '${model.code}ModelJson, domain, "${model.code}"); \n';
     sc = '${sc}    ${model.code}Model ${model.codeFirstLetterLower}Model = '
-         'new ${model.code}Model(model); \n';
+         '${model.code}Model(model); \n';
     sc = '${sc}    add(${model.codeFirstLetterLower}Model); \n';
     sc = '${sc} \n';
   }

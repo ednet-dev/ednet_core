@@ -9,14 +9,14 @@ class Id implements IId<Id> {
   Id(this._concept)
       : _referenceMap = <String, Reference>{},
         _attributeMap = <String, Object>{} {
-    for (Parent p in _concept.parents.whereType<Parent>())  {
+    for (Parent p in _concept.parents.whereType<Parent>()) {
       if (p.identifier) {
-        _referenceMap[p.code] = null;
+        _referenceMap.remove(p.code);
       }
     }
     for (Attribute a in concept.attributes.whereType<Attribute>()) {
       if (a.identifier) {
-        _attributeMap[a.code] = null;
+        _attributeMap.remove(a.code);
       }
     }
   }
@@ -62,7 +62,7 @@ class Id implements IId<Id> {
 
   /// Two ids are equal if their parents are equal.
   bool equalParents(Id id) {
-    for (Parent p in _concept.parents.whereType<Parent>())  {
+    for (Parent p in _concept.parents.whereType<Parent>()) {
       if (p.identifier) {
         if (_referenceMap[p.code] != id.getReference(p.code)) {
           return false;
@@ -166,7 +166,7 @@ class Id implements IId<Id> {
   int compareParents(Id id) {
     if (id.referenceLength > 0) {
       var compare = 0;
-      for (Parent p in _concept.parents.whereType<Parent>())  {
+      for (Parent p in _concept.parents.whereType<Parent>()) {
         if (p.identifier) {
           final ref = _referenceMap[p.code];
           final ref2 = id.getReference(p.code);

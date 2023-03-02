@@ -28,7 +28,7 @@ String genEDNetWeb(Model model) {
   sc = '${sc} \n';
 
   sc = '${sc}void showData(CoreRepository repository) { \n';
-  sc = '${sc}   var mainView = new View(document, "main"); \n';
+  sc = '${sc}   var mainView = View(document, "main"); \n';
   sc = '${sc}   mainView.repo = repository; \n';
   sc = '${sc}   new RepoMainSection(mainView); \n';
   sc = '${sc}} \n';

@@ -128,7 +128,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
   @override
   Id? get id {
     if (_concept == null) {
-      throw new ConceptException('Entity concept is not defined.');
+      return null;
+      // throw new ConceptException('Entity concept is not defined.');
     }
     Id id = Id(_concept!);
     for (Parent p in _concept!.parents.whereType<Parent>()) {

@@ -24,12 +24,13 @@ String genConceptGen(Concept concept, String library) {
       Concept destinationConcept = child.destinationConcept;
       if (!generatedConcepts.contains(destinationConcept)) {
         generatedConcepts.add(destinationConcept);
-        sc = '$sc    Concept ${destinationConcept.codeFirstLetterLower}'
+        sc = '$sc    Concept? ${destinationConcept.codeFirstLetterLower}'
             'Concept = concept.model.concepts.singleWhereCode('
             '"${destinationConcept.code}"); \n';
+        sc = '$sc    assert(${destinationConcept.codeFirstLetterLower}Concept!= null); \n';
       }
-      sc = '$sc    setChild("${child.code}", new ${destinationConcept.codes}('
-          '${destinationConcept.codeFirstLetterLower}Concept)); \n';
+      sc = '$sc    setChild("${child.code}", ${destinationConcept.codes}('
+          '${destinationConcept.codeFirstLetterLower}Concept!)); \n';
     }
     sc = '$sc  } \n';
   }
@@ -81,7 +82,7 @@ String genConceptGen(Concept concept, String library) {
             'Concept = concept.model.concepts.singleWhereCode('
             '"${destinationConcept.code}"); \n';
       }
-      sc = '$sc    setChild("${child.code}", new ${destinationConcept.codes}('
+      sc = '$sc    setChild("${child.code}", ${destinationConcept.codes}('
           '${destinationConcept.codeFirstLetterLower}Concept)); \n';
     }
     sc = '$sc  } \n';
@@ -91,12 +92,12 @@ String genConceptGen(Concept concept, String library) {
   for (Parent parent in concept.parents.whereType<Parent>()) {
     Concept destinationConcept = parent.destinationConcept;
     sc = '$sc  Reference get ${parent.code}Reference => '
-        'getReference("${parent.code}"); \n ';
+        'getReference("${parent.code}") as Reference; \n ';
     sc = '$sc void set ${parent.code}Reference(Reference reference) { '
         'setReference("${parent.code}", reference); } \n ';
     sc = '$sc \n';
     sc = '$sc  ${destinationConcept.code} get ${parent.code} => '
-        'getParent("${parent.code}"); \n ';
+        'getParent("${parent.code}") as ${destinationConcept.code}; \n ';
     sc = '$sc void set ${parent.code}(${destinationConcept.code} p) { '
         'setParent("${parent.code}", p); } \n ';
     sc = '$sc \n';
@@ -111,14 +112,14 @@ String genConceptGen(Concept concept, String library) {
   for (Child child in concept.children.whereType<Child>()) {
     Concept destinationConcept = child.destinationConcept;
     sc = '$sc  ${destinationConcept.codes} get ${child.code} => '
-        'getChild("${child.code}"); \n ';
+        'getChild("${child.code}") as ${destinationConcept.codes}; \n ';
     // set child?
     sc = '$sc \n';
   }
 
-  sc = '$sc  ${concept.code} newEntity() => new ${concept.code}(concept); \n';
+  sc = '$sc  ${concept.code} newEntity() => ${concept.code}(concept); \n';
   sc = '$sc  ${concept.codes} newEntities() => '
-      'new ${concept.codes}(concept); \n ';
+      '${concept.codes}(concept); \n ';
   sc = '$sc \n';
 
   if (id.attributeLength == 1) {
@@ -149,8 +150,8 @@ String genConceptGen(Concept concept, String library) {
   sc = '$sc  } \n';
   sc = '$sc \n';
   sc = '$sc  ${concept.codes} newEntities() => '
-      'new ${concept.codes}(concept); \n';
-  sc = '$sc  ${concept.code} newEntity() => new ${concept.code}(concept); \n ';
+      '${concept.codes}(concept); \n';
+  sc = '$sc  ${concept.code} newEntity() => ${concept.code}(concept); \n ';
   sc = '$sc \n';
   sc = '$sc} \n';
   sc = '$sc \n';

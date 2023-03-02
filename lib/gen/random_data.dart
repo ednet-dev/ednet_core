@@ -1,8 +1,8 @@
 part of ednet_core;
 
-bool randomBool() => new Random().nextBool();
-double randomDouble(num max) => new Random().nextDouble() * max;
-int randomInt(int max) => new Random().nextInt(max);
+bool randomBool() => Random().nextBool();
+double randomDouble(num max) => Random().nextDouble() * max;
+int randomInt(int max) => Random().nextInt(max);
 
 num randomNum(int max) {
   var logic = randomBool();

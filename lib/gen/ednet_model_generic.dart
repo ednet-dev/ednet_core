@@ -13,13 +13,13 @@ String genEntries(Model model, String library) {
   sc = '$sc  ${model.code}Entries(Model model) : super(model); \n';
   sc = '$sc \n';
   sc = '$sc  Map<String, Entities> newEntries() { \n';
-  sc = '$sc    var entries = new Map<String, Entities>(); \n';
+  sc = '$sc    var entries = Map<String, Entities>(); \n';
   sc = '$sc    var concept; \n';
   for (Concept entryConcept in model.entryConcepts) {
     sc = '$sc    concept = model.concepts.singleWhereCode('
         '"${entryConcept.code}"); \n';
     sc = '$sc    entries["${entryConcept.code}"] = '
-        'new ${entryConcept.codes}(concept); \n';
+        '${entryConcept.codes}(concept); \n';
   }
   sc = '$sc    return entries; \n';
   sc = '$sc  } \n';
@@ -28,12 +28,12 @@ String genEntries(Model model, String library) {
   sc = '$sc  Entities? newEntities(String conceptCode) { \n';
   sc = '$sc    var concept = model.concepts.singleWhereCode(conceptCode); \n';
   sc = '$sc    if (concept == null) { \n';
-  sc = '$sc      throw new ConceptError('
+  sc = '$sc      throw ConceptError('
       '"\${conceptCode} concept does not exist.") ; \n';
   sc = '$sc    } \n';
   for (Concept concept in model.concepts) {
     sc = '$sc    if (concept.code == "${concept.code}") { \n';
-    sc = '$sc      return new ${concept.codes}(concept); \n';
+    sc = '$sc      return ${concept.codes}(concept); \n';
     sc = '$sc    } \n';
   }
   sc = '$sc    return null; \n';
@@ -43,12 +43,12 @@ String genEntries(Model model, String library) {
   sc = '$sc  Entity? newEntity(String conceptCode) { \n';
   sc = '$sc    var concept = model.concepts.singleWhereCode(conceptCode); \n';
   sc = '$sc    if (concept == null) { \n';
-  sc = '$sc      throw new ConceptError('
+  sc = '$sc      throw ConceptError('
       '"\${conceptCode} concept does not exist.") ; \n';
   sc = '$sc    } \n';
   for (Concept concept in model.concepts) {
     sc = '$sc    if (concept.code == "${concept.code}") { \n';
-    sc = '$sc      return new ${concept.code}(concept); \n';
+    sc = '$sc      return ${concept.code}(concept); \n';
     sc = '$sc    } \n';
   }
   sc = '$sc    return null; \n';
@@ -58,7 +58,7 @@ String genEntries(Model model, String library) {
   for (Concept entryConcept in model.entryConcepts) {
     sc = '$sc  ${entryConcept.codes} get '
         '${entryConcept.codesFirstLetterLower}'
-        ' => getEntry("${entryConcept.code}"); \n';
+        ' => getEntry("${entryConcept.code}") as ${entryConcept.codes}; \n';
   }
 
   sc = '$sc \n';

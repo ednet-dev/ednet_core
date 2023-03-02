@@ -5,26 +5,24 @@ Model fromJsonToModel(String json, Domain domain, String modelCode) {
     throw EDNetException('Empty JSON string for Model parse');
   }
 
-  Map<String, Object> boardMap = jsonDecode(json);
-  List<Map<String, Object>> boxes =
-      boardMap["boxes"] as List<Map<String, Object>>;
-  List<Map<String, Object>> lines =
-      boardMap["lines"] as List<Map<String, Object>>;
+  var boardMap = jsonDecode(json);
+  var boxes = boardMap["boxes"];
+  var lines = boardMap["lines"];
 
   Model model = Model(domain, modelCode);
 
-  for (Map<String, Object> box in boxes) {
-    String conceptCode = box["name"] as String;
-    bool conceptEntry = box["entry"] as bool;
+  for (var box in boxes) {
+    String conceptCode = box["name"];
+    bool conceptEntry = box["entry"];
     Concept concept = Concept(model, conceptCode);
     concept.entry = conceptEntry;
 
-    List<Map<String, Object>> items = box["items"] as List<Map<String, Object>>;
-    for (Map<String, Object> item in items) {
-      String attributeCode = item["name"] as String;
+    var items = box["items"];
+    for (var item in items) {
+      String attributeCode = item["name"];
       if (attributeCode != 'oid' && attributeCode != 'code') {
         Attribute attribute = Attribute(concept, attributeCode);
-        String itemCategory = item["category"] as String;
+        String itemCategory = item["category"];
         if (itemCategory == 'guid') {
           attribute.guid = true;
         } else if (itemCategory == 'identifier') {
@@ -32,9 +30,9 @@ Model fromJsonToModel(String json, Domain domain, String modelCode) {
         } else if (itemCategory == 'required') {
           attribute.minc = '1';
         }
-        int itemSequence = item["sequence"] as int;
+        int itemSequence = item["sequence"];
         attribute.sequence = itemSequence;
-        String itemInit = item["init"] as String;
+        String itemInit = item["init"];
         if (itemInit.trim() == '') {
           attribute.init = null;
         } else if (itemInit == 'increment') {
@@ -45,11 +43,11 @@ Model fromJsonToModel(String json, Domain domain, String modelCode) {
         } else {
           attribute.init = itemInit;
         }
-        bool itemEssential = item["essential"] as bool;
+        bool itemEssential = item["essential"];
         attribute.essential = itemEssential;
-        bool itemSensitive = item["sensitive"] as bool;
+        bool itemSensitive = item["sensitive"];
         attribute.sensitive = itemSensitive;
-        String itemType = item["type"] as String;
+        String itemType = item["type"];
         AttributeType? type = domain.types.singleWhereCode(itemType);
         if (type != null) {
           attribute.type = type;
@@ -60,9 +58,9 @@ Model fromJsonToModel(String json, Domain domain, String modelCode) {
     }
   }
 
-  for (Map<String, Object> line in lines) {
-    String box1Name = line["box1Name"] as String;
-    String box2Name = line["box2Name"] as String;
+  for (var line in lines) {
+    String box1Name = line["box1Name"];
+    String box2Name = line["box2Name"];
 
     Concept? concept1 = model.concepts.singleWhereCode(box1Name);
     Concept? concept2 = model.concepts.singleWhereCode(box2Name);
@@ -73,18 +71,16 @@ Model fromJsonToModel(String json, Domain domain, String modelCode) {
       throw ConceptException('Line concept is missing for the $box2Name box.');
     }
 
-    String box1box2Name = line["box1box2Name"] as String;
-    String box1box2Min = line["box1box2Min"] as String;
-    String box1box2Max = line["box1box2Max"] as String;
-    bool box1box2Id = line["box1box2Id"] as bool;
-
-    String box2box1Name = line["box2box1Name"] as String;
-    String box2box1Min = line["box2box1Min"] as String;
-    String box2box1Max = line["box2box1Max"] as String;
-    bool box2box1Id = line["box2box1Id"] as bool;
-
-    bool lineInternal = line["internal"] as bool;
-    String lineCategory = line["category"] as String;
+    String box1box2Name = line["box1box2Name"];
+    String box1box2Min = line["box1box2Min"];
+    String box1box2Max = line["box1box2Max"];
+    bool box1box2Id = line["box1box2Id"];
+    String box2box1Name = line["box2box1Name"];
+    String box2box1Min = line["box2box1Min"];
+    String box2box1Max = line["box2box1Max"];
+    bool box2box1Id = line["box2box1Id"];
+    bool lineInternal = line["internal"];
+    String lineCategory = line["category"];
 
     bool d12Child;
     bool d21Child;

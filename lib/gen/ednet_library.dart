@@ -55,7 +55,7 @@ String genEDNetLibrary(Model model) {
 
   sc = '${sc}import "package:ednet_core/ednet_core.dart"; \n';
   sc = '$sc \n';
-  sc = '${sc}part "destructive_repository.dart"; \n';
+  sc = '${sc}part "repository.dart"; \n';
   sc = '$sc \n';
   
   sc = '${sc}part "gen/${domain.codeLowerUnderscore}/i_domain_models.dart"; \n';
