@@ -829,8 +829,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     }
 
     for (Parent parent in concept.parents.whereType<Parent>()) {
-      var parentReference = entityMap[parent.code] as Map<String, String>?;
-      if ((parentReference as String) == 'null') {
+      var parentReference = entityMap[parent.code];
+      if (parentReference == null || parentReference == 'null') {
         if (parent.minc != '0') {
           throw ParentException('${parent.code} parent cannot be null.');
         }
