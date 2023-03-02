@@ -365,7 +365,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       try {
         return setAttribute(name, Uri.parse(string));
       } on ArgumentError catch (e) {
-        throw TypeException('${attribute.code!} attribute value is not Uri: $e');
+        throw TypeException(
+            '${attribute.code!} attribute value is not Uri: $e');
       }
     } else {
       // other
@@ -805,12 +806,10 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       if (attribute.identifier) {
         var beforeUpdate = attribute.update;
         attribute.update = true;
-        setStringToAttribute(
-            attribute.code!, entityMap[attribute.code!] as String);
+        setStringToAttribute(attribute.code!, entityMap[attribute.code!]);
         attribute.update = beforeUpdate;
-      } else {
-        setStringToAttribute(
-            attribute.code!, entityMap[attribute.code!] as String);
+      } else if (attribute.code != null && entityMap[attribute.code!] != null) {
+        setStringToAttribute(attribute.code!, entityMap[attribute.code!]);
       }
     }
     _neighborsFromJsonMap(entityMap, internalParent);
@@ -906,7 +905,8 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
     Parent? parent = _concept!.parents.singleWhereCode(name) as Parent?;
     if (parent == null) {
-      String msg = '${_concept!.code!}.$name is not correct parent entity name.';
+      String msg =
+          '${_concept!.code!}.$name is not correct parent entity name.';
       throw UpdateException(msg);
     }
 
