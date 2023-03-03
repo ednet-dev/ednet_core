@@ -32,7 +32,7 @@ Model fromJsonToModel(String json, Domain domain, String modelCode) {
         }
         int itemSequence = item["sequence"];
         attribute.sequence = itemSequence;
-        String itemInit = item["init"];
+        String itemInit = item["init"] ?? '';
         if (itemInit.trim() == '') {
           attribute.init = null;
         } else if (itemInit == 'increment') {
