@@ -24,23 +24,20 @@ class Concept extends Entity<Concept> {
 
   Model model;
 
-  late Attributes attributes;
-  late Parents parents; // destination parent neighbors
-  late Children children; // destination child neighbors
+  Attributes attributes;
+  Parents parents; // destination parent neighbors
+  Children children; // destination child neighbors
 
-  late Parents sourceParents;
-  late Children sourceChildren;
+  Parents sourceParents;
+  Children sourceChildren;
 
-  Concept(this.model, String conceptCode) {
+  Concept(this.model, String conceptCode)
+      : attributes = Attributes(),
+        parents = Parents(),
+        children = Children(),
+        sourceParents = Parents(),
+        sourceChildren = Children() {
     code = conceptCode;
-
-    attributes = Attributes();
-
-    parents = Parents();
-    children = Children();
-
-    sourceParents = Parents();
-    sourceChildren = Children();
     model.concepts.add(this);
   }
 
