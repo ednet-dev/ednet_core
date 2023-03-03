@@ -609,7 +609,15 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     const category = 'unique';
     final message = '${entity.concept.code!}.code! is not unique.';
     // uniqueness validation
-    if (entity.id != null && singleWhereId(entity.id!) != null) {
+    var eid = entity.id;
+    var isEid = eid != null;
+    var k = null;
+
+    if (isEid) {
+      k = singleWhereId(entity.id!);
+    }
+    var isK = k != null;
+    if (isEid && isK) {
       ValidationException exception = ValidationException(category, message);
       exceptions.add(exception);
       result = false;

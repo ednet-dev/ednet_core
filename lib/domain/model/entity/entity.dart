@@ -892,8 +892,9 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
       }
       return true;
     } else {
-      String msg = '${_concept!.code!}.${child.code!} is not updatable.';
-      throw UpdateException(msg);
+      return false;
+      // String msg = '${_concept!.code!}.${child.code!} is not updatable.';
+      // throw UpdateException(msg);
     }
   }
 
