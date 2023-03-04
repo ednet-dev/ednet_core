@@ -10,7 +10,7 @@ class Concept extends Entity<Concept> {
   bool updateOid = false;
   bool updateCode = false;
   bool updateWhen = false;
-  bool add = true;
+  bool canAdd = true;
   bool remove = true;
   late String description;
 

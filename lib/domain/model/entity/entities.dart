@@ -546,7 +546,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     if (_concept == null) {
       throw new ConceptException('Entities.add: concept is not defined.');
     }
-    if (!_concept!.add) {
+    if (!_concept!.canAdd) {
       throw new AddException('An entity cannot be added to ${_concept!.code}.');
     }
 
