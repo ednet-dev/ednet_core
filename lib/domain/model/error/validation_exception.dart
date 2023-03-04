@@ -4,7 +4,9 @@ class ValidationException implements Exception {
   final String category;
   final String message;
 
-  const ValidationException(this.category, this.message);
+  ValidationException(this.category, this.message) {
+    print('EXCEPTION: ' + this.category + ' ' + this.message);
+  }
 
   /// Returns a string that represents the error.
   @override

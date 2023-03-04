@@ -570,7 +570,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     var eid = entity.id;
     var isEid = eid != null;
     var k = null;
-    
+
     if (isEid) {
       k = singleWhereId(entity.id!);
     }
@@ -584,11 +584,11 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   bool validateIncrementAndRequired(entity, bool isValid) {
-     for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
+    for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
       var shouldIncrement = a.increment != null;
       var exists = entity.getAttribute(a.code!) != null;
       var isRequired = a.required;
-    
+
       if (shouldIncrement) {
         if (length == 0) {
           entity.setAttribute(a.code!, a.increment!);
@@ -607,7 +607,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         const category = 'required';
         final message = '${entity.concept.code!}.${a.code!} attribute is null.';
         final exception = ValidationException(category, message);
-    
+
         exceptions.add(exception);
         isValid = false;
       }
@@ -617,7 +617,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         const category = 'required';
         final message = '${entity.concept.code!}.${p.code!} parent is null.';
         final exception = ValidationException(category, message);
-    
+
         exceptions.add(exception);
         isValid = false;
       }
@@ -634,7 +634,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           const category = 'max cardinality';
           final message = '${_concept!.code}.max is $maxc.';
           var exception = ValidationException(category, message);
-    
+
           exceptions.add(exception);
           isValid = false;
         }
