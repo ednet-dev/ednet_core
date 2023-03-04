@@ -27,7 +27,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     return entities;
   }
 
-  set concept(Concept concept) {
+  set concept(Concept? concept) {
     _concept = concept;
     pre = true;
     post = true;
@@ -41,12 +41,12 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   @override
-  Concept get concept {
-    if (_concept == null) {
-      throw ConceptException("Concept not set");
-    }
+  Concept? get concept {
+    // if (_concept == null) {
+    //   throw ConceptException("Concept not set");
+    // }
 
-    return _concept!;
+    return _concept;
   }
 
   @override
@@ -684,7 +684,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       } else {
         // not propagated
         var msg = '${entity.concept.code!} entity (${entity.oid}) '
-            'was not added - propagation to the source ${source?.concept.code!} '
+            'was not added - propagation to the source ${source?.concept?.code!} '
             'entities was not successful';
         throw AddException(msg);
       }
@@ -770,7 +770,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           if (entity.code != null) {
             _codeEntityMap.remove(entity.code!);
           }
-          if (entity.id != null) {
+          if (entity._concept != null && entity.id != null) {
             _idEntityMap.remove(entity.id.toString());
           }
           if (postRemove(entity)) {
@@ -795,7 +795,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       } else {
         // not propagated
         var msg = '${entity.concept.code!} entity (${entity.oid}) '
-            'was not removed - propagation to the source ${source!.concept.code!} '
+            'was not removed - propagation to the source ${source!.concept?.code!} '
             'entities was not successful';
         throw RemoveException(msg);
       }
@@ -868,7 +868,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   bool addFrom(Entities<E> entities) {
     bool allAdded = true;
-    if (_concept == entities.concept) {
+    if (_concept == entities.concept!) {
       for (var entity in entities) {
         add(entity) ? true : allAdded = false;
       }
@@ -880,7 +880,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   bool removeFrom(Entities<E> entities) {
     bool allRemoved = true;
-    if (_concept == entities.concept) {
+    if (_concept == entities.concept!) {
       for (var entity in entities) {
         remove(entity) ? true : allRemoved = false;
       }
@@ -892,7 +892,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   bool setAttributesFrom(Entities<E> entities) {
     bool allSet = true;
-    if (_concept == entities.concept) {
+    if (_concept == entities.concept!) {
       for (var entity in entities) {
         var baseEntity = singleWhereOid(entity.oid);
         if (baseEntity != null) {

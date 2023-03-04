@@ -2,7 +2,7 @@ part of ednet_core;
 
 // http://dartlangfr.net/dart-cheat-sheet/
 abstract class IEntities<E extends IEntity<E>> implements Iterable<E> {
-  Concept get concept;
+  Concept? get concept;
 
   IValidationExceptions get exceptions;
 

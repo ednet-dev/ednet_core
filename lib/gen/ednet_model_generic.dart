@@ -19,7 +19,7 @@ String genEntries(Model model, String library) {
     sc = '$sc    concept = model.concepts.singleWhereCode('
         '"${entryConcept.code}"); \n';
     sc = '$sc    entries["${entryConcept.code}"] = '
-        '${entryConcept.codes}(concept); \n';
+        '${entryConcept.codes}(concept!); \n';
   }
   sc = '$sc    return entries; \n';
   sc = '$sc  } \n';
@@ -33,7 +33,7 @@ String genEntries(Model model, String library) {
   sc = '$sc    } \n';
   for (Concept concept in model.concepts) {
     sc = '$sc    if (concept.code == "${concept.code}") { \n';
-    sc = '$sc      return ${concept.codes}(concept); \n';
+    sc = '$sc      return ${concept.codes}(concept!); \n';
     sc = '$sc    } \n';
   }
   sc = '$sc    return null; \n';
@@ -48,7 +48,7 @@ String genEntries(Model model, String library) {
   sc = '$sc    } \n';
   for (Concept concept in model.concepts) {
     sc = '$sc    if (concept.code == "${concept.code}") { \n';
-    sc = '$sc      return ${concept.code}(concept); \n';
+    sc = '$sc      return ${concept.code}(concept!); \n';
     sc = '$sc    } \n';
   }
   sc = '$sc    return null; \n';

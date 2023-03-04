@@ -74,7 +74,7 @@ unary (where a concept is associated with itself) or binary (where two concepts 
 associations can be further classified into simple binary associations and identifying associations.
 
 Identifying associations are a special type of binary association in which one of the participating concepts (called the
-identified concept) contains an attribute that serves as a unique identifier for instances of the other concept. In
+identified concept!) contains an attribute that serves as a unique identifier for instances of the other concept. In
 other words, the identifier of the identified concept is used as a foreign key in the identifying concept to establish
 the relationship between them.
 

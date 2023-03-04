@@ -31,7 +31,7 @@ String createInitEntryEntityRandomly(Concept entryConcept,
   }
   var entryEntities = entryConcept.codesFirstLetterLower;
   sc = '$sc    var $entryEntity = ${entryConcept.code!}('
-      '${entryConcept.codesFirstLetterLower}.concept); \n';
+      '${entryConcept.codesFirstLetterLower}.concept!); \n';
   var attributesSet = setInitAttributesRandomly(entryConcept, entryEntity);
   sc = '$sc$attributesSet';
 
@@ -56,7 +56,7 @@ String createInitEntryEntityRandomly(Concept entryConcept,
 
   if (withChildren) {
     sc = '$sc \n';
-    for (Child child in entryConcept.children.whereType<Child>())  {
+    for (Child child in entryConcept.children.whereType<Child>()) {
       if (child.internal) {
         String parentVar = entryEntity;
         String parentCode = child.opposite!.code!;
@@ -83,7 +83,7 @@ String createTestEntryEntityRandomly(Concept entryConcept,
   }
   var entryEntities = entryConcept.codesFirstLetterLower;
   sc = '${sc}var $entryEntity = ${entryConcept.code!}('
-      '${entryConcept.codesFirstLetterLower}.concept); \n';
+      '${entryConcept.codesFirstLetterLower}.concept!); \n';
   var attributesSet = setTestAttributesRandomly(entryConcept, entryEntity);
   sc = '$sc  $attributesSet';
 
@@ -108,7 +108,7 @@ String createTestEntryEntityRandomly(Concept entryConcept,
 
   if (withChildren) {
     sc = '$sc \n';
-    for (Child child in entryConcept.children.whereType<Child>())  {
+    for (Child child in entryConcept.children.whereType<Child>()) {
       if (child.internal) {
         String parentVar = entryEntity;
         String parentCode = child.opposite!.code!;
@@ -131,7 +131,7 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
     var childEntity = '$parentVar$childCode$i';
     var childEntities = childCode;
     sc = '$sc    var $childEntity = ${childConcept.code!}('
-        '$parentVar.$childCode.concept); \n';
+        '$parentVar.$childCode.concept!); \n';
     var attributesSet = setInitAttributesRandomly(childConcept, childEntity);
     sc = '$sc$attributesSet';
 
@@ -150,7 +150,7 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
 
     for (Parent externalRequiredParent
         in childConcept.externalRequiredParents) {
-      //var parent  = '${externalRequiredParent.code!}';
+//var parent  = '${externalRequiredParent.code!}';
       var parent8 = externalRequiredParent.codeFirstLetterUpper;
       sc = '$sc    $childEntity$parent8.'
           '${externalRequiredParent.opposite?.code!}.add('
@@ -158,13 +158,13 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
     }
 
     sc = '$sc \n';
-    for (Child child in childConcept.children.whereType<Child>())  {
+    for (Child child in childConcept.children.whereType<Child>()) {
       if (child.internal && !child.reflexive) {
-        // the old child becomes a new parent
+// the old child becomes a new parent
         String newParentVar = childEntity;
         String newParentCode = child.opposite!.code!;
         Concept newParentConcept = childConcept;
-        // a new child is a grandchild of the old parent, or a child of a new parent
+// a new child is a grandchild of the old parent, or a child of a new parent
         String newChildCode = child.code!;
         Concept newChildConcept = child.destinationConcept;
         var entitiesCreated = createChildEntitiesRandomly(newParentVar,
@@ -179,7 +179,7 @@ String createChildEntitiesRandomly(String parentVar, String parentCode,
 // to do: check if random value should be unique
 String setInitAttributesRandomly(Concept concept, String entity) {
   var sc = '';
-  //for (Attribute attribute in concept.requiredAttributes) {
+//for (Attribute attribute in concept.requiredAttributes) {
   for (Attribute attribute in concept.attributes.whereType<Attribute>()) {
     var attributeSet = setInitAttributeRandomly(attribute, entity);
     sc = '$sc$attributeSet';
@@ -189,7 +189,7 @@ String setInitAttributesRandomly(Concept concept, String entity) {
 
 String setTestAttributesRandomly(Concept concept, String entity) {
   var sc = '';
-  //for (Attribute attribute in concept.requiredAttributes) {
+//for (Attribute attribute in concept.requiredAttributes) {
   for (Attribute attribute in concept.attributes.whereType<Attribute>()) {
     var attributeSet = setTestAttributeRandomly(attribute, entity);
     sc = '$sc$attributeSet';

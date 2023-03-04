@@ -11,7 +11,7 @@ String genConcept(Concept concept, String library) {
   sc = '$sc \n';
   sc = '${sc}class ${concept.code} extends ${concept.code}Gen { \n';
   sc = '$sc \n';
-  sc = '$sc  ${concept.code}(Concept concept) : super(concept); \n';
+  sc = '$sc  ${concept.code}(Concept concept) : super(concept!); \n';
   sc = '$sc \n';
 
   Id id = concept.id;
@@ -62,7 +62,7 @@ String genConcept(Concept concept, String library) {
 
   sc = '${sc}class ${concept.codes} extends ${concept.codes}Gen { \n';
   sc = '$sc \n';
-  sc = '$sc  ${concept.codes}(Concept concept) : super(concept); \n';
+  sc = '$sc  ${concept.codes}(Concept concept) : super(concept!); \n';
   sc = '$sc \n';
 
   sc = '$sc  // added after code gen - begin \n';

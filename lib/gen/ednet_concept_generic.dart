@@ -22,8 +22,8 @@ String genConceptGen(Concept concept, String library) {
     var generatedConcepts = <Concept>[];
     for (Child child in concept.children.whereType<Child>()) {
       Concept destinationConcept = child.destinationConcept;
-      if (!generatedConcepts.contains(destinationConcept)) {
-        generatedConcepts.add(destinationConcept);
+      if (!generatedConcepts.contains(destinationConcept!)) {
+        generatedConcepts.add(destinationConcept!);
         sc = '$sc    Concept? ${destinationConcept.codeFirstLetterLower}'
             'Concept = concept.model.concepts.singleWhereCode('
             '"${destinationConcept.code}"); \n';
@@ -76,14 +76,14 @@ String genConceptGen(Concept concept, String library) {
     var generatedConcepts = <Concept>[];
     for (Child child in concept.children.whereType<Child>()) {
       Concept destinationConcept = child.destinationConcept;
-      if (!generatedConcepts.contains(destinationConcept)) {
-        generatedConcepts.add(destinationConcept);
+      if (!generatedConcepts.contains(destinationConcept!)) {
+        generatedConcepts.add(destinationConcept!);
         sc = '$sc    Concept ${destinationConcept.codeFirstLetterLower}'
             'Concept = concept.model.concepts.singleWhereCode('
             '"${destinationConcept.code}"); \n';
       }
       sc = '$sc    setChild("${child.code}", ${destinationConcept.codes}('
-          '${destinationConcept.codeFirstLetterLower}Concept)); \n';
+          '${destinationConcept.codeFirstLetterLower}concept!)); \n';
     }
     sc = '$sc  } \n';
     sc = '$sc \n';
@@ -117,9 +117,9 @@ String genConceptGen(Concept concept, String library) {
     sc = '$sc \n';
   }
 
-  sc = '$sc  ${concept.code} newEntity() => ${concept.code}(concept); \n';
+  sc = '$sc  ${concept.code} newEntity() => ${concept.code}(concept!); \n';
   sc = '$sc  ${concept.codes} newEntities() => '
-      '${concept.codes}(concept); \n ';
+      '${concept.codes}(concept!); \n ';
   sc = '$sc \n';
 
   if (id.attributeLength == 1) {
@@ -150,8 +150,8 @@ String genConceptGen(Concept concept, String library) {
   sc = '$sc  } \n';
   sc = '$sc \n';
   sc = '$sc  ${concept.codes} newEntities() => '
-      '${concept.codes}(concept); \n';
-  sc = '$sc  ${concept.code} newEntity() => ${concept.code}(concept); \n ';
+      '${concept.codes}(concept!); \n';
+  sc = '$sc  ${concept.code} newEntity() => ${concept.code}(concept!); \n ';
   sc = '$sc \n';
   sc = '$sc} \n';
   sc = '$sc \n';

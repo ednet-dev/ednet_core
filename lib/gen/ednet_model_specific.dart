@@ -43,7 +43,7 @@ String genModel(Model model, String library) {
   for (Concept entryConcept in model.entryConcepts) {
     var Entities = '${entryConcept.codePluralFirstLetterUpper}';
     sc = '${sc}  void init${Entities}() { \n';
-    var entitiesCreated = createInitEntryEntitiesRandomly(entryConcept);
+    var entitiesCreated = createInitEntryEntitiesRandomly(entryConcept!);
     sc = '${sc}${entitiesCreated}';
     sc = '${sc}  } \n';
     sc = '${sc} \n'; 
