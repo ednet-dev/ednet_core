@@ -43,11 +43,11 @@ Model fromJsonToModel(String json, Domain domain, String modelCode) {
         } else {
           attribute.init = itemInit;
         }
-        bool itemEssential = item["essential"];
+        bool itemEssential = item["essential"] ?? false;
         attribute.essential = itemEssential;
-        bool itemSensitive = item["sensitive"];
+        bool itemSensitive = item["sensitive"] ?? false;
         attribute.sensitive = itemSensitive;
-        String itemType = item["type"];
+        String itemType = item["type"] ?? 'String';
         AttributeType? type = domain.types.singleWhereCode(itemType);
         if (type != null) {
           attribute.type = type;
