@@ -553,27 +553,43 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     bool isValid = true;
 
     // max validation
-    if (maxc != 'N') {
-      int maxInt;
-      try {
-        maxInt = int.parse(maxc);
-        if (length == maxInt) {
-          const category = 'max cardinality';
-          final message = '${_concept!.code}.max is $maxc.';
-          var exception = ValidationException(category, message);
-
-          exceptions.add(exception);
-          isValid = false;
-        }
-      } on FormatException catch (e) {
-        throw AddException(
-            'Entities max is neither N nor a positive integer string: $e');
-      }
-    }
+    isValid = validateCardinality(isValid);
 
     // increment and required validation
-    for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
-      if (a.increment != null) {
+    isValid = validateIncrementAndRequired(entity, isValid);
+
+    // uniqueness validation
+    isValid = validateUnique(entity, isValid);
+
+    return isValid;
+  }
+
+  bool validateUnique(entity, bool isValid) {
+    const category = 'unique';
+    final message = '${entity.concept.code!}.code! is not unique.';
+    var eid = entity.id;
+    var isEid = eid != null;
+    var k = null;
+    
+    if (isEid) {
+      k = singleWhereId(entity.id!);
+    }
+    var isK = k != null;
+    if (isEid && isK) {
+      ValidationException exception = ValidationException(category, message);
+      exceptions.add(exception);
+      isValid = false;
+    }
+    return isValid;
+  }
+
+  bool validateIncrementAndRequired(entity, bool isValid) {
+     for (Attribute a in _concept!.attributes.whereType<Attribute>()) {
+      var shouldIncrement = a.increment != null;
+      var exists = entity.getAttribute(a.code!) != null;
+      var isRequired = a.required;
+    
+      if (shouldIncrement) {
         if (length == 0) {
           entity.setAttribute(a.code!, a.increment!);
         } else if (a.type?.code! == 'int') {
@@ -587,11 +603,11 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           throw TypeException(
               '${a.code!} attribute value cannot be incremented.');
         }
-      } else if (a.required && entity.getAttribute(a.code!) == null) {
+      } else if (isRequired && !exists) {
         const category = 'required';
         final message = '${entity.concept.code!}.${a.code!} attribute is null.';
         final exception = ValidationException(category, message);
-
+    
         exceptions.add(exception);
         isValid = false;
       }
@@ -601,28 +617,32 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         const category = 'required';
         final message = '${entity.concept.code!}.${p.code!} parent is null.';
         final exception = ValidationException(category, message);
-
+    
         exceptions.add(exception);
         isValid = false;
       }
     }
-    const category = 'unique';
-    final message = '${entity.concept.code!}.code! is not unique.';
-    // uniqueness validation
-    var eid = entity.id;
-    var isEid = eid != null;
-    var k = null;
+    return isValid;
+  }
 
-    if (isEid) {
-      k = singleWhereId(entity.id!);
+  bool validateCardinality(bool isValid) {
+    if (maxc != 'N') {
+      int maxInt;
+      try {
+        maxInt = int.parse(maxc);
+        if (length == maxInt) {
+          const category = 'max cardinality';
+          final message = '${_concept!.code}.max is $maxc.';
+          var exception = ValidationException(category, message);
+    
+          exceptions.add(exception);
+          isValid = false;
+        }
+      } on FormatException catch (e) {
+        throw AddException(
+            'Entities max is neither N nor a positive integer string: $e');
+      }
     }
-    var isK = k != null;
-    if (isEid && isK) {
-      ValidationException exception = ValidationException(category, message);
-      exceptions.add(exception);
-      isValid = false;
-    }
-
     return isValid;
   }
 
