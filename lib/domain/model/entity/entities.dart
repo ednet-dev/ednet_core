@@ -534,7 +534,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   @override
-  bool preAdd(E entity) {
+  bool isValid(E entity) {
     if (!pre) {
       return true;
     }
@@ -550,7 +550,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       throw new AddException('An entity cannot be added to ${_concept!.code}.');
     }
 
-    bool result = true;
+    bool isValid = true;
 
     // max validation
     if (maxc != 'N') {
@@ -563,7 +563,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
           var exception = ValidationException(category, message);
 
           exceptions.add(exception);
-          result = false;
+          isValid = false;
         }
       } on FormatException catch (e) {
         throw AddException(
@@ -593,7 +593,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         final exception = ValidationException(category, message);
 
         exceptions.add(exception);
-        result = false;
+        isValid = false;
       }
     }
     for (Parent p in _concept!.parents.whereType<Parent>()) {
@@ -603,7 +603,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
         final exception = ValidationException(category, message);
 
         exceptions.add(exception);
-        result = false;
+        isValid = false;
       }
     }
     const category = 'unique';
@@ -620,16 +620,16 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     if (isEid && isK) {
       ValidationException exception = ValidationException(category, message);
       exceptions.add(exception);
-      result = false;
+      isValid = false;
     }
 
-    return result;
+    return isValid;
   }
 
   @override
   bool add(E entity) {
     bool added = false;
-    if (preAdd(entity)) {
+    if (isValid(entity)) {
       var propagated = true;
       if (source != null && propagateToSource) {
         propagated = source!.add(entity);

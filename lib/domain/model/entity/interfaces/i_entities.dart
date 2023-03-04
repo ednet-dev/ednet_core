@@ -45,7 +45,7 @@ abstract class IEntities<E extends IEntity<E>> implements Iterable<E> {
   void clear();
 
   void sort([int Function(E a, E b) compare]); // in place sort
-  bool preAdd(E entity);
+  bool isValid(E entity);
 
   bool add(E entity);
 
