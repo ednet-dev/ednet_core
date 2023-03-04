@@ -152,8 +152,8 @@ String genEDNetTest(CoreRepository repo, Model model, Concept entryConcept) {
     sc = '$sc      var ${entity}Concept = $entities.concept; \n';
     sc = '$sc      var ${entity}Count = $entities.length; \n';
     sc = '$sc      var $entity = $entity2(${entity}Concept); \n';
-    sc = '$sc      var added = $entities.add($entity); \n';
-    sc = '$sc      expect(added, isFalse); \n';
+    sc = '$sc      var isAdded = $entities.add($entity); \n';
+    sc = '$sc      expect(isAdded, isFalse); \n';
     sc = '$sc      expect($entities.length, equals(${entity}Count)); \n';
     sc = '$sc      expect($entities.exceptions.length, greaterThan(0)); \n';
     sc = '$sc      expect($entities.exceptions.toList()[0].category, '
