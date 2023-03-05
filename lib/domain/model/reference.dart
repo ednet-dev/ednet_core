@@ -30,4 +30,11 @@ class Reference {
   String toString() {
     return parentOidString;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return this.parentOidString == (other as Reference).parentOidString &&
+        this.parentConceptCode == other.parentConceptCode &&
+        this.entryConceptCode == other.entryConceptCode;
+  }
 }

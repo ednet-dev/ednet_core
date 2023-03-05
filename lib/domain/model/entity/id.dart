@@ -64,7 +64,12 @@ class Id implements IId<Id> {
   bool equalParents(Id id) {
     for (Parent p in _concept.parents.whereType<Parent>()) {
       if (p.identifier) {
-        if (_referenceMap[p.code!] != id.getReference(p.code!)) {
+        final refA = _referenceMap[p.code!];
+        final refB = id.getReference(p.code!);
+        if (refA != refB) {
+          final pOiId = p.oid;
+          final pId = p.id;
+          final pCode = p.code;
           return false;
         }
       }
@@ -133,7 +138,11 @@ class Id implements IId<Id> {
       if (identical(this, id)) {
         return true;
       } else {
-        return equals(id);
+        if (this == null || id == null) {
+          return false;
+        } else {
+          return equals(id);
+        }
       }
     } else {
       return false;

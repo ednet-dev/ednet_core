@@ -833,6 +833,8 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
     if (_concept == null) {
       throw new ConceptException('Entities.update: concept is not defined.');
     }
+    final id1 = beforeEntity.id;
+    final id2 = afterEntity.id;
     if (beforeEntity.oid == afterEntity.oid &&
         beforeEntity.code == afterEntity.code &&
         beforeEntity.id == afterEntity.id) {
@@ -868,7 +870,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   bool addFrom(Entities<E> entities) {
     bool allAdded = true;
-    if (_concept == entities.concept!) {
+    if (_concept == entities.concept) {
       for (var entity in entities) {
         add(entity) ? true : allAdded = false;
       }
@@ -880,7 +882,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   bool removeFrom(Entities<E> entities) {
     bool allRemoved = true;
-    if (_concept == entities.concept!) {
+    if (_concept == entities.concept) {
       for (var entity in entities) {
         remove(entity) ? true : allRemoved = false;
       }
@@ -892,7 +894,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
 
   bool setAttributesFrom(Entities<E> entities) {
     bool allSet = true;
-    if (_concept == entities.concept!) {
+    if (_concept == entities.concept) {
       for (var entity in entities) {
         var baseEntity = singleWhereOid(entity.oid);
         if (baseEntity != null) {
