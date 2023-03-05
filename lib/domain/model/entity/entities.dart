@@ -684,7 +684,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       } else {
         // not propagated
         var msg = '${entity.concept.code!} entity (${entity.oid}) '
-            'was not added - propagation to the source ${source?.concept?.code!} '
+            'was not added - propagation to the source ${source?.concept.code!} '
             'entities was not successful';
         throw AddException(msg);
       }
@@ -795,7 +795,7 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
       } else {
         // not propagated
         var msg = '${entity.concept.code!} entity (${entity.oid}) '
-            'was not removed - propagation to the source ${source!.concept?.code!} '
+            'was not removed - propagation to the source ${source!.concept.code!} '
             'entities was not successful';
         throw RemoveException(msg);
       }
