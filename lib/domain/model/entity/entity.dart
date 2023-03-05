@@ -35,9 +35,9 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   @override
   Concept get concept {
-    if (_concept == null) {
-      throw EDNetException("concept is not set");
-    }
+    // if (_concept == null) {
+    //   throw EDNetException("concept is not set");
+    // }
 
     return _concept!;
   }

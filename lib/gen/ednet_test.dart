@@ -149,7 +149,7 @@ sc = '$sc    }); \n';
 sc = '$sc \n';
 
 sc = '$sc    test("Add $entity required error", () { \n';
-var requiredNonIdAttribute = findRequiredNonIdAttribute(entryConcept!);
+var requiredNonIdAttribute = findRequiredNonIdAttribute(entryConcept);
 if (requiredNonIdAttribute != null) {
 sc = '$sc      var ${entity}Concept = $entities.concept!; \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
@@ -170,7 +170,7 @@ sc = '$sc    }); \n';
 sc = '$sc \n';
 
 sc = '$sc    test("Add $entity unique error", () { \n';
-var idAttribute = findIdAttribute(entryConcept!);
+var idAttribute = findIdAttribute(entryConcept);
 if (idAttribute != null) {
 if (idAttribute.increment == null) {
 sc = '$sc      var ${entity}Concept = $entities.concept!; \n';
@@ -243,7 +243,7 @@ sc = '$sc    }); \n';
 sc = '$sc \n';
 
 sc = '$sc    test("Find $entity by attribute", () { \n';
-var nonRequiredAttribute = findNonRequiredAttribute(entryConcept!);
+var nonRequiredAttribute = findNonRequiredAttribute(entryConcept);
 if (nonRequiredAttribute != null) {
 sc = '$sc      var random$entity2 = $entities.random(); \n';
 sc = '$sc      var $entity = \n';
@@ -300,7 +300,7 @@ sc = '$sc    }); \n';
 sc = '$sc \n';
 
 sc = '$sc    test("Select $entities by attribute, then add", () { \n';
-var nonIdAttribute = findNonIdAttribute(entryConcept!);
+var nonIdAttribute = findNonIdAttribute(entryConcept);
 if (nonIdAttribute != null) {
 sc = '$sc      var random$entity2 = $entities.random(); \n';
 sc = '$sc      var selected$entities2 = \n';

@@ -22,8 +22,8 @@ String genConceptGen(Concept concept, String library) {
     var generatedConcepts = <Concept>[];
     for (Child child in concept.children.whereType<Child>()) {
       Concept destinationConcept = child.destinationConcept;
-      if (!generatedConcepts.contains(destinationConcept!)) {
-        generatedConcepts.add(destinationConcept!);
+      if (!generatedConcepts.contains(destinationConcept)) {
+        generatedConcepts.add(destinationConcept);
         sc = '$sc    Concept? ${destinationConcept.codeFirstLetterLower}'
             'Concept = concept.model.concepts.singleWhereCode('
             '"${destinationConcept.code}"); \n';
@@ -76,8 +76,8 @@ String genConceptGen(Concept concept, String library) {
     var generatedConcepts = <Concept>[];
     for (Child child in concept.children.whereType<Child>()) {
       Concept destinationConcept = child.destinationConcept;
-      if (!generatedConcepts.contains(destinationConcept!)) {
-        generatedConcepts.add(destinationConcept!);
+      if (!generatedConcepts.contains(destinationConcept)) {
+        generatedConcepts.add(destinationConcept);
         sc = '$sc    Concept ${destinationConcept.codeFirstLetterLower}'
             'Concept = concept.model.concepts.singleWhereCode('
             '"${destinationConcept.code}"); \n';

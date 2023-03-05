@@ -82,7 +82,7 @@ class Concept extends Entity<Concept> {
         if (concept == null) {
           return false;
         } else {
-          return equals(concept!);
+          return equals(concept);
         }
       }
     } else {

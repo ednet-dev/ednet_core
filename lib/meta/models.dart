@@ -19,7 +19,7 @@ class Model extends Entity<Model> {
     var selectedElements = concepts.toList().where((c) => c.entry);
     var entryList = <Concept>[];
     for (var concept in selectedElements) {
-      entryList.add(concept!);
+      entryList.add(concept);
     }
     return entryList;
   }
@@ -32,7 +32,7 @@ class Model extends Entity<Model> {
       var sameExternalCountConcepts = <Concept>[];
       for (var concept in entryConcepts) {
         if (concept.parents.externalCount == c) {
-          sameExternalCountConcepts.add(concept!);
+          sameExternalCountConcepts.add(concept);
         }
       }
       // order by external child count (from high to low)
@@ -40,14 +40,14 @@ class Model extends Entity<Model> {
       for (var s = 8; s >= 0; s--) {
         for (var concept in sameExternalCountConcepts) {
           if (concept.children.externalCount == s) {
-            orderedSameExternalCountConcepts.add(concept!);
+            orderedSameExternalCountConcepts.add(concept);
           }
         }
       }
       assert(sameExternalCountConcepts.length ==
           orderedSameExternalCountConcepts.length);
       for (var concept in orderedSameExternalCountConcepts) {
-        orderedEntryConcepts.add(concept!);
+        orderedEntryConcepts.add(concept);
         orderedEntryConceptsCount++;
       }
       if (orderedEntryConceptsCount == entryConcepts.length) {
