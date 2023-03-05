@@ -565,22 +565,23 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   bool validateUnique(entity, bool isValid) {
-    const category = 'unique';
-    final message = '${entity.concept.code!}.code! is not unique.';
-    var eid = entity.id;
-    var isEid = eid != null;
-    var k = null;
+    bool result = true;
 
-    if (isEid) {
-      k = singleWhereId(entity.id!);
-    }
-    var isK = k != null;
-    if (isEid && isK) {
-      ValidationException exception = ValidationException(category, message);
+    // uniqueness validation
+    if (entity.code != null && singleWhereCode(entity.code) != null) {
+      var exception = new ValidationException(
+          'unique', '${entity.concept.code}.code is not unique.');
       exceptions.add(exception);
-      isValid = false;
+      result = false;
     }
-    return isValid;
+    if (entity.id != null && singleWhereId(entity.id) != null) {
+      ValidationException exception = new ValidationException('unique',
+          '${entity.concept.code}.id ${entity.id.toString()} is not unique.');
+      exceptions.add(exception);
+      result = false;
+    }
+
+    return result;
   }
 
   bool validateIncrementAndRequired(entity, bool isValid) {
