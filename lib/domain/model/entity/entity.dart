@@ -35,9 +35,9 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
   @override
   Concept get concept {
-    // if (_concept == null) {
-    //   throw EDNetException("concept is not set");
-    // }
+    if (_concept == null) {
+      throw EDNetException("concept is not set");
+    }
 
     return _concept!;
   }
@@ -430,16 +430,24 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
     entity.oid = _oid;
     entity.concept.updateOid = beforeUpdateOid;
 
-    var beforeUpdateCode = entity.concept.updateCode;
-    entity.concept.updateCode = true;
-    entity.code = _code;
-    entity.concept.updateCode = beforeUpdateCode;
+    if (_code != null) {
+      var beforeUpdateCode = entity.concept.updateCode;
+      entity.concept.updateCode = true;
+      entity.code = _code;
+      entity.concept.updateCode = beforeUpdateCode;
+    }
 
     var beforeUpdateWhen = concept.updateWhen;
     concept.updateWhen = true;
-    entity.whenAdded = _whenAdded;
-    entity.whenSet = _whenSet;
-    entity.whenRemoved = _whenRemoved;
+    if (_whenAdded != null) {
+      entity.whenAdded = _whenAdded;
+    }
+    if (_whenSet != null) {
+      entity.whenSet = _whenSet;
+    }
+    if (_whenRemoved != null) {
+      entity.whenRemoved = _whenRemoved;
+    }
     concept.updateWhen = beforeUpdateWhen;
 
     for (Attribute attribute in _concept!.attributes.whereType<Attribute>()) {

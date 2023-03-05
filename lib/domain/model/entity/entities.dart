@@ -41,12 +41,12 @@ class Entities<E extends Entity<E>> implements IEntities<E> {
   }
 
   @override
-  Concept? get concept {
-    // if (_concept == null) {
-    //   throw ConceptException("Concept not set");
-    // }
+  Concept get concept {
+    if (_concept == null) {
+      throw ConceptException("Concept not set");
+    }
 
-    return _concept;
+    return _concept!;
   }
 
   @override

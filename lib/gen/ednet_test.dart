@@ -525,7 +525,7 @@ sc = '$sc      expect(afterUpdateEntity.${nonIdAttribute.code}, '
 sc = '$sc      // $entities.update can only be used if oid, code or '
 'id is set. \n';
 sc = '$sc      expect(() => $entities.update(random$entity2, '
-'afterUpdateEntity), throws); \n';
+'afterUpdateEntity), throwsA(isA<Exception>())); \n';
 } else {
 sc = '$sc      // no attribute that is not id \n';
 }

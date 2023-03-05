@@ -83,7 +83,7 @@ String genConceptGen(Concept concept, String library) {
             '"${destinationConcept.code}"); \n';
       }
       sc = '$sc    setChild("${child.code}", ${destinationConcept.codes}('
-          '${destinationConcept.codeFirstLetterLower}concept!)); \n';
+          '${destinationConcept.codeFirstLetterLower}Concept!)); \n';
     }
     sc = '$sc  } \n';
     sc = '$sc \n';
@@ -117,9 +117,9 @@ String genConceptGen(Concept concept, String library) {
     sc = '$sc \n';
   }
 
-  sc = '$sc  ${concept.code} newEntity() => ${concept.code}(concept!); \n';
+  sc = '$sc  ${concept.code} newEntity() => ${concept.code}(concept); \n';
   sc = '$sc  ${concept.codes} newEntities() => '
-      '${concept.codes}(concept!); \n ';
+      '${concept.codes}(concept); \n ';
   sc = '$sc \n';
 
   if (id.attributeLength == 1) {
