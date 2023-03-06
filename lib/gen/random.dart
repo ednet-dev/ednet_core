@@ -10,11 +10,11 @@ String createInitEntryEntitiesRandomly(Concept entryConcept) {
   return sc;
 }
 
-String createTestEntryEntitiesRandomly(Concept entryConcept) {
+String createTestEntryEntitiesRandomly(Concept entryConcept, model) {
   var sc = '';
   for (var i = 1; i < ENTRY_ENTITIES_COUNT + 1; i++) {
     var entitiesCreated =
-        createTestEntryEntityRandomly(entryConcept, suffix: i);
+        createTestEntryEntityRandomly(entryConcept, suffix: i, model:model);
     sc = '$sc$entitiesCreated';
   }
   return sc;
@@ -97,7 +97,7 @@ String allParents(parents, String text) {
 }
 
 String createTestEntryEntityRandomly(Concept entryConcept,
-    {int? suffix, bool withChildren = true}) {
+    {int? suffix, bool withChildren = true, model}) {
   var sc = '';
   String entryEntity;
   if (suffix != null) {
@@ -117,7 +117,7 @@ String createTestEntryEntityRandomly(Concept entryConcept,
     var parents =
         externalRequiredParent.destinationConcept;
     sc =
-        '$sc    var $entryEntity$parent2 = ${allParents(parents, '')}.random(); \n';
+        '$sc    var $entryEntity$parent2 = ${model.codeFirstLetterLower}Model.${allParents(parents, '')}.random(); \n';
     sc = '$sc    $entryEntity.$parent = $entryEntity$parent2; \n';
   }
 

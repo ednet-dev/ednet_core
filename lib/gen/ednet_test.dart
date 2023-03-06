@@ -176,7 +176,7 @@ if (idAttribute.increment == null) {
 sc = '$sc      var ${entity}Concept = $entities.concept; \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
 sc = '$sc      var $entity = $entity2(${entity}concept); \n';
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      $entity.${idAttribute.code} = '
 'random$entity2.${idAttribute.code}; \n';
 sc = '$sc      var added = $entities.add($entity); \n';
@@ -203,7 +203,7 @@ sc = '$sc    }); \n';
 sc = '$sc \n';
 
 sc = '$sc    test("Find $entity by oid", () { \n';
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var $entity = '
 '$entities.singleWhereOid(random$entity2.oid); \n';
 sc = '$sc      expect($entity, isNotNull); \n';
@@ -213,7 +213,7 @@ sc = '$sc \n';
 
 sc = '$sc    test("Find $entity by attribute id", () { \n';
 if (idAttribute != null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var $entity = \n';
 sc = '$sc          $entities.singleWhereAttributeId('
 '"${idAttribute.code}", random$entity2.${idAttribute.code}); \n';
@@ -228,7 +228,7 @@ sc = '$sc \n';
 
 sc = '$sc    test("Find $entity by required attribute", () { \n';
 if (requiredNonIdAttribute != null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var $entity = \n';
 sc = '$sc          $entities.firstWhereAttribute('
 '"${requiredNonIdAttribute.code}", '
@@ -245,7 +245,7 @@ sc = '$sc \n';
 sc = '$sc    test("Find $entity by attribute", () { \n';
 var nonRequiredAttribute = findNonRequiredAttribute(entryConcept);
 if (nonRequiredAttribute != null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var $entity = \n';
 sc = '$sc          $entities.firstWhereAttribute('
 '"${nonRequiredAttribute.code}", random$entity2.'
@@ -261,7 +261,7 @@ sc = '$sc \n';
 
 sc = '$sc    test("Select $entities by attribute", () { \n';
 if (nonRequiredAttribute != null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var selected$entities2 = \n';
 sc = '$sc          $entities.selectWhereAttribute('
 '"${nonRequiredAttribute.code}", random$entity2.'
@@ -281,7 +281,7 @@ sc = '$sc \n';
 
 sc = '$sc    test("Select $entities by required attribute", () { \n';
 if (requiredNonIdAttribute != null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var selected$entities2 = \n';
 sc = '$sc          $entities.selectWhereAttribute('
 '"${requiredNonIdAttribute.code}", '
@@ -302,7 +302,7 @@ sc = '$sc \n';
 sc = '$sc    test("Select $entities by attribute, then add", () { \n';
 var nonIdAttribute = findNonIdAttribute(entryConcept);
 if (nonIdAttribute != null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var selected$entities2 = \n';
 sc = '$sc          $entities.selectWhereAttribute('
 '"${nonIdAttribute.code}", random$entity2.${nonIdAttribute.code}); \n';
@@ -328,7 +328,7 @@ sc = '$sc \n';
 
 sc = '$sc    test("Select $entities by attribute, then remove", () { \n';
 if (nonIdAttribute != null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var selected$entities2 = \n';
 sc = '$sc          $entities.selectWhereAttribute('
 '"${nonIdAttribute.code}", random$entity2.${nonIdAttribute.code}); \n';
@@ -427,9 +427,9 @@ sc = '$sc    }); \n';
 sc = '$sc \n';
 
 sc = '$sc    test("Random $entity", () { \n';
-sc = '$sc      var ${entity}1 = $entities.random(); \n';
+sc = '$sc      var ${entity}1 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      expect(${entity}1, isNotNull); \n';
-sc = '$sc      var ${entity}2 = $entities.random(); \n';
+sc = '$sc      var ${entity}2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      expect(${entity}2, isNotNull); \n';
 sc = '$sc \n';
 sc = '$sc      //${entity}1.display(prefix: "random1"); \n';
@@ -440,7 +440,7 @@ sc = '$sc \n';
 sc = '$sc    test("Update $entity id with try", () { \n';
 if (idAttribute != null) {
 if (idAttribute.increment == null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var beforeUpdate = random$entity2.${idAttribute.code}; \n';
 sc = '$sc      try { \n';
 var attributeSet =
@@ -462,7 +462,7 @@ sc = '$sc \n';
 sc = '$sc    test("Update $entity id without try", () { \n';
 if (idAttribute != null) {
 if (idAttribute.increment == null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var beforeUpdateValue = '
 'random$entity2.${idAttribute.code}; \n';
 var value = genAttributeTextRandomly(idAttribute);
@@ -482,7 +482,7 @@ sc = '$sc \n';
 sc = '$sc    test("Update $entity id with success", () { \n';
 if (idAttribute != null) {
 if (idAttribute.increment == null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var afterUpdateEntity = random$entity2.copy(); \n';
 sc = '$sc      var attribute = random$entity2.concept.attributes.'
 'singleWhereCode("${idAttribute.code}"); \n';
@@ -514,7 +514,7 @@ sc = '$sc \n';
 
 sc = '$sc    test("Update $entity non id attribute with failure", () { \n';
 if (nonIdAttribute != null) {
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 //sc = '${sc}      var beforeUpdateValue = '
 //     'random${Entity}.${nonIdAttribute.code}; \n';
 sc = '$sc      var afterUpdateEntity = random$entity2.copy(); \n';
@@ -533,7 +533,7 @@ sc = '$sc    }); \n';
 sc = '$sc \n';
 
 sc = '$sc    test("Copy Equality", () { \n';
-sc = '$sc      var random$entity2 = $entities.random(); \n';
+sc = '$sc      var random$entity2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      random$entity2.display(prefix:"before copy: "); \n';
 sc = '$sc      var random${entity2}Copy = random$entity2.copy(); \n';
 sc = '$sc      random${entity2}Copy.display(prefix:"after copy: "); \n';
@@ -574,7 +574,7 @@ sc = '$sc    test("$entity action undo and redo", () { \n';
 //sc = '${sc}      var ${entity}Concept = ${entities}.concept; \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
 sc =
-'$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false)}';
+'$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false, model:model)}';
 sc = '$sc      expect($entities.length, equals(++${entity}Count)); \n';
 sc = '$sc      $entities.remove($entity); \n';
 sc = '$sc      expect($entities.length, equals(--${entity}Count)); \n';
@@ -595,7 +595,7 @@ sc = '$sc    test("$entity session undo and redo", () { \n';
 //sc = '${sc}      var ${entity}Concept = ${entities}.concept; \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
 sc =
-'$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false)}';
+'$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false, model:model)}';
 sc = '$sc      expect($entities.length, equals(++${entity}Count)); \n';
 sc = '$sc      $entities.remove($entity); \n';
 sc = '$sc      expect($entities.length, equals(--${entity}Count)); \n';
@@ -614,7 +614,7 @@ sc = '$sc \n';
 
 sc = '$sc    test("$entity2 update undo and redo", () { \n';
 if (nonIdAttribute != null) {
-sc = '$sc      var $entity = $entities.random(); \n';
+sc = '$sc      var $entity = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 var value = genAttributeTextRandomly(nonIdAttribute);
 sc = '$sc      var action = SetAttributeCommand(session, '
 '$entity, "${nonIdAttribute.code}", $value); \n';
@@ -635,14 +635,14 @@ sc = '$sc \n';
 
 sc = '$sc    test("$entity2 action with multiple undos and redos", () { \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
-sc = '$sc      var ${entity}1 = $entities.random(); \n';
+sc = '$sc      var ${entity}1 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc \n';
 sc = '$sc      var action1 = RemoveCommand(session, $entities, '
 '${entity}1); \n';
 sc = '$sc      action1.doIt(); \n';
 sc = '$sc      expect($entities.length, equals(--${entity}Count)); \n';
 sc = '$sc \n';
-sc = '$sc      var ${entity}2 = $entities.random(); \n';
+sc = '$sc      var ${entity}2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc \n';
 sc = '$sc      var action2 = RemoveCommand(session, $entities, '
 '${entity}2); \n';
@@ -671,10 +671,10 @@ sc = '$sc \n';
 
 sc = '$sc    test("Transaction undo and redo", () { \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
-sc = '$sc      var ${entity}1 = $entities.random(); \n';
-sc = '$sc      var ${entity}2 = $entities.random(); \n';
+sc = '$sc      var ${entity}1 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
+sc = '$sc      var ${entity}2 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      while (${entity}1 == ${entity}2) { \n';
-sc = '$sc        ${entity}2 = $entities.random();  \n';
+sc = '$sc        ${entity}2 = ${model.codeFirstLetterLower}Model.$entities.random();  \n';
 sc = '$sc      } \n';
 sc = '$sc      var action1 = RemoveCommand(session, $entities, '
 '${entity}1); \n';
@@ -707,7 +707,7 @@ sc = '$sc \n';
 
 sc = '$sc    test("Transaction with one action error", () { \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
-sc = '$sc      var ${entity}1 = $entities.random(); \n';
+sc = '$sc      var ${entity}1 = ${model.codeFirstLetterLower}Model.$entities.random(); \n';
 sc = '$sc      var ${entity}2 = ${entity}1; \n';
 sc = '$sc      var action1 = RemoveCommand(session, $entities, '
 '${entity}1); \n';
@@ -737,7 +737,7 @@ sc = '$sc \n';
 sc =
 '$sc      ${domain.codeFirstLetterLower}Domain.startCommandReaction(reaction); \n';
 sc =
-'$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false)}';
+'$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false, model:model)}';
 sc = '$sc      expect($entities.length, equals(++${entity}Count)); \n';
 sc = '$sc      $entities.remove($entity); \n';
 sc = '$sc      expect($entities.length, equals(--${entity}Count)); \n';
