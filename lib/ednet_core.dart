@@ -140,3 +140,6 @@ part 'domain/model/error/validation_exception.dart';
 part 'domain/model/error/validation_exceptions.dart';
 
 part 'domain/model/aggregate_root/aggregate_root.dart';
+
+/// Authorization
+part 'domain/application/i_authorizable_entity.dart';
