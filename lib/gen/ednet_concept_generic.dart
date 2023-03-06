@@ -24,13 +24,13 @@ String genConceptGen(Concept concept, String library) {
       Concept destinationConcept = child.destinationConcept;
       if (!generatedConcepts.contains(destinationConcept)) {
         generatedConcepts.add(destinationConcept);
-        sc = '$sc    Concept? ${destinationConcept.codeFirstLetterLower}'
+        sc = '$sc    Concept ${destinationConcept.codeFirstLetterLower}'
             'Concept = concept.model.concepts.singleWhereCode('
-            '"${destinationConcept.code}"); \n';
-        sc = '$sc    assert(${destinationConcept.codeFirstLetterLower}Concept!= null); \n';
+            '"${destinationConcept.code}") as Concept; \n';
+        sc = '$sc    assert(${destinationConcept.codeFirstLetterLower}Concept != null); \n';
       }
       sc = '$sc    setChild("${child.code}", ${destinationConcept.codes}('
-          '${destinationConcept.codeFirstLetterLower}Concept!)); \n';
+          '${destinationConcept.codeFirstLetterLower}Concept)); \n';
     }
     sc = '$sc  } \n';
   }
@@ -83,7 +83,7 @@ String genConceptGen(Concept concept, String library) {
             '"${destinationConcept.code}"); \n';
       }
       sc = '$sc    setChild("${child.code}", ${destinationConcept.codes}('
-          '${destinationConcept.codeFirstLetterLower}Concept!)); \n';
+          '${destinationConcept.codeFirstLetterLower}Concept)); \n';
     }
     sc = '$sc  } \n';
     sc = '$sc \n';
@@ -150,8 +150,8 @@ String genConceptGen(Concept concept, String library) {
   sc = '$sc  } \n';
   sc = '$sc \n';
   sc = '$sc  ${concept.codes} newEntities() => '
-      '${concept.codes}(concept!); \n';
-  sc = '$sc  ${concept.code} newEntity() => ${concept.code}(concept!); \n ';
+      '${concept.codes}(concept); \n';
+  sc = '$sc  ${concept.code} newEntity() => ${concept.code}(concept); \n ';
   sc = '$sc \n';
   sc = '$sc} \n';
   sc = '$sc \n';

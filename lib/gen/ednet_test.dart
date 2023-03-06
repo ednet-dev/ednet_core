@@ -151,9 +151,9 @@ sc = '$sc \n';
 sc = '$sc    test("Add $entity required error", () { \n';
 var requiredNonIdAttribute = findRequiredNonIdAttribute(entryConcept);
 if (requiredNonIdAttribute != null) {
-sc = '$sc      var ${entity}Concept = $entities.concept!; \n';
+sc = '$sc      var ${entity}Concept = $entities.concept; \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
-sc = '$sc      var $entity = $entity2(${entity}concept!); \n';
+sc = '$sc      var $entity = $entity2(${entity}concept); \n';
 sc = '$sc      var isAdded = $entities.add($entity); \n';
 sc = '$sc      expect(isAdded, isFalse); \n';
 sc = '$sc      expect($entities.length, equals(${entity}Count)); \n';
@@ -173,9 +173,9 @@ sc = '$sc    test("Add $entity unique error", () { \n';
 var idAttribute = findIdAttribute(entryConcept);
 if (idAttribute != null) {
 if (idAttribute.increment == null) {
-sc = '$sc      var ${entity}Concept = $entities.concept!; \n';
+sc = '$sc      var ${entity}Concept = $entities.concept; \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
-sc = '$sc      var $entity = $entity2(${entity}concept!); \n';
+sc = '$sc      var $entity = $entity2(${entity}concept); \n';
 sc = '$sc      var random$entity2 = $entities.random(); \n';
 sc = '$sc      $entity.${idAttribute.code} = '
 'random$entity2.${idAttribute.code}; \n';
@@ -310,7 +310,7 @@ sc = '$sc      expect(selected$entities2.isEmpty, isFalse); \n';
 sc = '$sc      expect(selected$entities2.source?.isEmpty, isFalse); \n';
 sc = '$sc      var ${entities}Count = $entities.length; \n';
 sc = '$sc \n';
-sc = '$sc      var $entity = $entity2($entities.concept!); \n';
+sc = '$sc      var $entity = $entity2($entities.concept); \n';
 var attributesSet = setTestAttributesRandomly(entryConcept, entity);
 sc = '$sc$attributesSet';
 sc = '$sc      var added = selected$entities2.add($entity); \n';
@@ -571,7 +571,7 @@ sc = '$sc    }); \n';
 sc = '$sc \n';
 
 sc = '$sc    test("$entity action undo and redo", () { \n';
-//sc = '${sc}      var ${entity}Concept = ${entities}.concept!; \n';
+//sc = '${sc}      var ${entity}Concept = ${entities}.concept; \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
 sc =
 '$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false)}';
@@ -592,7 +592,7 @@ sc = '$sc    }); \n';
 sc = '$sc \n';
 
 sc = '$sc    test("$entity session undo and redo", () { \n';
-//sc = '${sc}      var ${entity}Concept = ${entities}.concept!; \n';
+//sc = '${sc}      var ${entity}Concept = ${entities}.concept; \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
 sc =
 '$sc      ${createTestEntryEntityRandomly(entryConcept, withChildren: false)}';
@@ -728,7 +728,7 @@ sc = '$sc    }); \n';
 sc = '$sc \n';
 
 sc = '$sc    test("Reactions to $entity actions", () { \n';
-//sc = '${sc}      var ${entity}Concept = ${entities}.concept!; \n';
+//sc = '${sc}      var ${entity}Concept = ${entities}.concept; \n';
 sc = '$sc      var ${entity}Count = $entities.length; \n';
 sc = '$sc \n';
 sc = '$sc      var reaction = ${entity2}Reaction(); \n';
