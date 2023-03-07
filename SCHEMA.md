@@ -31,18 +31,18 @@ Concept definition. Defines a single Concept, including its name, whether it is 
 ### Relationship
 Relationship between two Concepts. Defines a relationship between two Concepts, including the names of the Concepts, the name of the relationship, the minimum and maximum number of instances of the second Concept, the name of the inverse relationship, and whether the relationship involves an identifier from the second Concept.
 
-- box1Name: The name of the first Concept in the relationship.
-- box2Name: The name of the second Concept in the relationship.
-- box1box2Name: The name of the relationship.
-- box1box2Min: The minimum number of instances of the second Concept in the relationship.
-- box1box2Max: The maximum number of instances of the second Concept in the relationship.
-- box2box1Name: The name of the inverse relationship.
-- box2box1Min: The minimum number of instances of the first Concept in the inverse relationship.
-- box2box1Max: The maximum number of instances of the first Concept in the inverse relationship.
+- from: The name of the first Concept in the relationship.
+- to: The name of the second Concept in the relationship.
+- fromToName: The name of the relationship.
+- fromToMin: The minimum number of instances of the second Concept in the relationship.
+- fromToMax: The maximum number of instances of the second Concept in the relationship.
+- toFromName: The name of the inverse relationship.
+- toFromMin: The minimum number of instances of the first Concept in the inverse relationship.
+- toFromMax: The maximum number of instances of the first Concept in the inverse relationship.
 - category: The category of the relationship.
 - internal: Whether the relationship is internal to the model.
-- box1box2Id: Indicates whether the relationship involves an identifier from the second Concept.
-- box2box1Id: Indicates whether the inverse relationship involves an identifier from the first Concept.
+- fromToId: Indicates whether the relationship involves an identifier from the second Concept.
+- toFromId: Indicates whether the inverse relationship involves an identifier from the first Concept.
 
 ## Properties
 
@@ -78,11 +78,11 @@ identified concept!) contains an attribute that serves as a unique identifier fo
 other words, the identifier of the identified concept is used as a foreign key in the identifying concept to establish
 the relationship between them.
 
-In the context of the JSON schema,the "box1box2Id" and "box2box1Id" properties indicate whether an identifying
-association exists between two concepts in a binary relationship. If "box1box2Id" is true, it means that the first
+In the context of the JSON schema,the "fromToId" and "toFromId" properties indicate whether an identifying
+association exists between two concepts in a binary relationship. If "fromToId" is true, it means that the first
 concept in the relationship contains an attribute that serves as an identifier for instances of the second concept.
 
-Similarly, if "box2box1Id" is true, it means that the second concept in the relationship contains an attribute that
+Similarly, if "toFromId" is true, it means that the second concept in the relationship contains an attribute that
 serves as an identifier for instances of the first concept.
 
 The internal flag indicates whether the relationship is internal or external. An internal relationship is one that connects concepts within the same model, while an external relationship connects concepts from different models.

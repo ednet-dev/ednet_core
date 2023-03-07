@@ -3,7 +3,7 @@
   "properties": {
     "contexts": {
       "type": "array",
-      "items": {
+      "attributes": {
         "type": "object",
         "properties": {
           "name": {
@@ -11,13 +11,13 @@
           },
           "depends_on": {
             "type": "array",
-            "items": {
+            "attributes": {
               "type": "string"
             }
           },
           "aggregates": {
             "type": "array",
-            "items": {
+            "attributes": {
               "type": "object",
               "properties": {
                 "name": {

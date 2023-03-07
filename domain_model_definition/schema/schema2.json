@@ -3,7 +3,7 @@
   "properties": {
     "boundedContexts": {
       "type": "array",
-      "items": {
+      "attributes": {
         "type": "object",
         "properties": {
           "name": {
@@ -14,7 +14,7 @@
           },
           "aggregates": {
             "type": "array",
-            "items": {
+            "attributes": {
               "type": "object",
               "properties": {
                 "name": {
@@ -22,19 +22,19 @@
                 },
                 "entities": {
                   "type": "array",
-                  "items": {
+                  "attributes": {
                     "type": "string"
                   }
                 },
                 "valueObjects": {
                   "type": "array",
-                  "items": {
+                  "attributes": {
                     "type": "string"
                   }
                 },
                 "repositories": {
                   "type": "array",
-                  "items": {
+                  "attributes": {
                     "type": "object",
                     "properties": {
                       "name": {
@@ -48,7 +48,7 @@
                 },
                 "commands": {
                   "type": "array",
-                  "items": {
+                  "attributes": {
                     "type": "object",
                     "properties": {
                       "name": {
@@ -65,7 +65,7 @@
                 },
                 "events": {
                   "type": "array",
-                  "items": {
+                  "attributes": {
                     "type": "object",
                     "properties": {
                       "name": {
@@ -79,7 +79,7 @@
                 },
                 "policies": {
                   "type": "array",
-                  "items": {
+                  "attributes": {
                     "type": "object",
                     "properties": {
                       "name": {
@@ -96,7 +96,7 @@
           },
           "applicationServices": {
             "type": "array",
-            "items": {
+            "attributes": {
               "type": "object",
               "properties": {
                 "name": {
@@ -104,7 +104,7 @@
                 },
                 "operations": {
                   "type": "array",
-                  "items": {
+                  "attributes": {
                     "type": "object",
                     "properties": {
                       "name": {

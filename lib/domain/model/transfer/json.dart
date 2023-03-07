@@ -1,28 +1,35 @@
 part of ednet_core;
 
-Model fromJsonToModel(String json, Domain domain, String modelCode) {
-  if (json.trim() == '') {
-    throw EDNetException('Empty JSON string for Model parse');
-  }
+Model fromJsonToModel(String json, Domain domain, String modelCode, yaml) {
+  var jsonConcepts;
+  var relations;
 
-  var boardMap = jsonDecode(json);
-  var boxes = boardMap["boxes"];
-  var lines = boardMap["lines"];
+  if (yaml == null) {
+    if (json.trim() == '') {
+      throw EDNetException('Empty JSON string for Model parse');
+    }
+    var boardMap = jsonDecode(json);
+    jsonConcepts = boardMap["concepts"];
+    relations = boardMap["relations"];
+  } else {
+    jsonConcepts = yaml["concepts"];
+    relations = yaml["relations"];
+  }
 
   Model model = Model(domain, modelCode);
 
-  for (var box in boxes) {
-    String conceptCode = box["name"];
-    bool conceptEntry = box["entry"];
+  for (var jsonConcept in jsonConcepts) {
+    String conceptCode = jsonConcept["name"];
+    bool conceptEntry = jsonConcept["entry"] ?? false;
     Concept concept = Concept(model, conceptCode);
     concept.entry = conceptEntry;
 
-    var items = box["items"];
+    var items = jsonConcept["attributes"] ?? [];
     for (var item in items) {
       String attributeCode = item["name"];
       if (attributeCode != 'oid' && attributeCode != 'code') {
         Attribute attribute = Attribute(concept, attributeCode);
-        String itemCategory = item["category"];
+        String itemCategory = item["category"] ?? '';
         if (itemCategory == 'guid') {
           attribute.guid = true;
         } else if (itemCategory == 'identifier') {
@@ -58,49 +65,51 @@ Model fromJsonToModel(String json, Domain domain, String modelCode) {
     }
   }
 
-  for (var line in lines) {
-    String box1Name = line["box1Name"];
-    String box2Name = line["box2Name"];
+  for (var relation in relations) {
+    String from = relation["from"];
+    String to = relation["to"];
 
-    Concept? concept1 = model.concepts.singleWhereCode(box1Name);
-    Concept? concept2 = model.concepts.singleWhereCode(box2Name);
+    Concept? concept1 = model.concepts.singleWhereCode(from);
+    Concept? concept2 = model.concepts.singleWhereCode(to);
     if (concept1 == null) {
-      throw ConceptException('Line concept is missing for the $box1Name box.');
+      throw ConceptException(
+          'Line concept is missing for the $from jsonConcept. For ${domain.code}.$modelCode');
     }
     if (concept2 == null) {
-      throw ConceptException('Line concept is missing for the $box2Name box.');
+      throw ConceptException(
+          'Line concept is missing for the $to jsonConcept. For ${domain.code}.$modelCode');
     }
 
-    String box1box2Name = line["box1box2Name"];
-    String box1box2Min = line["box1box2Min"];
-    String box1box2Max = line["box1box2Max"];
-    bool box1box2Id = line["box1box2Id"];
-    String box2box1Name = line["box2box1Name"];
-    String box2box1Min = line["box2box1Min"];
-    String box2box1Max = line["box2box1Max"];
-    bool box2box1Id = line["box2box1Id"];
-    bool lineInternal = line["internal"];
-    String lineCategory = line["category"];
+    String fromToName = relation["fromToName"];
+    String fromToMin = '${relation["fromToMin"]}';
+    String fromToMax = '${relation["fromToMax"]}';
+    bool fromToId = relation["fromToId"] ?? false;
+    String toFromName = relation["toFromName"];
+    String toFromMin = '${relation["toFromMin"]}';
+    String toFromMax = '${relation["toFromMax"]}';
+    bool toFromId = relation["toFromId"] ?? false;
+    bool lineInternal = relation["internal"] ?? false;
+    String lineCategory = relation["category"] ?? 'rel';
 
     bool d12Child;
     bool d21Child;
     bool d12Parent;
     bool d21Parent;
 
-    if (box1box2Max != '1') {
+    if (fromToMax != '1') {
       d12Child = true;
-      if (box2box1Max != '1') {
+      if (toFromMax != '1') {
         d21Child = true;
       } else {
         d21Child = false;
       }
-    } else if (box2box1Max != '1') {
+    } else if (toFromMax != '1') {
       d12Child = false;
       d21Child = true;
-    } else if (box1box2Min == '0') {
+    } else if (fromToMin == '0') {
       d12Child = true;
       d21Child = false;
-    } else if (box2box1Min == '0') {
+    } else if (toFromMin == '0') {
       d12Child = false;
       d21Child = true;
     } else {
@@ -112,29 +121,29 @@ Model fromJsonToModel(String json, Domain domain, String modelCode) {
     d21Parent = !d21Child;
 
     if (d12Child && d21Child) {
-      throw Exception('$box1Name -- $box2Name line has two children.');
+      throw Exception('$from -- $to relation has two children.');
     }
     if (d12Parent && d21Parent) {
-      throw Exception('$box1Name -- $box2Name line has two parents.');
+      throw Exception('$from -- $to relation has two parents.');
     }
 
     Neighbor neighbor12;
     Neighbor neighbor21;
 
     if (d12Child && d21Parent) {
-      neighbor12 = Child(concept1, concept2, box1box2Name);
-      neighbor21 = Parent(concept2, concept1, box2box1Name);
+      neighbor12 = Child(concept1, concept2, fromToName);
+      neighbor21 = Parent(concept2, concept1, toFromName);
 
       neighbor12.opposite = neighbor21;
       neighbor21.opposite = neighbor12;
 
-      neighbor12.minc = box1box2Min;
-      neighbor12.maxc = box1box2Max;
-      neighbor12.identifier = box1box2Id;
+      neighbor12.minc = fromToMin;
+      neighbor12.maxc = fromToMax;
+      neighbor12.identifier = fromToId;
 
-      neighbor21.minc = box2box1Min;
-      neighbor21.maxc = box2box1Max;
-      neighbor21.identifier = box2box1Id;
+      neighbor21.minc = toFromMin;
+      neighbor21.maxc = toFromMax;
+      neighbor21.identifier = toFromId;
 
       neighbor12.internal = lineInternal;
       if (lineCategory == 'inheritance') {
@@ -154,19 +163,19 @@ Model fromJsonToModel(String json, Domain domain, String modelCode) {
         neighbor21.twin = true;
       }
     } else if (d12Parent && d21Child) {
-      neighbor12 = Parent(concept1, concept2, box1box2Name);
-      neighbor21 = Child(concept2, concept1, box2box1Name);
+      neighbor12 = Parent(concept1, concept2, fromToName);
+      neighbor21 = Child(concept2, concept1, toFromName);
 
       neighbor12.opposite = neighbor21;
       neighbor21.opposite = neighbor12;
 
-      neighbor12.minc = box1box2Min;
-      neighbor12.maxc = box1box2Max;
-      neighbor12.identifier = box1box2Id;
+      neighbor12.minc = fromToMin;
+      neighbor12.maxc = fromToMax;
+      neighbor12.identifier = fromToId;
 
-      neighbor21.minc = box2box1Min;
-      neighbor21.maxc = box2box1Max;
-      neighbor21.identifier = box2box1Id;
+      neighbor21.minc = toFromMin;
+      neighbor21.maxc = toFromMax;
+      neighbor21.identifier = toFromId;
 
       neighbor12.internal = lineInternal;
       if (lineCategory == 'inheritance') {

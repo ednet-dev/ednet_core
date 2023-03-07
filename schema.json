@@ -72,10 +72,10 @@
           "description": "The height of the canvas artifact",
           "type": "integer"
         },
-        "items": {
+        "attributes": {
           "description": "An array of attributes defining the Concept",
           "type": "array",
-          "items": {
+          "attributes": {
             "$ref": "#/definitions/attribute"
           }
         }
@@ -87,41 +87,41 @@
         "y",
         "width",
         "height",
-        "items"
+        "attributes"
       ]
     },
     "relationship": {
       "type": "object",
       "properties": {
-        "box1Name": {
+        "from": {
           "description": "The name of the first Concept in the relationship.",
           "type": "string"
         },
-        "box2Name": {
+        "to": {
           "description": "The name of the second Concept in the relationship.",
           "type": "string"
         },
-        "box1box2Name": {
+        "fromToName": {
           "description": "The name of the relationship.",
           "type": "string"
         },
-        "box1box2Min": {
+        "fromToMin": {
           "description": "The minimum number of instances of the second Concept in the relationship.",
           "type": "string"
         },
-        "box1box2Max": {
+        "fromToMax": {
           "description": "The maximum number of instances of the second Concept in the relationship.",
           "type": "string"
         },
-        "box2box1Name": {
+        "toFromName": {
           "description": "The name of the inverse relationship.",
           "type": "string"
         },
-        "box2box1Min": {
+        "toFromMin": {
           "description": "The minimum number of instances of the first Concept in the inverse relationship.",
           "type": "string"
         },
-        "box2box1Max": {
+        "toFromMax": {
           "description": "The maximum number of instances of the first Concept in the inverse relationship.",
           "type": "string"
         },
@@ -133,28 +133,28 @@
           "description": "Indicates whether the relationship is internal to the Concept, i.e., whether it is used for implementation purposes only and have no public API beside what Parent Concept provides.",
           "type": "boolean"
         },
-        "box1box2Id": {
+        "fromToId": {
           "description": "Whether the relationship involves an identifier from the second Concept.",
           "type": "boolean"
         },
-        "box2box1Id": {
+        "toFromId": {
           "description": "Whether the inverse relationship involves an identifier from the first Concept.",
           "type": "boolean"
         }
       },
       "required": [
-        "box1Name",
-        "box2Name",
-        "box1box2Name",
-        "box1box2Min",
-        "box1box2Max",
-        "box2box1Name",
-        "box2box1Min",
-        "box2box1Max",
+        "from",
+        "to",
+        "fromToName",
+        "fromToMin",
+        "fromToMax",
+        "toFromName",
+        "toFromMin",
+        "toFromMax",
         "category",
         "internal",
-        "box1box2Id",
-        "box2box1Id"
+        "fromToId",
+        "toFromId"
       ]
     }
   },
@@ -164,10 +164,10 @@
       "description": "The width of the canvas",
       "type": "integer"
     },
-    "lines": {
+    "relations": {
       "description": "An array of relationships between Concepts",
       "type": "array",
-      "items": {
+      "attributes": {
         "$ref": "#/definitions/relationship"
       }
     },
@@ -175,18 +175,18 @@
       "description": "The height of the canvas",
       "type": "integer"
     },
-    "boxes": {
+    "concepts": {
       "description": "Array of EDNetCore Concepts",
       "type": "array",
-      "items": {
+      "attributes": {
         "$ref": "#/definitions/box"
       }
     }
   },
   "required": [
     "width",
-    "lines",
+    "relations",
     "height",
-    "boxes"
+    "concepts"
   ]
 }

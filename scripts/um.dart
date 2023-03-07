@@ -69,10 +69,10 @@ void _updateModel(Map<String, dynamic> data, Map<String, dynamic> model) {
     for (var line in data['lines']) {
       var existingLine = model['lines'].firstWhere(
           (l) =>
-              l['box1Name'] == line['box1Name'] &&
-              l['box2Name'] == line['box2Name'] &&
-              l['box1box2Name'] == line['box1box2Name'] &&
-              l['box2box1Name'] == line['box2box1Name'],
+              l['from'] == line['from'] &&
+              l['to'] == line['to'] &&
+              l['fromToName'] == line['fromToName'] &&
+              l['toFromName'] == line['toFromName'],
           orElse: () => null);
 
       if (existingLine == null) {

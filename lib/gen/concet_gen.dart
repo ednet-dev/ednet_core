@@ -28,7 +28,7 @@ abstract class ${concept.code}Gen extends Entity<${concept.code}> {
    ${initChildren}
     Concept? providerCriteriaConcept = concept.model.concepts.singleWhereCode("ProviderCriteria"); 
     assert(providerCriteriaConcept!= null); 
-    setChild("inquiry", ProviderCriterias(providerCriteriaConcept!)); 
+    setChild("inquiry", Provider  Criterias(providerCriteriaConcept!)); 
     Concept? attachmentConcept = concept.model.concepts.singleWhereCode("Attachment"); 
     assert(attachmentConcept!= null); 
     setChild("attachments", Attachments(attachmentConcept!)); 
