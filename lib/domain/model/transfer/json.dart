@@ -50,7 +50,7 @@ Model fromJsonToModel(String json, Domain domain, String modelCode, yaml) {
         } else {
           attribute.init = itemInit;
         }
-        bool itemEssential = item["essential"] ?? false;
+        bool itemEssential = item["essential"] ?? true;
         attribute.essential = itemEssential;
         bool itemSensitive = item["sensitive"] ?? false;
         attribute.sensitive = itemSensitive;
