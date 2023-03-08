@@ -3,7 +3,7 @@ import 'dart:io';
 class YamlSource {
   final String localPath = "domain_model_definition";
   final String remoteUrl =
-      "https://github.com/ednet-dev/example-configuration-domain.git";
+      "https://github.com/context-dev/example-configuration-domain.git";
 
   Future<String> getYamlPath() async {
     String yamlPath = localPath;

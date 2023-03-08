@@ -864,7 +864,7 @@ class Entity<E extends Entity<E>> implements IEntity<E> {
 
               =============================================
               Internal parent oid is wrong, create issue for ${parent.code!}
-              on https://github.com/ednet-dev/cms/issues/new?title=_neighborsFromJsonMap%20bug                           
+              on https://github.com/context-dev/cms/issues/new?title=_neighborsFromJsonMap%20bug                           
               ---------------------------------------------                            
               model_entries.dart: entity.setParent(parent.code!, internalParent); 
               internal parent oid: ${internalParent?.oid}                  
